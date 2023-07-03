@@ -1,0 +1,27 @@
+{
+    "name": "advent-of-code-node",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc",
+        "dev": "nodemon --watch './src/*' -e ts,js --exec 'npm run build'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AndrewJDawes/advent-of-code-node.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/AndrewJDawes/advent-of-code-node/issues"
+    },
+    "homepage": "https://github.com/AndrewJDawes/advent-of-code-node#readme",
+    "devDependencies": {
+        "@types/node": "^20.3.3",
+        "nodemon": "^2.0.22",
+        "typescript": "^5.1.6"
+    }
+}
