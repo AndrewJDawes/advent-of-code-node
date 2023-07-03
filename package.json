@@ -5,9 +5,9 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc",
-        "dev": "nodemon --watch './src/*' -e ts,js --exec 'npm run build'"
+        "dev": "nodemon --watch './src/*' -e ts,js --exec 'npm run build'",
+        "test": "mocha"
     },
     "repository": {
         "type": "git",
@@ -20,8 +20,13 @@
     },
     "homepage": "https://github.com/AndrewJDawes/advent-of-code-node#readme",
     "devDependencies": {
+        "@types/chai": "^4.3.5",
+        "@types/mocha": "^10.0.1",
         "@types/node": "^20.3.3",
+        "chai": "^4.3.7",
+        "mocha": "^10.2.0",
         "nodemon": "^2.0.22",
+        "ts-node": "^10.9.1",
         "typescript": "^5.1.6"
     }
 }
