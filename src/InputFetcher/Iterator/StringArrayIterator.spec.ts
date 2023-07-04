@@ -2,7 +2,7 @@ import Mocha from "mocha";
 import { expect } from "chai";
 import StringArrayIterator from "./StringArrayIterator.js";
 
-describe("StringArrayIterator", () => {
+describe("InputFetcher StringArrayIterator", () => {
     it("returns each and every item in the given array", async () => {
         const arr = ["one", "two", "three"];
         let index = 0;

@@ -1,6 +1,6 @@
 import Iterator from "../Interface/Iterator.js";
-interface InputFetcher {
+interface Service {
     getIterator(): Promise<Iterator>;
 }
 
-export default InputFetcher;
+export default Service;

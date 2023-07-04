@@ -2,7 +2,7 @@ import Mocha from "mocha";
 import { expect } from "chai";
 import StringArray from "./StringArray.js";
 
-describe("StringArray", () => {
+describe("InputFetcher StringArray", () => {
     describe("getIterator", () => {
         it("returns a Promise that resolves to an Iterator", async () => {
             const arr = ["cat", "dog", "mouse"];
