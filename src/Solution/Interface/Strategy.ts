@@ -1,5 +1,5 @@
 interface Strategy {
-    execute(): Promise<string>;
+    solve(): Promise<string>;
 }
 
 export default Strategy;

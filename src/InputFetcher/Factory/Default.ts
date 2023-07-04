@@ -1,34 +1,34 @@
-import Factory from "../Interface/Factory.js";
-import Service from "../Interface/Service.js";
-import URL from "../Service/URL.js";
-import FilePath from "../Service/FilePath.js";
-import StringArray from "../Service/StringArray.js";
+import Factory from '../Interface/Factory.js';
+import Service from '../Interface/Service.js';
+import URL from '../Service/URL.js';
+import FilePath from '../Service/FilePath.js';
+import StringArray from '../Service/StringArray.js';
 class Default implements Factory {
-    getService(type: string, source: string | Array<string>): Service {
-        switch (type) {
-            case "url":
-                if (!(typeof source === "string")) {
+    getService(dataType: string, dataSource: string | Array<string>): Service {
+        switch (dataType) {
+            case 'url':
+                if (!(typeof dataSource === 'string')) {
                     throw new Error(
-                        "Default factory: URL source must be a string"
+                        'Default factory: URL dataSource must be a string'
                     );
                 }
-                return new URL(source);
-            case "file":
-                if (!(typeof source === "string")) {
+                return new URL(dataSource);
+            case 'file':
+                if (!(typeof dataSource === 'string')) {
                     throw new Error(
-                        "Default factory: File source must be a string"
+                        'Default factory: File dataSource must be a string'
                     );
                 }
-                return new FilePath(source);
-            case "array":
-                if (!(source instanceof Array)) {
+                return new FilePath(dataSource);
+            case 'array':
+                if (!(dataSource instanceof Array)) {
                     throw new Error(
-                        "Default factory: Array source must be an array"
+                        'Default factory: Array dataSource must be an array'
                     );
                 }
-                return new StringArray(source);
+                return new StringArray(dataSource);
             default:
-                throw new Error("Default factory: unknown type");
+                throw new Error('Default factory: unknown dataType');
         }
     }
 }

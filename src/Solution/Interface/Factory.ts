@@ -1,8 +1,8 @@
-import Strategy from "./Strategy.js";
-("../Interface/Strategy.js");
+import Strategy from './Strategy.js';
+import Config from './Config.js';
 
 interface Factory {
-    create(year: string, day: string): Strategy;
+    create(config: Config): Strategy;
 }
 
 export default Factory;

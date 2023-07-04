@@ -1,8 +1,8 @@
-import Service from "../Interface/Service.js";
+import Service from '../Interface/Service.js';
 interface Factory {
     getService(
-        type: "url" | "file" | "array",
-        source: string | Array<string>
+        dataType: 'url' | 'file' | 'array',
+        dataSource: string | Array<string>
     ): Service;
 }
 
