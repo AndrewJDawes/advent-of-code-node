@@ -4,13 +4,16 @@ import InterfaceConfig from '../Interface/Config.js';
 import InterfaceSolutionStrategy from '../../Solution/Interface/Strategy.js';
 import Solution20151 from '../Strategy/2015/1.js';
 class FromConfig implements InterfaceSolutionFactory {
-    factory: InterfaceInputFetcherFactory;
-    constructor(factory: InterfaceInputFetcherFactory) {
-        this.factory = factory;
+    inputFetcherFactory: InterfaceInputFetcherFactory;
+    constructor(inputFetcherFactory: InterfaceInputFetcherFactory) {
+        this.inputFetcherFactory = inputFetcherFactory;
     }
     create(config: InterfaceConfig): InterfaceSolutionStrategy {
         const { dataType, dataSource } = config;
-        const service = this.factory.getService(dataType, dataSource);
+        const service = this.inputFetcherFactory.getService(
+            dataType,
+            dataSource
+        );
         return new Solution20151(service);
     }
 }

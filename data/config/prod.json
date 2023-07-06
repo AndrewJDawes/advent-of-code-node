@@ -1,0 +1,14 @@
+[
+    {
+        "day": "1",
+        "year": "2019",
+        "dataType": "array",
+        "dataSource": ["dog", "cat", "mouse"]
+    },
+    {
+        "day": "2",
+        "year": "2019",
+        "dataType": "array",
+        "dataSource": ["rat", "mat", "hat"]
+    }
+]
