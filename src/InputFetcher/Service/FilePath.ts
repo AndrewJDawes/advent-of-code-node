@@ -42,5 +42,18 @@ class FilePath implements InputFetcherInterfaceService {
     async getIterator(): Promise<Iterator> {
         return new ReadableStreamLines(await this.getReadableStream());
     }
+    testReadFile(): ReadableStream {
+        const reader = fs.createReadStream(this.filePath);
+        return new ReadableStream({
+            start(controller) {
+                reader.on('data', (chunk) => {
+                    controller.enqueue(chunk);
+                });
+                reader.on('end', () => {
+                    controller.close();
+                });
+            },
+        });
+    }
 }
 export default FilePath;
