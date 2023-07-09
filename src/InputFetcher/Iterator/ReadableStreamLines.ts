@@ -1,7 +1,7 @@
-import readline from "readline";
-import Iterator from "../Interface/Iterator.js";
+import readline from 'readline';
+import Iterator from '../Interface/Iterator.js';
 
-class StreamLines implements Iterator {
+class ReadableStreamLines implements Iterator {
     readStream: ReadableStream;
     constructor(readStream: ReadableStream) {
         this.readStream = readStream;
@@ -10,13 +10,16 @@ class StreamLines implements Iterator {
         next(): Promise<{ value: string; done: boolean }>;
     } {
         const reader = this.readStream.getReader();
+        console.log({ reader });
         return {
-            next() {
+            next: () => {
                 return new Promise((resolve, reject) => {
+                    console.log('next');
                     reader.read().then(({ done, value }) => {
+                        console.log({ done, value });
                         if (done) {
                             reader.releaseLock();
-                            resolve({ value: "", done: true });
+                            resolve({ value: '', done: true });
                         } else {
                             resolve({ value: value, done: false });
                         }
@@ -27,4 +30,4 @@ class StreamLines implements Iterator {
     }
 }
 
-export default StreamLines;
+export default ReadableStreamLines;
