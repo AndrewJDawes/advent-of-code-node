@@ -13,7 +13,7 @@ class FileStreamer implements Streamable {
                 let chunks: Array<string> = [];
                 reader.read().then(function process({ done, value: chunk }) {
                     if (done) {
-                        // console.log('done');
+                        console.log('done from LineStreamer');
                         return controller.close();
                     }
                     // console.log('chunk', chunk);

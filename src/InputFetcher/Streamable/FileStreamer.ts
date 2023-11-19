@@ -11,9 +11,11 @@ class FileStreamer implements Streamable {
         return new ReadableStream({
             start(controller) {
                 reader.on('data', (chunk) => {
+                    // console.log('data from FileStreamer');
                     controller.enqueue(chunk);
                 });
                 reader.on('end', () => {
+                    console.log('end from FileStreamer');
                     controller.close();
                 });
             },

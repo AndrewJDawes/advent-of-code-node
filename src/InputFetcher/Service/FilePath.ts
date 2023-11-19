@@ -1,6 +1,6 @@
 import InputFetcherInterfaceService from '../Interface/Service.js';
 import fs, { read } from 'fs';
-import ReadableStreamLines from '../Iterator/ReadableStreamLines.js';
+import ReadableStreamIterator from '../Iterator/ReadableStreamIterator.js';
 import Iterator from '../Interface/Iterator.js';
 class FilePath implements InputFetcherInterfaceService {
     filePath: string;
@@ -40,7 +40,7 @@ class FilePath implements InputFetcherInterfaceService {
         });
     }
     async getIterator(): Promise<Iterator> {
-        return new ReadableStreamLines(await this.getReadableStream());
+        return new ReadableStreamIterator(await this.getReadableStream());
     }
     testReadFile(): ReadableStream {
         const reader = fs.createReadStream(this.filePath);

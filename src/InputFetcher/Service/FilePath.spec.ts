@@ -4,6 +4,7 @@ import Service from './FilePath.js';
 import FileStreamer from '../Streamable/FileStreamer.js';
 import TextStreamer from '../Streamable/TextStreamer.js';
 import LineStreamer from '../Streamable/LineStreamer.js';
+import ReadableStreamIterator from '../Iterator/ReadableStreamIterator.js';
 
 import path from 'path';
 
@@ -39,11 +40,22 @@ describe('InputFetcher FilePath', () => {
                     new FileStreamer(filePath).getReadableStream()
                 ).getReadableStream()
             );
+            // const streamer = new TextStreamer(
+            //     new FileStreamer(filePath).getReadableStream()
+            // );
             // for await (const value of streamer) {
             //     console.log({ value });
             // }
-            const reader = streamer.getReadableStream().getReader();
             // @todo - implement this as an async iterator (over ReadableStream)
+            const iterator = new ReadableStreamIterator(
+                streamer.getReadableStream()
+            );
+            for await (const value of iterator) {
+                console.log({ value });
+                // const thing = value;
+            }
+            /*
+            const reader = streamer.getReadableStream().getReader();
             reader.read().then(function process({ done, value }) {
                 // console.log({ done, value });
                 if (done) {
@@ -53,6 +65,8 @@ describe('InputFetcher FilePath', () => {
                 // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream/getReader
                 reader.read().then(process);
             });
+            */
+
             // const stream = service.testReadFile();
             // // does not work but should
             // // for await (const chunk of stream) {

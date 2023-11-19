@@ -1,7 +1,7 @@
-import InputFetcherInterfaceService from "../Interface/Service.js";
-import ReadableStreamLines from "../Iterator/ReadableStreamLines.js";
-import Iterator from "../Interface/Iterator.js";
-import readline from "readline";
+import InputFetcherInterfaceService from '../Interface/Service.js';
+import ReadableStreamIterator from '../Iterator/ReadableStreamIterator.js';
+import Iterator from '../Interface/Iterator.js';
+import readline from 'readline';
 class URL implements InputFetcherInterfaceService {
     url: string;
     constructor(url: string) {
@@ -10,7 +10,7 @@ class URL implements InputFetcherInterfaceService {
     async getReadableStream(): Promise<ReadableStream> {
         const res = await fetch(this.url);
         if (null === res.body) {
-            throw new Error("res.body is null");
+            throw new Error('res.body is null');
         }
         const reader = res.body.getReader();
         return new ReadableStream({
@@ -24,9 +24,9 @@ class URL implements InputFetcherInterfaceService {
                     }
                     const chunk = decoder.decode(value, { stream: true });
                     chunks.push(chunk);
-                    const chunksJoined = chunks.join("");
-                    const lines = chunksJoined.split("\n");
-                    chunks = [lines.pop() || ""];
+                    const chunksJoined = chunks.join('');
+                    const lines = chunksJoined.split('\n');
+                    chunks = [lines.pop() || ''];
                     for (const line of lines) {
                         controller.enqueue(line);
                     }
@@ -37,7 +37,7 @@ class URL implements InputFetcherInterfaceService {
         });
     }
     async getIterator(): Promise<Iterator> {
-        return new ReadableStreamLines(await this.getReadableStream());
+        return new ReadableStreamIterator(await this.getReadableStream());
     }
 }
 export default URL;
