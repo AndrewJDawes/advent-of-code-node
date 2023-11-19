@@ -33,19 +33,19 @@ describe('InputFetcher FilePath', () => {
         // });
         it('returns a Promise that resolves to an Iterator', async () => {
             const filePath = `${__dirname}/../../../data/test/InputFetcher/Service/FilePath.txt`;
-            const service = new Service(filePath);
+            // const service = new Service(filePath);
             const streamer = new LineStreamer(
                 new TextStreamer(
-                    new FileStreamer(service.filePath).getReadableStream()
+                    new FileStreamer(filePath).getReadableStream()
                 ).getReadableStream()
             );
             // for await (const value of streamer) {
             //     console.log({ value });
             // }
             const reader = streamer.getReadableStream().getReader();
-
+            // @todo - implement this as an async iterator (over ReadableStream)
             reader.read().then(function process({ done, value }) {
-                console.log({ done, value });
+                // console.log({ done, value });
                 if (done) {
                     console.log('Stream complete');
                     return;
