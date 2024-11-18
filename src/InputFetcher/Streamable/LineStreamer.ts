@@ -13,6 +13,9 @@ class FileStreamer implements Streamer {
                 let chunks: Array<string> = [];
                 reader.read().then(function process({ done, value: chunk }) {
                     if (done) {
+                        if (chunks.length) {
+                            controller.enqueue(chunks.join(''));
+                        }
                         console.log('done from LineStreamer');
                         return controller.close();
                     }

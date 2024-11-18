@@ -20,7 +20,7 @@ describe('InputFetcher FilePath', () => {
             const filePath = `${__dirname}/../../../data/test/InputFetcher/Service/FilePath.txt`;
             const service = new Service(filePath);
             const iterator = await service.getAsyncIterator();
-            let totalLines = 1;
+            let totalLines = 0;
             for await (const value of iterator) {
                 totalLines++;
             }

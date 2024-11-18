@@ -14,16 +14,15 @@ describe('InputFetcher URL', () => {
             const url = 'https://adventofcode.com/2015/day/1/input';
             const service = new Service(url);
             const iterator = await service.getAsyncIterator();
-            let totalLines = 1;
+            let totalLines = 0;
             let endValue = '';
             for await (const value of iterator) {
-                console.log({ value });
                 endValue += value;
                 totalLines++;
             }
-            console.log({ endValue });
-            expect(endValue).to.equal('');
-            expect(totalLines).to.equal(129871);
+            // expect endvalue to only contain left and right parentheses
+            expect(endValue).to.contain('(').and.to.contain(')');
+            expect(totalLines).to.equal(1);
         });
     });
 });

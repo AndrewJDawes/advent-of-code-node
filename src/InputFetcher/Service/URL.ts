@@ -19,6 +19,7 @@ class URL implements InputFetcherInterfaceService {
         const textStreamer = await new TextStreamer(
             urlStreamer
         ).getReadableStream();
+        // TODO: Figure out why this is not working - the textStreamer works fine, but this is always returning an empty string
         const lineStreamer = await new LineStreamer(
             textStreamer
         ).getReadableStream();
