@@ -1,5 +1,5 @@
 interface Streamer {
-    getReadableStream(): ReadableStream;
+    getReadableStream(): Promise<ReadableStream>;
 }
 
 export default Streamer;

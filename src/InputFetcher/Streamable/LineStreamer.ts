@@ -5,7 +5,7 @@ class FileStreamer implements Streamer {
     constructor(stream: ReadableStream) {
         this.stream = stream;
     }
-    getReadableStream(): ReadableStream<any> {
+    async getReadableStream(): Promise<ReadableStream<any>> {
         const reader = this.stream.getReader();
         return new ReadableStream({
             start: (controller) => {
