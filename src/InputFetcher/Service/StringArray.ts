@@ -7,7 +7,7 @@ class StringArray implements Service {
     constructor(array: Array<string>) {
         this.array = array;
     }
-    getIterator(): Promise<AsyncIterator> {
+    getAsyncIterator(): Promise<AsyncIterator> {
         return Promise.resolve(new StringArrayIterator(this.array));
     }
 }

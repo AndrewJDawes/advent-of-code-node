@@ -16,13 +16,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 describe('InputFetcher FilePath', () => {
-    describe('getIterator', () => {
+    describe('getAsyncIterator', () => {
         // it('returns a Promise that resolves to an Iterator', async () => {
         //     const expected = ['one', 'two', 'three'];
         //     const service = new Service(
         //         `${__dirname}/../../../data/test/InputFetcher/Service/FilePath.txt`
         //     );
-        //     const iterator = await service.getIterator();
+        //     const iterator = await service.getAsyncIterator();
         //     console.log({ iterator });
         //     // expect iterator to have a Symbol.asyncIterator property
         //     expect(iterator[Symbol.asyncIterator]).to.be.a('function');

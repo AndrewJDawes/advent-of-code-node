@@ -39,7 +39,7 @@ class FilePath implements InputFetcherInterfaceService {
             },
         });
     }
-    async getIterator(): Promise<AsyncIterator> {
+    async getAsyncIterator(): Promise<AsyncIterator> {
         return new ReadableStreamIterator(await this.getReadableStream());
     }
     testReadFile(): ReadableStream {
