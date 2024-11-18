@@ -10,7 +10,6 @@ class ReadableStreamAsyncIterator implements AsyncIterator {
         next(): Promise<{ value: string; done: boolean }>;
     } {
         const reader = this.readStream.getReader();
-        console.log({ reader });
         return {
             next: () => {
                 return new Promise((resolve, reject) => {

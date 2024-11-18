@@ -5,20 +5,27 @@ let data = '';
 
 const solutionFactory = new SolutionFactory(new InputFetcherFactory());
 
-async function processInput(input: Config) {
-    const { year, day, dataType, dataSource } = input;
-    const config = { year, day, dataType, dataSource };
-    const solution = solutionFactory.create(config);
-    const result = await solution.solve();
-    process.stdout.write(
-        JSON.stringify({
-            year,
-            day,
-            dataType,
-            dataSource,
-            result,
-        })
-    );
+async function processInput(configs: Config[]) {
+    process.stdout.write('[');
+    for (let i = 0; i < configs.length; i++) {
+        const config = configs[i];
+        const { year, day, dataType, dataSource } = config;
+        const solution = solutionFactory.create(config);
+        const result = await solution.solve();
+        process.stdout.write(
+            JSON.stringify({
+                year,
+                day,
+                dataType,
+                dataSource,
+                result,
+            })
+        );
+        if (i < configs.length - 1) {
+            process.stdout.write(',');
+        }
+    }
+    process.stdout.write(']');
 }
 
 process.stdin.setEncoding('utf8');
@@ -34,9 +41,9 @@ process.stdin.on('end', () => {
     try {
         const input = JSON.parse(data);
         if (Array.isArray(input)) {
-            input.forEach((input) => processInput(input));
-        } else {
             processInput(input);
+        } else {
+            processInput([input]);
         }
     } catch (e) {
         console.error(e);

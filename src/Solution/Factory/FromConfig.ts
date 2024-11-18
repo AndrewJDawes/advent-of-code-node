@@ -14,7 +14,14 @@ class FromConfig implements InterfaceSolutionFactory {
             dataType,
             dataSource
         );
-        return new Solution20151(service);
+        switch (config.year + config.day) {
+            case '20151':
+                return new Solution20151(service);
+            default:
+                throw new Error(
+                    'Unknown year and day: ' + config.year + config.day
+                );
+        }
     }
 }
 export default FromConfig;

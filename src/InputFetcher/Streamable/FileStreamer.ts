@@ -15,7 +15,7 @@ class FileStreamer implements Streamer {
                     controller.enqueue(chunk);
                 });
                 reader.on('end', () => {
-                    console.log('end from FileStreamer');
+                    // console.log('end from FileStreamer');
                     controller.close();
                 });
             },

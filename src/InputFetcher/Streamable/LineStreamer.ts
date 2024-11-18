@@ -16,7 +16,7 @@ class FileStreamer implements Streamer {
                         if (chunks.length) {
                             controller.enqueue(chunks.join(''));
                         }
-                        console.log('done from LineStreamer');
+                        // console.log('done from LineStreamer');
                         return controller.close();
                     }
                     // console.log('chunk', chunk);
