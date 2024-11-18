@@ -1,5 +1,5 @@
-interface Streamable {
+interface Streamer {
     getReadableStream(): ReadableStream;
 }
 
-export default Streamable;
+export default Streamer;

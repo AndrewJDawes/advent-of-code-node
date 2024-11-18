@@ -1,5 +1,5 @@
 import InputFetcherInterfaceService from '../Interface/Service.js';
-import ReadableStreamIterator from '../Iterator/ReadableStreamIterator.js';
+import ReadableStreamAsyncIterator from '../Iterator/ReadableStreamIterator.js';
 import AsyncIterator from '../Interface/Iterator.js';
 import readline from 'readline';
 class URL implements InputFetcherInterfaceService {
@@ -37,7 +37,7 @@ class URL implements InputFetcherInterfaceService {
         });
     }
     async getAsyncIterator(): Promise<AsyncIterator> {
-        return new ReadableStreamIterator(await this.getReadableStream());
+        return new ReadableStreamAsyncIterator(await this.getReadableStream());
     }
 }
 export default URL;

@@ -1,7 +1,7 @@
-import Streamable from '../Interface/Streamable.js';
+import Streamer from '../Interface/Streamable.js';
 import fs from 'fs';
 
-class FileStreamer implements Streamable {
+class FileStreamer implements Streamer {
     filePath: string;
     constructor(filePath: string) {
         this.filePath = filePath;

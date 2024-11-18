@@ -4,7 +4,7 @@ import Service from './FilePath.js';
 import FileStreamer from '../Streamable/FileStreamer.js';
 import TextStreamer from '../Streamable/TextStreamer.js';
 import LineStreamer from '../Streamable/LineStreamer.js';
-import ReadableStreamIterator from '../Iterator/ReadableStreamIterator.js';
+import ReadableStreamAsyncIterator from '../Iterator/ReadableStreamIterator.js';
 
 import path from 'path';
 
@@ -47,7 +47,7 @@ describe('InputFetcher FilePath', () => {
             //     console.log({ value });
             // }
             // @todo - implement this as an async iterator (over ReadableStream)
-            const iterator = new ReadableStreamIterator(
+            const iterator = new ReadableStreamAsyncIterator(
                 streamer.getReadableStream()
             );
             for await (const value of iterator) {

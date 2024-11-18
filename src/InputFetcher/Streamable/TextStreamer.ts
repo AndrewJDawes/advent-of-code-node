@@ -1,6 +1,6 @@
-import Streamable from '../Interface/Streamable.js';
+import Streamer from '../Interface/Streamable.js';
 
-class TextStreamer implements Streamable {
+class TextStreamer implements Streamer {
     stream: ReadableStream;
     constructor(stream: ReadableStream) {
         this.stream = stream;
