@@ -4,7 +4,7 @@ import Service from './FilePath.js';
 import FileStreamer from '../Streamable/FileStreamer.js';
 import TextStreamer from '../Streamable/TextStreamer.js';
 import LineStreamer from '../Streamable/LineStreamer.js';
-import ReadableStreamAsyncIterator from '../Iterator/ReadableStreamIterator.js';
+import ReadableStreamAsyncIterator from '../Iterator/ReadableStreamAsyncIterator.js';
 
 import path from 'path';
 

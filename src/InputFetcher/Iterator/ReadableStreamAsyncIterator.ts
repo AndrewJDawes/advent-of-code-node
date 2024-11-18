@@ -1,5 +1,5 @@
 import readline from 'readline';
-import AsyncIterator from '../Interface/Iterator.js';
+import AsyncIterator from '../Interface/AsyncIterator.js';
 
 class ReadableStreamAsyncIterator implements AsyncIterator {
     readStream: ReadableStream;

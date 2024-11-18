@@ -1,6 +1,6 @@
 import InputFetcherInterfaceService from '../Interface/Service.js';
-import ReadableStreamAsyncIterator from '../Iterator/ReadableStreamIterator.js';
-import AsyncIterator from '../Interface/Iterator.js';
+import ReadableStreamAsyncIterator from '../Iterator/ReadableStreamAsyncIterator.js';
+import AsyncIterator from '../Interface/AsyncIterator.js';
 import readline from 'readline';
 class URL implements InputFetcherInterfaceService {
     url: string;

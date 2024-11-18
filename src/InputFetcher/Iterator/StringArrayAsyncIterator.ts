@@ -1,6 +1,6 @@
-import AsyncIterator from '../Interface/Iterator.js';
+import AsyncIterator from '../Interface/AsyncIterator.js';
 
-class StringArrayIterator implements AsyncIterator {
+class StringArrayAsyncIterator implements AsyncIterator {
     array: Array<string>;
     constructor(array: Array<string>) {
         // Copy the array to prevent mutation
@@ -22,4 +22,4 @@ class StringArrayIterator implements AsyncIterator {
     }
 }
 
-export default StringArrayIterator;
+export default StringArrayAsyncIterator;

@@ -1,7 +1,7 @@
 import InputFetcherInterfaceService from '../Interface/Service.js';
 import fs, { read } from 'fs';
-import ReadableStreamAsyncIterator from '../Iterator/ReadableStreamIterator.js';
-import AsyncIterator from '../Interface/Iterator.js';
+import ReadableStreamAsyncIterator from '../Iterator/ReadableStreamAsyncIterator.js';
+import AsyncIterator from '../Interface/AsyncIterator.js';
 import LineStreamer from '../Streamable/LineStreamer.js';
 import TextStreamer from '../Streamable/TextStreamer.js';
 import FileStreamer from '../Streamable/FileStreamer.js';

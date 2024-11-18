@@ -1,4 +1,4 @@
-import Streamer from '../Interface/Streamable.js';
+import Streamer from '../Interface/Streamer.js';
 
 class FileStreamer implements Streamer {
     stream: ReadableStream;

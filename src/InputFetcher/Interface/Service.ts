@@ -1,4 +1,4 @@
-import AsyncIterator from '../Interface/Iterator.js';
+import AsyncIterator from './AsyncIterator.js';
 interface Service {
     getAsyncIterator(): Promise<AsyncIterator>;
 }

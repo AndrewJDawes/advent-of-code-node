@@ -1,6 +1,6 @@
-import AsyncIterator from '../Interface/Iterator.js';
+import AsyncIterator from '../Interface/AsyncIterator.js';
 import Service from '../Interface/Service.js';
-import StringArrayIterator from '../Iterator/StringArrayIterator.js';
+import StringArrayAsyncIterator from '../Iterator/StringArrayAsyncIterator.js';
 
 class StringArray implements Service {
     array: Array<string>;
@@ -8,7 +8,7 @@ class StringArray implements Service {
         this.array = array;
     }
     getAsyncIterator(): Promise<AsyncIterator> {
-        return Promise.resolve(new StringArrayIterator(this.array));
+        return Promise.resolve(new StringArrayAsyncIterator(this.array));
     }
 }
 
