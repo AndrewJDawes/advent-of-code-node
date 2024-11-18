@@ -1,6 +1,6 @@
-import Iterator from "../Interface/Iterator.js";
+import AsyncIterator from '../Interface/Iterator.js';
 
-class StringArrayIterator implements Iterator {
+class StringArrayIterator implements AsyncIterator {
     array: Array<string>;
     constructor(array: Array<string>) {
         // Copy the array to prevent mutation
@@ -14,7 +14,7 @@ class StringArrayIterator implements Iterator {
             next: () => {
                 index++;
                 return Promise.resolve({
-                    value: this.array[index] ?? "",
+                    value: this.array[index] ?? '',
                     done: index < this.array.length ? false : true,
                 });
             },

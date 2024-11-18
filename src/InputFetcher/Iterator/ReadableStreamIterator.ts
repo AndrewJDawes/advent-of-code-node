@@ -1,7 +1,7 @@
 import readline from 'readline';
-import Iterator from '../Interface/Iterator.js';
+import AsyncIterator from '../Interface/Iterator.js';
 
-class ReadableStreamIterator implements Iterator {
+class ReadableStreamIterator implements AsyncIterator {
     readStream: ReadableStream;
     constructor(readStream: ReadableStream) {
         this.readStream = readStream;
