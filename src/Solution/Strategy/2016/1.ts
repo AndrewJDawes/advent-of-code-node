@@ -51,7 +51,10 @@ class Solution20161 implements InterfaceSolutionStrategy {
         let southWestAxisDifference = 0;
         for await (let line of iterator) {
             const splitIntoInstructions = line.split(', ');
-            splitIntoInstructions.forEach((instruction) => {});
+            splitIntoInstructions.forEach((instruction) => {
+                const parsedInstruction =
+                    Solution20161.parseInstruction(instruction);
+            });
         }
         return Promise.resolve(
             (northSouthAxisDifference + southWestAxisDifference).toString()
