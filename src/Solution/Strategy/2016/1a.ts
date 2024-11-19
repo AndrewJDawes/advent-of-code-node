@@ -38,7 +38,7 @@ export enum Factor {
     NorthEast = 1,
     SouthWest = -1,
 }
-class Solution20161 implements InterfaceSolutionStrategy {
+class Solution20161a implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
     constructor(inputFetcher: InterfaceInputFetcher) {
         this.inputFetcher = inputFetcher;
@@ -55,19 +55,19 @@ class Solution20161 implements InterfaceSolutionStrategy {
             const splitIntoInstructions = line.split(', ');
             splitIntoInstructions.forEach((instruction) => {
                 const { movement, handDirection } =
-                    Solution20161.parseInstruction(instruction);
+                    Solution20161a.parseInstruction(instruction);
                 // Determine which direction
-                currentCardinalDirection = Solution20161.rotate(
+                currentCardinalDirection = Solution20161a.rotate(
                     currentCardinalDirection,
                     handDirection,
                     numberOfRotations
                 );
                 // Add to correct axis
-                const axis = Solution20161.cardinalDirectionToAxis(
+                const axis = Solution20161a.cardinalDirectionToAxis(
                     currentCardinalDirection
                 );
                 // Determine whether positive or negative
-                const factor = Solution20161.cardinalDirectionToFactor(
+                const factor = Solution20161a.cardinalDirectionToFactor(
                     currentCardinalDirection
                 );
                 axesDifferences[axis] += movement * factor;
@@ -91,12 +91,12 @@ class Solution20161 implements InterfaceSolutionStrategy {
             throw new Error(`Unable to parseInstruction: ${instruction}`);
         }
         const handDirectionString = regexApplied[1];
-        if (!Solution20161.isKeyInHandDirection(handDirectionString)) {
+        if (!Solution20161a.isKeyInHandDirection(handDirectionString)) {
             throw new Error(`Invalid handDirection: ${handDirectionString}`);
         }
         const movement = Number.parseInt(regexApplied[2]);
         const handDirection =
-            Solution20161.getHandDirectionFromKey(handDirectionString);
+            Solution20161a.getHandDirectionFromKey(handDirectionString);
         return {
             movement,
             handDirection,
@@ -133,4 +133,4 @@ class Solution20161 implements InterfaceSolutionStrategy {
         );
     }
 }
-export default Solution20161;
+export default Solution20161a;
