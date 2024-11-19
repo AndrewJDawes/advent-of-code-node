@@ -46,18 +46,40 @@ class Solution20161 implements InterfaceSolutionStrategy {
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
         let currentCardinalDirection = CardinalDirection.North;
-        const rotationAmount = 1;
-        let northSouthAxisDifference = 0;
-        let southWestAxisDifference = 0;
+        const numberOfRotations = 1;
+        let axesDifferences = {
+            [Axis.NorthSouth]: 0,
+            [Axis.EastWest]: 0,
+        };
         for await (let line of iterator) {
             const splitIntoInstructions = line.split(', ');
             splitIntoInstructions.forEach((instruction) => {
-                const parsedInstruction =
+                const { movement, handDirection } =
                     Solution20161.parseInstruction(instruction);
+                // Determine which direction
+                currentCardinalDirection = Solution20161.rotate(
+                    currentCardinalDirection,
+                    handDirection,
+                    numberOfRotations
+                );
+                // Determine whether positive or negative
+                // Add to correct axis
+                const axis = Solution20161.cardinalDirectionToAxis(
+                    currentCardinalDirection
+                );
+                const factor = Solution20161.cardinalDirectionToFactor(
+                    currentCardinalDirection
+                );
+                axesDifferences[axis] += movement * factor;
             });
         }
         return Promise.resolve(
-            (northSouthAxisDifference + southWestAxisDifference).toString()
+            Math.abs(
+                Object.values(axesDifferences).reduce(
+                    (prev, curr) => prev + curr,
+                    0
+                )
+            ).toString()
         );
     }
     static parseInstruction(instruction: string): {

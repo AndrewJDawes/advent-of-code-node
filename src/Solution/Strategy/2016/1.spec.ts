@@ -8,14 +8,26 @@ import Solution20161, {
 } from './1.js';
 
 describe('Solution20161', () => {
-    // describe('solve', () => {
-    //     it('interprets (()(()( as 3', async () => {
-    //         const arr = ['(()(()('];
-    //         const stringArr = new StringArray(arr);
-    //         const solution = await new Solution20161(stringArr).solve();
-    //         expect(solution).to.equal('3');
-    //     });
-    // });
+    describe('solve', () => {
+        it('interprets R2, L3 as 2', async () => {
+            const arr = ['R2, L3'];
+            const stringArr = new StringArray(arr);
+            const solution = await new Solution20161(stringArr).solve();
+            expect(solution).to.equal('5');
+        });
+        it('interprets R2, R2, R2 as 2', async () => {
+            const arr = ['R2, R2, R2'];
+            const stringArr = new StringArray(arr);
+            const solution = await new Solution20161(stringArr).solve();
+            expect(solution).to.equal('2');
+        });
+        it('interprets R5, L5, R5, R3 as 12', async () => {
+            const arr = ['R5, L5, R5, R3'];
+            const stringArr = new StringArray(arr);
+            const solution = await new Solution20161(stringArr).solve();
+            expect(solution).to.equal('12');
+        });
+    });
     describe('cardinalDirectionToAxis', () => {
         it('interprets North as NorthSouth', async () => {
             expect(
