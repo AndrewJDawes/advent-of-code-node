@@ -9,15 +9,11 @@ async function processInput(configs: Config[]) {
     process.stdout.write('[');
     for (let i = 0; i < configs.length; i++) {
         const config = configs[i];
-        const { year, day, dataType, dataSource } = config;
         const solution = solutionFactory.create(config);
         const result = await solution.solve();
         process.stdout.write(
             JSON.stringify({
-                year,
-                day,
-                dataType,
-                dataSource,
+                ...config,
                 result,
             })
         );

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import StringArray from '../../../InputFetcher/Service/StringArray.js';
-import Solution20155b from './5b.js';
+import StringArray from '../../../../InputFetcher/Service/StringArray.js';
+import Solution20155b from './b.js';
 
 describe('Solution 20155b', () => {
     describe('solve', () => {

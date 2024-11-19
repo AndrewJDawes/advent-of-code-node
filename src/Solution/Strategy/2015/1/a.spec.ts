@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import StringArray from '../../../InputFetcher/Service/StringArray.js';
-import Solution20151 from './1.js';
+import StringArray from '../../../../InputFetcher/Service/StringArray.js';
+import Solution20151 from './a.js';
 
 describe('Solution 20151', () => {
     describe('getAsyncIterator', () => {

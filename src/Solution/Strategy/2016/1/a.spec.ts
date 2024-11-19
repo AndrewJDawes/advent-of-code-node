@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import StringArray from '../../../InputFetcher/Service/StringArray.js';
+import StringArray from '../../../../InputFetcher/Service/StringArray.js';
 import Solution20161a, {
     Axis,
     CardinalDirection,
     Factor,
     HandDirection,
-} from './1a.js';
+} from './a.js';
 
 describe('Solution20161', () => {
     describe('solve', () => {

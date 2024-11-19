@@ -1,5 +1,5 @@
-import InterfaceSolutionStrategy from '../../Interface/Strategy.js';
-import InterfaceInputFetcher from '../../../InputFetcher/Interface/Service.js';
+import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
+import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
 /*
 --- Day 5: Doesn't He Have Intern-Elves For This? ---
 Santa needs help figuring out which strings in his text file are naughty or nice.
