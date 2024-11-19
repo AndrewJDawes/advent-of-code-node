@@ -51,6 +51,11 @@ class Solution20161 implements InterfaceSolutionStrategy {
             [Axis.NorthSouth]: 0,
             [Axis.EastWest]: 0,
         };
+        // let input = '';
+        // for await (let line of iterator) {
+        //     input += line;
+        // }
+        // console.log({ input });
         for await (let line of iterator) {
             const splitIntoInstructions = line.split(', ');
             splitIntoInstructions.forEach((instruction) => {
@@ -62,11 +67,11 @@ class Solution20161 implements InterfaceSolutionStrategy {
                     handDirection,
                     numberOfRotations
                 );
-                // Determine whether positive or negative
                 // Add to correct axis
                 const axis = Solution20161.cardinalDirectionToAxis(
                     currentCardinalDirection
                 );
+                // Determine whether positive or negative
                 const factor = Solution20161.cardinalDirectionToFactor(
                     currentCardinalDirection
                 );
