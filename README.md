@@ -8,8 +8,7 @@
     -   So if your file was named `34.ts`, name your spec file `34.spec.ts`
 -   Write your unit tests
 -   Run `mocha` and use the `-f` filter to run only your test (by name)
-    -   Example: `node_modules/mocha/bin/mocha.js  -f 'Solut
-ion 20151'`
+    -   Example: `node_modules/mocha/bin/mocha.js  -f 'Solution 20151'`
 
 ## TODO
 

@@ -1,14 +1,8 @@
 [
     {
         "year": "2015",
-        "day": "1",
-        "dataType": "array",
-        "dataSource": ["dog", "cat", "mouse"]
-    },
-    {
-        "year": "2015",
-        "day": "2",
-        "dataType": "array",
-        "dataSource": ["rat", "mat", "hat"]
+        "day": "5b",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2015/day/5/input"
     }
 ]
