@@ -30,13 +30,22 @@ class Solution20161b implements InterfaceSolutionStrategy {
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
         let currentCardinalDirection = CardinalDirection.North;
+        const originPoint: Point = {
+            [Axis.EastWest]: 0,
+            [Axis.NorthSouth]: 0,
+        };
+        let currentPoint: Point = {
+            [Axis.EastWest]: 0,
+            [Axis.NorthSouth]: 0,
+        };
         const numberOfRotations = 1;
         let axesDifferences = {
             [Axis.NorthSouth]: 0,
             [Axis.EastWest]: 0,
         };
-        for await (let line of iterator) {
-            const splitIntoInstructions = line.split(', ');
+        const lines: Line[] = [];
+        for await (let inputLine of iterator) {
+            const splitIntoInstructions = inputLine.split(', ');
             splitIntoInstructions.forEach((instruction) => {
                 const { movement, handDirection } =
                     Solution20161a.parseInstruction(instruction);
@@ -54,19 +63,118 @@ class Solution20161b implements InterfaceSolutionStrategy {
                 const factor = Solution20161a.cardinalDirectionToFactor(
                     currentCardinalDirection
                 );
-                axesDifferences[axis] += movement * factor;
+                const newLine: Line = {
+                    from: currentPoint,
+                    to: currentPoint,
+                };
+                newLine.to[axis] += movement * factor;
+                const intersectingLines = lines.filter((line) => {
+                    return Solution20161b.doLinesIntersect(line, newLine);
+                });
+                const pointsOfIntersection = intersectingLines.map((line) => {
+                    return Solution20161b.calculatePointOfIntersection(
+                        newLine,
+                        line
+                    );
+                });
+                const closestPoint = Solution20161b.findClosestPoint(
+                    newLine.from,
+                    pointsOfIntersection
+                );
+                if (closestPoint) {
+                    return Solution20161b.calculateDistanceBetweenTwoPoints(
+                        originPoint,
+                        closestPoint
+                    );
+                }
+                lines.push(newLine);
+                currentPoint = newLine.to;
+                // -   On input
+                //     -   Loop through other all prior added line segments, calculating whether they intersect with new line segment
+                //     -   For all points of intersection, stash them in an array
+                //         -   Of those items, find the one that is closest to the `from` of our new line (that will be the first intersection)
+                //             -   abs(x1 - x2) + abs(y1 - y2)
+                //     -   IF we found an intersection
+                //         -   SUM up the difference between original location X (0) and intersection X (?) + difference between original location Y (0) and intersection Y (?)
+                //             -   That will be the number of blocks
+                //     -   ELSE
+                //         -   Append the new line segment to list of line segments
+                //         -   Update last known point
             });
         }
-        return Promise.resolve(
-            Math.abs(
-                Object.values(axesDifferences).reduce(
-                    (prev, curr) => prev + curr,
-                    0
-                )
-            ).toString()
-        );
+        throw new Error('No intersection found!');
+        return 'No intersection found!';
     }
     static doLinesIntersect(lineA: Line, lineB: Line): boolean {
+        const o1 = Solution20161b.calculateOrientation(
+            lineA.from,
+            lineA.to,
+            lineB.from
+        );
+        const o2 = Solution20161b.calculateOrientation(
+            lineA.from,
+            lineA.to,
+            lineB.to
+        );
+        const o3 = Solution20161b.calculateOrientation(
+            lineB.from,
+            lineB.to,
+            lineA.from
+        );
+        const o4 = Solution20161b.calculateOrientation(
+            lineB.from,
+            lineB.to,
+            lineA.to
+        );
+
+        // # General case
+        if (o1 !== o2 && o3 !== o4) {
+            return true;
+        }
+
+        if (
+            o1 === Orientation.Collinear &&
+            Solution20161b.collinearPointsAreOnSameSegment(
+                lineA.from,
+                lineA.to,
+                lineB.from
+            )
+        ) {
+            return true;
+        }
+
+        if (
+            o2 === Orientation.Collinear &&
+            Solution20161b.collinearPointsAreOnSameSegment(
+                lineA.from,
+                lineA.to,
+                lineB.to
+            )
+        ) {
+            return true;
+        }
+
+        if (
+            o3 === Orientation.Collinear &&
+            Solution20161b.collinearPointsAreOnSameSegment(
+                lineB.from,
+                lineB.to,
+                lineA.from
+            )
+        ) {
+            return true;
+        }
+
+        if (
+            o4 === Orientation.Collinear &&
+            Solution20161b.collinearPointsAreOnSameSegment(
+                lineB.from,
+                lineB.to,
+                lineA.to
+            )
+        ) {
+            return true;
+        }
         return false;
     }
     static calculatePointOfIntersection(lineA: Line, lineB: Line): Point {
@@ -130,7 +238,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
             Math.abs(pointA[Axis.NorthSouth] - pointB[Axis.NorthSouth])
         );
     }
-    static findClosestPoint(point: Point, points: Point[]): Point {
+    static findClosestPoint(point: Point, points: Point[]): Point | null {
         if (!points.length) {
             throw new Error('points cannot be empty');
         }
