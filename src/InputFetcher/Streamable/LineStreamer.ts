@@ -23,7 +23,8 @@ class FileStreamer implements Streamer {
                     chunks.push(chunk);
                     const chunksJoined = chunks.join('');
                     const lines = chunksJoined.split('\n');
-                    chunks = [lines.pop() || ''];
+                    const newChunk = lines.pop();
+                    chunks = newChunk ? [newChunk] : [];
                     for (const line of lines) {
                         controller.enqueue(line);
                     }
