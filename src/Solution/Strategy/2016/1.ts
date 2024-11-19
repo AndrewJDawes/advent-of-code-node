@@ -51,11 +51,6 @@ class Solution20161 implements InterfaceSolutionStrategy {
             [Axis.NorthSouth]: 0,
             [Axis.EastWest]: 0,
         };
-        // let input = '';
-        // for await (let line of iterator) {
-        //     input += line;
-        // }
-        // console.log({ input });
         for await (let line of iterator) {
             const splitIntoInstructions = line.split(', ');
             splitIntoInstructions.forEach((instruction) => {
