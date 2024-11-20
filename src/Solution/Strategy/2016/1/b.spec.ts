@@ -18,7 +18,7 @@ describe('Solution20161b', () => {
             expect(solution).to.equal('4');
         });
     });
-    describe('doLinesIntersect', () => {
+    describe('linesIntersect', () => {
         it('interprets (-1,-1, 5,5) and (0,4, 1,3, 2,2, 3,1, 4,0) as intersect true', async () => {
             const lineA: Line = {
                 from: {
@@ -40,7 +40,7 @@ describe('Solution20161b', () => {
                     [Axis.NorthSouth]: 0,
                 },
             };
-            const solution = Solution20161b.doLinesIntersect(lineA, lineB);
+            const solution = Solution20161b.linesIntersect(lineA, lineB);
             expect(solution).to.equal(true);
         });
     });

@@ -34,7 +34,6 @@ class Solution20161b implements InterfaceSolutionStrategy {
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
-        const numberOfBlocksDistant = null;
         let currentCardinalDirection = CardinalDirection.North;
         const originPoint: Point = {
             [Axis.EastWest]: 0,
@@ -77,7 +76,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
                 // exclude the most recent line, because it obviously shares a junction with newest line
                 const consideredLines = lines.slice(0, lines.length - 1);
                 const intersectingLines = consideredLines.filter((line) => {
-                    return Solution20161b.doLinesIntersect(line, newLine);
+                    return Solution20161b.linesIntersect(line, newLine);
                 });
                 const pointsOfIntersection = intersectingLines.map((line) => {
                     return Solution20161b.calculatePointOfIntersection(
@@ -104,7 +103,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
         }
         return 'No intersection found!';
     }
-    static doLinesIntersect(lineA: Line, lineB: Line): boolean {
+    static linesIntersect(lineA: Line, lineB: Line): boolean {
         const o1 = Solution20161b.calculateOrientation(
             lineA.from,
             lineA.to,
