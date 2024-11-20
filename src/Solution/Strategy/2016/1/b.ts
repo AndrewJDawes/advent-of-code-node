@@ -9,6 +9,11 @@ For example, if your instructions are R8, R4, R4, R8, the first location you vis
 
 How many blocks away is the first location you visit twice?
 */
+export enum LineDirection {
+    Horizontal = 0,
+    Vertical = 1,
+    Sloped = 2,
+}
 export enum Orientation {
     Collinear = 0,
     Clockwise = 1,
@@ -29,6 +34,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
+        const numberOfBlocksDistant = null;
         let currentCardinalDirection = CardinalDirection.North;
         const originPoint: Point = {
             [Axis.EastWest]: 0,
@@ -46,7 +52,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
         const lines: Line[] = [];
         for await (let inputLine of iterator) {
             const splitIntoInstructions = inputLine.split(', ');
-            splitIntoInstructions.forEach((instruction) => {
+            for (const instruction of splitIntoInstructions) {
                 const { movement, handDirection } =
                     Solution20161a.parseInstruction(instruction);
                 // Determine which direction
@@ -64,45 +70,38 @@ class Solution20161b implements InterfaceSolutionStrategy {
                     currentCardinalDirection
                 );
                 const newLine: Line = {
-                    from: currentPoint,
-                    to: currentPoint,
+                    from: { ...currentPoint },
+                    to: { ...currentPoint },
                 };
                 newLine.to[axis] += movement * factor;
-                const intersectingLines = lines.filter((line) => {
+                // exclude the most recent line, because it obviously shares a junction with newest line
+                const consideredLines = lines.slice(0, lines.length - 1);
+                const intersectingLines = consideredLines.filter((line) => {
                     return Solution20161b.doLinesIntersect(line, newLine);
                 });
                 const pointsOfIntersection = intersectingLines.map((line) => {
                     return Solution20161b.calculatePointOfIntersection(
-                        newLine,
-                        line
+                        line,
+                        newLine
                     );
                 });
-                const closestPoint = Solution20161b.findClosestPoint(
-                    newLine.from,
-                    pointsOfIntersection
-                );
-                if (closestPoint) {
-                    return Solution20161b.calculateDistanceBetweenTwoPoints(
-                        originPoint,
-                        closestPoint
+
+                if (pointsOfIntersection.length) {
+                    const closestPoint = Solution20161b.findClosestPoint(
+                        newLine.from,
+                        pointsOfIntersection
                     );
+                    if (closestPoint) {
+                        return Solution20161b.calculateDistanceBetweenTwoPoints(
+                            originPoint,
+                            closestPoint
+                        ).toString();
+                    }
                 }
                 lines.push(newLine);
-                currentPoint = newLine.to;
-                // -   On input
-                //     -   Loop through other all prior added line segments, calculating whether they intersect with new line segment
-                //     -   For all points of intersection, stash them in an array
-                //         -   Of those items, find the one that is closest to the `from` of our new line (that will be the first intersection)
-                //             -   abs(x1 - x2) + abs(y1 - y2)
-                //     -   IF we found an intersection
-                //         -   SUM up the difference between original location X (0) and intersection X (?) + difference between original location Y (0) and intersection Y (?)
-                //             -   That will be the number of blocks
-                //     -   ELSE
-                //         -   Append the new line segment to list of line segments
-                //         -   Update last known point
-            });
+                currentPoint = { ...newLine.to };
+            }
         }
-        throw new Error('No intersection found!');
         return 'No intersection found!';
     }
     static doLinesIntersect(lineA: Line, lineB: Line): boolean {
@@ -178,21 +177,32 @@ class Solution20161b implements InterfaceSolutionStrategy {
         return false;
     }
     static calculatePointOfIntersection(lineA: Line, lineB: Line): Point {
-        const lineASlope =
-            (lineA.to[Axis.NorthSouth] - lineA.from[Axis.NorthSouth]) /
-            (lineA.to[Axis.EastWest] - lineA.from[Axis.EastWest]);
-        const lineBSlope =
-            (lineB.to[Axis.NorthSouth] - lineB.from[Axis.NorthSouth]) /
-            (lineB.to[Axis.EastWest] - lineB.from[Axis.EastWest]);
-        const lineAIntercept =
-            lineA.from[Axis.NorthSouth] -
-            lineASlope * lineA.from[Axis.EastWest];
-        const lineBIntercept =
-            lineB.from[Axis.NorthSouth] -
-            lineBSlope * lineB.from[Axis.EastWest];
-        const pointX =
-            (lineBIntercept - lineAIntercept) / (lineASlope - lineBSlope);
-        const pointY = lineASlope * pointX + lineAIntercept;
+        const lineADirection = Solution20161b.calculateLineDirection(lineA);
+        if (lineADirection === LineDirection.Sloped) {
+            throw new Error('Line is sloped!');
+        }
+        const lineBDirection = Solution20161b.calculateLineDirection(lineB);
+        if (lineBDirection === LineDirection.Sloped) {
+            throw new Error('Line is sloped!');
+        }
+        if (lineADirection === lineBDirection) {
+            throw new Error('Lines do not intersect!');
+        }
+        // Find the two constants
+        let pointX: number | null = null;
+        let pointY: number | null = null;
+        if (lineADirection === LineDirection.Vertical) {
+            pointX = lineA.from[Axis.EastWest];
+            pointY = lineB.from[Axis.NorthSouth];
+        } else {
+            pointX = lineB.from[Axis.EastWest];
+            pointY = lineA.from[Axis.NorthSouth];
+        }
+        if (null === pointX || null === pointY) {
+            throw new Error(
+                'Unable to find the intersection of two non-sloped lines!'
+            );
+        }
         return {
             [Axis.EastWest]: pointX,
             [Axis.NorthSouth]: pointY,
@@ -262,6 +272,15 @@ class Solution20161b implements InterfaceSolutionStrategy {
             throw new Error('Unable to find a closest point');
         }
         return closestPoint;
+    }
+    static calculateLineDirection(line: Line): LineDirection {
+        if (line.from[Axis.NorthSouth] === line.to[Axis.NorthSouth]) {
+            return LineDirection.Horizontal;
+        }
+        if (line.from[Axis.EastWest] === line.to[Axis.EastWest]) {
+            return LineDirection.Vertical;
+        }
+        return LineDirection.Sloped;
     }
 }
 export default Solution20161b;

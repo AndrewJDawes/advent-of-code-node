@@ -1,23 +1,23 @@
 import { expect } from 'chai';
 import StringArray from '../../../../InputFetcher/Service/StringArray.js';
-import Solution20161b, { Line, Orientation } from './b.js';
+import Solution20161b, { Line, LineDirection, Orientation } from './b.js';
 import { Axis } from './a.js';
 
 describe('Solution20161b', () => {
-    // describe('solve', () => {
-    //     it('interprets R8, R4, R4, R8 as 4', async () => {
-    //         const arr = ['R8, R4, R4, R8'];
-    //         const stringArr = new StringArray(arr);
-    //         const solution = await new Solution20161b(stringArr).solve();
-    //         expect(solution).to.equal('4');
-    //     });
-    //     it('interprets L8, L4, L4, L8 as 4', async () => {
-    //         const arr = ['L8, L4, L4, L8'];
-    //         const stringArr = new StringArray(arr);
-    //         const solution = await new Solution20161b(stringArr).solve();
-    //         expect(solution).to.equal('4');
-    //     });
-    // });
+    describe('solve', () => {
+        it('interprets R8, R4, R4, R8 as 4', async () => {
+            const arr = ['R8, R4, R4, R8'];
+            const stringArr = new StringArray(arr);
+            const solution = await new Solution20161b(stringArr).solve();
+            expect(solution).to.equal('4');
+        });
+        it('interprets L8, L4, L4, L8 as 4', async () => {
+            const arr = ['L8, L4, L4, L8'];
+            const stringArr = new StringArray(arr);
+            const solution = await new Solution20161b(stringArr).solve();
+            expect(solution).to.equal('4');
+        });
+    });
     describe('doLinesIntersect', () => {
         it('interprets (-1,-1, 5,5) and (0,4, 1,3, 2,2, 3,1, 4,0) as intersect true', async () => {
             const lineA: Line = {
@@ -139,21 +139,21 @@ describe('Solution20161b', () => {
         });
     });
     describe('calculatePointOfIntersection', () => {
-        it('determines (-1,-1, 0,0, 2,2 3,3, 4,4, 5,5) and (0,4, 1,3, 2,2, 3,1, 4,0) intersect at 2,2', () => {
+        it('determines ((1,1), (1,-5)) and ((-3,-2),(5,-2))  intersect at 1,-2', () => {
             expect(
                 Solution20161b.calculatePointOfIntersection(
                     {
-                        to: { [Axis.EastWest]: -1, [Axis.NorthSouth]: -1 },
-                        from: { [Axis.EastWest]: 5, [Axis.NorthSouth]: 5 },
+                        from: { [Axis.EastWest]: 1, [Axis.NorthSouth]: 1 },
+                        to: { [Axis.EastWest]: 1, [Axis.NorthSouth]: -5 },
                     },
                     {
-                        to: { [Axis.EastWest]: 0, [Axis.NorthSouth]: 4 },
-                        from: { [Axis.EastWest]: 4, [Axis.NorthSouth]: 0 },
+                        from: { [Axis.EastWest]: -3, [Axis.NorthSouth]: -2 },
+                        to: { [Axis.EastWest]: 5, [Axis.NorthSouth]: -2 },
                     }
                 )
             ).to.deep.equal({
-                [Axis.EastWest]: 2,
-                [Axis.NorthSouth]: 2,
+                [Axis.EastWest]: 1,
+                [Axis.NorthSouth]: -2,
             });
         });
     });
@@ -200,6 +200,50 @@ describe('Solution20161b', () => {
                 [Axis.EastWest]: -2,
                 [Axis.NorthSouth]: 4,
             });
+        });
+    });
+    describe('calculateLineDirection', () => {
+        it('determines that (0,1),(0,5) is vertical', () => {
+            expect(
+                Solution20161b.calculateLineDirection({
+                    from: {
+                        [Axis.EastWest]: 0,
+                        [Axis.NorthSouth]: 1,
+                    },
+                    to: {
+                        [Axis.EastWest]: 0,
+                        [Axis.NorthSouth]: 5,
+                    },
+                })
+            ).to.equal(LineDirection.Vertical);
+        });
+        it('determines that (1,0),(5,0) is horizontal', () => {
+            expect(
+                Solution20161b.calculateLineDirection({
+                    from: {
+                        [Axis.EastWest]: 1,
+                        [Axis.NorthSouth]: 0,
+                    },
+                    to: {
+                        [Axis.EastWest]: 5,
+                        [Axis.NorthSouth]: 0,
+                    },
+                })
+            ).to.equal(LineDirection.Horizontal);
+        });
+        it('determines that (1,0),(5,1) is sloped', () => {
+            expect(
+                Solution20161b.calculateLineDirection({
+                    from: {
+                        [Axis.EastWest]: 1,
+                        [Axis.NorthSouth]: 0,
+                    },
+                    to: {
+                        [Axis.EastWest]: 5,
+                        [Axis.NorthSouth]: 1,
+                    },
+                })
+            ).to.equal(LineDirection.Sloped);
         });
     });
 });
