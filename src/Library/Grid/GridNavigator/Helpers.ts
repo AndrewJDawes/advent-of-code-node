@@ -1,11 +1,5 @@
 import { Direction, Position } from './Interfaces.js';
 
-export function directionCharacterToDirection(directionString: string) {
-    if (!(directionString in Direction)) {
-        throw Error(`Invalid direction: ${directionString}`);
-    }
-    return Direction[directionString as keyof typeof Direction];
-}
 export function directionToDeltaPosition(direction: Direction): Position {
     switch (direction) {
         case Direction.U: {

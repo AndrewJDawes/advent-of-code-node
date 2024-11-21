@@ -1,5 +1,8 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
+import GridNavigator from '../../../../Library/Grid/GridNavigator/C1.js';
+import { directionCharacterToDirection } from './Helpers.js';
+import { directionToDeltaPosition } from '../../../../Library/Grid/GridNavigator/Helpers.js';
 /*
 --- Day 2: Bathroom Security ---
 You arrive at Easter Bunny Headquarters under cover of darkness. However, you left in such a rush that you forgot to use the bathroom! Fancy office buildings like this one usually have keypad locks on their bathrooms, so you search the front desk for the code.
@@ -27,22 +30,7 @@ So, in this example, the bathroom code is 1985.
 
 Your puzzle input is the instructions from the document you found at the front desk. What is the bathroom code?
 */
-export enum Direction {
-    U = 0,
-    R = 1,
-    D = 2,
-    L = 3,
-}
-export interface Position {
-    rowNumber: number;
-    columnNumber: number;
-}
-export interface GridProperties {
-    start: number;
-    step: number;
-    width: number;
-    height: number;
-}
+
 class Solution20162a implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
     constructor(inputFetcher: InterfaceInputFetcher) {
@@ -51,99 +39,30 @@ class Solution20162a implements InterfaceSolutionStrategy {
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
         const buttons: number[] = [];
+        const gridNavigator = new GridNavigator(
+            {
+                start: 1,
+                step: 1,
+                width: 3,
+                height: 3,
+            },
+            {
+                rowNumber: 1,
+                columnNumber: 1,
+            }
+        );
         for await (let line of iterator) {
+            for (let character of Array.from(line)) {
+                directionToDeltaPosition;
+                gridNavigator.move(
+                    directionToDeltaPosition(
+                        directionCharacterToDirection(character)
+                    )
+                );
+            }
+            buttons.push(gridNavigator.getCurrentPositionValue());
         }
         return buttons.join('');
-    }
-    static getRowStartNumber(
-        gridProperties: GridProperties,
-        rowNumber: number
-    ): number {
-        if (rowNumber + 1 > gridProperties.height) {
-            throw new Error(`Exceeded number of rows`);
-        }
-        return (
-            rowNumber * gridProperties.width * gridProperties.step +
-            gridProperties.start
-        );
-    }
-    static getRowEndNumber(
-        gridProperties: GridProperties,
-        rowNumber: number
-    ): number {
-        if (rowNumber + 1 > gridProperties.height) {
-            throw new Error(`Exceeded number of rows`);
-        }
-        return (
-            gridProperties.start +
-            gridProperties.width * gridProperties.step * (rowNumber + 1) -
-            gridProperties.step
-        );
-    }
-    static directionCharacterToDirection(directionString: string) {
-        if (!(directionString in Direction)) {
-            throw Error(`Invalid direction: ${directionString}`);
-        }
-        return Direction[directionString as keyof typeof Direction];
-    }
-    static directionToDeltaPosition(direction: Direction): Position {
-        switch (direction) {
-            case Direction.U: {
-                return {
-                    rowNumber: -1,
-                    columnNumber: 0,
-                };
-            }
-            case Direction.R: {
-                return {
-                    rowNumber: 0,
-                    columnNumber: 1,
-                };
-            }
-            case Direction.D: {
-                return {
-                    rowNumber: 1,
-                    columnNumber: 0,
-                };
-            }
-            case Direction.L: {
-                return {
-                    rowNumber: 0,
-                    columnNumber: -1,
-                };
-            }
-        }
-    }
-    static move(
-        gridProperties: GridProperties,
-        currentPosition: Position,
-        deltaPosition: Position
-    ): Position {
-        return {
-            rowNumber: Math.min(
-                currentPosition.rowNumber + deltaPosition.rowNumber,
-                gridProperties.height - 1
-            ),
-            columnNumber: Math.min(
-                currentPosition.columnNumber + deltaPosition.columnNumber,
-                gridProperties.width - 1
-            ),
-        };
-    }
-    /*
-    3\n5\n7\n9\n11\n13
-    */
-    static getPositionValue(
-        gridProperties: GridProperties,
-        position: Position
-    ): number {
-        return (
-            Solution20162a.getRowStartNumber(
-                gridProperties,
-                position.rowNumber
-            ) +
-            position.columnNumber * gridProperties.step
-        );
     }
 }
 export default Solution20162a;
