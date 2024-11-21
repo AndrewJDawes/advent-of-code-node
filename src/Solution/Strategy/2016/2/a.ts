@@ -3,6 +3,7 @@ import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js
 import GridNavigator from '../../../../Library/Grid/NumericGridNavigator/C1.js';
 import { directionCharacterToDirection } from './Helpers.js';
 import { directionToDeltaPosition } from '../../../../Library/Grid/NumericGridNavigator/Helpers.js';
+import { OutOfBoundsException } from '../../../../Library/Grid/Interfaces.js';
 /*
 --- Day 2: Bathroom Security ---
 You arrive at Easter Bunny Headquarters under cover of darkness. However, you left in such a rush that you forgot to use the bathroom! Fancy office buildings like this one usually have keypad locks on their bathrooms, so you search the front desk for the code.
@@ -53,12 +54,19 @@ class Solution20162a implements InterfaceSolutionStrategy {
         );
         for await (let line of iterator) {
             for (let character of Array.from(line)) {
-                directionToDeltaPosition;
-                gridNavigator.move(
-                    directionToDeltaPosition(
-                        directionCharacterToDirection(character)
-                    )
-                );
+                try {
+                    gridNavigator.move(
+                        directionToDeltaPosition(
+                            directionCharacterToDirection(character)
+                        )
+                    );
+                } catch (e) {
+                    if (e instanceof OutOfBoundsException) {
+                        // Disregard out of bounds and just do not move
+                        continue;
+                    }
+                    throw e;
+                }
             }
             buttons.push(gridNavigator.getCurrentPositionValue());
         }

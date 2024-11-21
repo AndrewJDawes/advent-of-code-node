@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { Direction } from './Interfaces.js';
+import { Direction } from '../Interfaces.js';
 import { directionToDeltaPosition } from './Helpers.js';
-describe('Library Grid GridNavigator Helpers', () => {
+describe('Library Grid NumericGridNavigator Helpers', () => {
     describe('directionToDeltaPosition', () => {
         it('interprets Direction.U as {rowNumber -1, columnNumber: 0}', () => {
             expect(directionToDeltaPosition(Direction.U)).to.deep.equal({

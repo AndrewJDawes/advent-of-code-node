@@ -1,13 +1,6 @@
 import { expect } from 'chai';
-import { Direction } from './Interfaces.js';
 import C1 from './C1.js';
-describe('Library Grid GridNavigator C1', () => {
-    // describe('solve', () => {
-    //     it('interprets ULL\nRRDDD\nLURDL\nUUUUD as 1985', async () => {
-    //         const input = new StringArray(['ULL', 'RRDDD', 'LURDL', 'UUUUD']);
-    //         expect(new C1(input).solve()).to.equal('1985');
-    //     });
-    // });
+describe('Library Grid NumericGridNavigator C1', () => {
     describe('getRowStartNumber', () => {
         it('calculates row 1 (index 0) of a grid that starts at 1, steps by 1, and has 3 wide rows to start at 4', () => {
             const c1 = new C1(
@@ -132,7 +125,7 @@ describe('Library Grid GridNavigator C1', () => {
     });
 
     describe('move', () => {
-        it('interprets moving 3,1 from 1,1 on a 3x3 grid as ending at 2,2', () => {
+        it('errors when moving 2,1 from 1,1 on a 3x3 grid', () => {
             const c1 = new C1(
                 {
                     start: 1,
@@ -145,15 +138,12 @@ describe('Library Grid GridNavigator C1', () => {
                     columnNumber: 1,
                 }
             );
-            c1.move({
-                rowNumber: 3,
-                columnNumber: 1,
-            });
-            expect(c1.getCurrentPosition()).to.deep.equal({
-                rowNumber: 2,
-                columnNumber: 2,
-            });
-            expect(c1.getCurrentPositionValue()).to.equal(9);
+            expect(() =>
+                c1.move({
+                    rowNumber: 3,
+                    columnNumber: 1,
+                })
+            ).to.throw('Row number out of bounds');
         });
         it('interprets moving 3,1 from 1,1 on a 10x10 grid as ending at 4,2', () => {
             const c1 = new C1(

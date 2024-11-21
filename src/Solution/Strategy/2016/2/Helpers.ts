@@ -1,4 +1,4 @@
-import { Direction } from '../../../../Library/Grid/NumericGridNavigator/Interfaces.js';
+import { Direction } from '../../../../Library/Grid/Interfaces.js';
 
 export function directionCharacterToDirection(directionString: string) {
     if (!(directionString in Direction)) {

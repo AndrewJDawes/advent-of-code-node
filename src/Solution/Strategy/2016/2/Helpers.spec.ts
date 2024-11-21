@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { directionCharacterToDirection } from './Helpers.js';
-import { Direction } from '../../../../Library/Grid/NumericGridNavigator/Interfaces.js';
-describe('Library Grid GridNavigator Helpers', () => {
+import { Direction } from '../../../../Library/Grid/Interfaces.js';
+describe('Library Grid NumericGridNavigator Helpers', () => {
     describe('directionCharacterTodDirection', () => {
         it('interprets U as U', () => {
             expect(directionCharacterToDirection('U')).to.equal(Direction.U);

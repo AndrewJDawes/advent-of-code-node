@@ -1,8 +1,9 @@
 import {
     NumericGridNavigator,
     NumericGridProperties,
+    OutOfBoundsException,
     Position,
-} from './Interfaces.js';
+} from '../Interfaces.js';
 
 class C1 implements NumericGridNavigator {
     gridProperties: NumericGridProperties;
@@ -36,23 +37,24 @@ class C1 implements NumericGridNavigator {
         );
     }
     move(deltaPosition: Position): void {
-        this.currentPosition = {
-            rowNumber: Math.max(
-                0,
-                Math.min(
-                    this.currentPosition.rowNumber + deltaPosition.rowNumber,
-                    this.gridProperties.height - 1
-                )
-            ),
-            columnNumber: Math.max(
-                0,
-                Math.min(
-                    this.currentPosition.columnNumber +
-                        deltaPosition.columnNumber,
-                    this.gridProperties.width - 1
-                )
-            ),
+        const newPosition: Position = {
+            rowNumber: this.currentPosition.rowNumber + deltaPosition.rowNumber,
+            columnNumber:
+                this.currentPosition.columnNumber + deltaPosition.columnNumber,
         };
+        if (
+            newPosition.columnNumber > this.gridProperties.width - 1 ||
+            newPosition.columnNumber < 0
+        ) {
+            throw new OutOfBoundsException('Column number out of bounds');
+        }
+        if (
+            newPosition.rowNumber > this.gridProperties.height - 1 ||
+            newPosition.rowNumber < 0
+        ) {
+            throw new OutOfBoundsException('Row number out of bounds');
+        }
+        this.currentPosition = newPosition;
     }
     getCurrentPosition(): Position {
         return this.currentPosition;
