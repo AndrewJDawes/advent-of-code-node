@@ -1,9 +1,16 @@
-import { GridNavigator, GridProperties, Position } from './Interfaces.js';
+import {
+    NumericGridNavigator,
+    NumericGridProperties,
+    Position,
+} from './Interfaces.js';
 
-class C1 implements GridNavigator {
-    gridProperties: GridProperties;
+class C1 implements NumericGridNavigator {
+    gridProperties: NumericGridProperties;
     currentPosition: Position;
-    constructor(gridProperties: GridProperties, currentPosition: Position) {
+    constructor(
+        gridProperties: NumericGridProperties,
+        currentPosition: Position
+    ) {
         this.gridProperties = gridProperties;
         this.currentPosition = currentPosition;
     }

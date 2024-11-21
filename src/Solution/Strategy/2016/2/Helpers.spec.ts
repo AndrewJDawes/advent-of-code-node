@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { directionCharacterToDirection } from './Helpers.js';
-import { Direction } from '../../../../Library/Grid/GridNavigator/Interfaces.js';
+import { Direction } from '../../../../Library/Grid/NumericGridNavigator/Interfaces.js';
 describe('Library Grid GridNavigator Helpers', () => {
     describe('directionCharacterTodDirection', () => {
         it('interprets U as U', () => {

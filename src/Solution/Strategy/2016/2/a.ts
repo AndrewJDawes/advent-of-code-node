@@ -1,8 +1,8 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
-import GridNavigator from '../../../../Library/Grid/GridNavigator/C1.js';
+import GridNavigator from '../../../../Library/Grid/NumericGridNavigator/C1.js';
 import { directionCharacterToDirection } from './Helpers.js';
-import { directionToDeltaPosition } from '../../../../Library/Grid/GridNavigator/Helpers.js';
+import { directionToDeltaPosition } from '../../../../Library/Grid/NumericGridNavigator/Helpers.js';
 /*
 --- Day 2: Bathroom Security ---
 You arrive at Easter Bunny Headquarters under cover of darkness. However, you left in such a rush that you forgot to use the bathroom! Fancy office buildings like this one usually have keypad locks on their bathrooms, so you search the front desk for the code.

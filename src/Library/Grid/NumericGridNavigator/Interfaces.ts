@@ -8,13 +8,13 @@ export interface Position {
     rowNumber: number;
     columnNumber: number;
 }
-export interface GridProperties {
+export interface NumericGridProperties {
     start: number;
     step: number;
     width: number;
     height: number;
 }
-export interface GridNavigator {
+export interface NumericGridNavigator {
     getRowStartNumber(rowNumber: number): number;
     getRowEndNumber(rowNumber: number): number;
     move(deltaPosition: Position): void;
