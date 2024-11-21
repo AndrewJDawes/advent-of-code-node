@@ -1,0 +1,149 @@
+import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
+import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
+/*
+--- Day 2: Bathroom Security ---
+You arrive at Easter Bunny Headquarters under cover of darkness. However, you left in such a rush that you forgot to use the bathroom! Fancy office buildings like this one usually have keypad locks on their bathrooms, so you search the front desk for the code.
+
+"In order to improve security," the document you find says, "bathroom codes will no longer be written down. Instead, please memorize and follow the procedure below to access the bathrooms."
+
+The document goes on to explain that each button to be pressed can be found by starting on the previous button and moving to adjacent buttons on the keypad: U moves up, D moves down, L moves left, and R moves right. Each line of instructions corresponds to one button, starting at the previous button (or, for the first line, the "5" button); press whatever button you're on at the end of each line. If a move doesn't lead to a button, ignore it.
+
+You can't hold it much longer, so you decide to figure out the code as you walk to the bathroom. You picture a keypad like this:
+
+1 2 3
+4 5 6
+7 8 9
+Suppose your instructions are:
+
+ULL
+RRDDD
+LURDL
+UUUUD
+You start at "5" and move up (to "2"), left (to "1"), and left (you can't, and stay on "1"), so the first button is 1.
+Starting from the previous button ("1"), you move right twice (to "3") and then down three times (stopping at "9" after two moves and ignoring the third), ending up with 9.
+Continuing from "9", you move left, up, right, down, and left, ending with 8.
+Finally, you move up four times (stopping at "2"), then down once, ending with 5.
+So, in this example, the bathroom code is 1985.
+
+Your puzzle input is the instructions from the document you found at the front desk. What is the bathroom code?
+*/
+export enum Direction {
+    U = 0,
+    R = 1,
+    D = 2,
+    L = 3,
+}
+export interface Position {
+    rowNumber: number;
+    columnNumber: number;
+}
+export interface GridProperties {
+    start: number;
+    step: number;
+    width: number;
+    height: number;
+}
+class Solution20162a implements InterfaceSolutionStrategy {
+    inputFetcher: InterfaceInputFetcher;
+    constructor(inputFetcher: InterfaceInputFetcher) {
+        this.inputFetcher = inputFetcher;
+    }
+    async solve() {
+        const iterator = await this.inputFetcher.getAsyncIterator();
+        const buttons: number[] = [];
+        for await (let line of iterator) {
+        }
+        return buttons.join('');
+    }
+    static getRowStartNumber(
+        gridProperties: GridProperties,
+        rowNumber: number
+    ): number {
+        if (rowNumber + 1 > gridProperties.height) {
+            throw new Error(`Exceeded number of rows`);
+        }
+        return (
+            rowNumber * gridProperties.width * gridProperties.step +
+            gridProperties.start
+        );
+    }
+    static getRowEndNumber(
+        gridProperties: GridProperties,
+        rowNumber: number
+    ): number {
+        if (rowNumber + 1 > gridProperties.height) {
+            throw new Error(`Exceeded number of rows`);
+        }
+        return (
+            gridProperties.start +
+            gridProperties.width * gridProperties.step * (rowNumber + 1) -
+            gridProperties.step
+        );
+    }
+    static directionCharacterToDirection(directionString: string) {
+        if (!(directionString in Direction)) {
+            throw Error(`Invalid direction: ${directionString}`);
+        }
+        return Direction[directionString as keyof typeof Direction];
+    }
+    static directionToDeltaPosition(direction: Direction): Position {
+        switch (direction) {
+            case Direction.U: {
+                return {
+                    rowNumber: -1,
+                    columnNumber: 0,
+                };
+            }
+            case Direction.R: {
+                return {
+                    rowNumber: 0,
+                    columnNumber: 1,
+                };
+            }
+            case Direction.D: {
+                return {
+                    rowNumber: 1,
+                    columnNumber: 0,
+                };
+            }
+            case Direction.L: {
+                return {
+                    rowNumber: 0,
+                    columnNumber: -1,
+                };
+            }
+        }
+    }
+    static move(
+        gridProperties: GridProperties,
+        currentPosition: Position,
+        deltaPosition: Position
+    ): Position {
+        return {
+            rowNumber: Math.min(
+                currentPosition.rowNumber + deltaPosition.rowNumber,
+                gridProperties.height - 1
+            ),
+            columnNumber: Math.min(
+                currentPosition.columnNumber + deltaPosition.columnNumber,
+                gridProperties.width - 1
+            ),
+        };
+    }
+    /*
+    3\n5\n7\n9\n11\n13
+    */
+    static getPositionValue(
+        gridProperties: GridProperties,
+        position: Position
+    ): number {
+        return (
+            Solution20162a.getRowStartNumber(
+                gridProperties,
+                position.rowNumber
+            ) +
+            position.columnNumber * gridProperties.step
+        );
+    }
+}
+export default Solution20162a;
