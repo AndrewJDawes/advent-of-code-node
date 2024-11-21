@@ -30,13 +30,20 @@ class C1 implements GridNavigator {
     }
     move(deltaPosition: Position): void {
         this.currentPosition = {
-            rowNumber: Math.min(
-                this.currentPosition.rowNumber + deltaPosition.rowNumber,
-                this.gridProperties.height - 1
+            rowNumber: Math.max(
+                0,
+                Math.min(
+                    this.currentPosition.rowNumber + deltaPosition.rowNumber,
+                    this.gridProperties.height - 1
+                )
             ),
-            columnNumber: Math.min(
-                this.currentPosition.columnNumber + deltaPosition.columnNumber,
-                this.gridProperties.width - 1
+            columnNumber: Math.max(
+                0,
+                Math.min(
+                    this.currentPosition.columnNumber +
+                        deltaPosition.columnNumber,
+                    this.gridProperties.width - 1
+                )
             ),
         };
     }
