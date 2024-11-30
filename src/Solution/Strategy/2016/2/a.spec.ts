@@ -5,7 +5,8 @@ describe('Solution20162a', () => {
     describe('solve', () => {
         it('interprets ULL\nRRDDD\nLURDL\nUUUUD as 1985', async () => {
             const input = new StringArray(['ULL', 'RRDDD', 'LURDL', 'UUUUD']);
-            expect(await new Solution20162a(input).solve()).to.equal('1985');
+            const solution = await new Solution20162a(input).solve();
+            expect(solution).to.equal('1985');
         });
     });
 });

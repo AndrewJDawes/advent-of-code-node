@@ -1,10 +1,79 @@
 import { expect } from 'chai';
 import C1 from './C1.js';
-import MatrixC1 from '../Matrix/C1.js';
-import JustifiedPaddedRowC1 from '../Row/JustifiedPaddedRowC1.js';
 import FactoryC1 from '../Matrix/Factory/C1.js';
 describe('Library Grid NumericGridNavigator C1', () => {
     describe('move', () => {
+        it('errors when creating out of bounds position for column that does not exist', () => {
+            expect(() => {
+                const c1 = new C1(
+                    new FactoryC1([
+                        ['1'],
+                        ['2', '3', '4'],
+                        ['5', '6', '7', '8', '9'],
+                        ['A', 'B', 'C'],
+                        ['D'],
+                    ]).build(),
+                    {
+                        rowNumber: 3,
+                        columnNumber: 0,
+                    }
+                );
+            }).to.throw('Column number out of bounds');
+        });
+        it('errors when moving out of bounds to a column that does not exist', () => {
+            const c1 = new C1(
+                new FactoryC1([
+                    ['1'],
+                    ['2', '3', '4'],
+                    ['5', '6', '7', '8', '9'],
+                    ['A', 'B', 'C'],
+                    ['D'],
+                ]).build(),
+                {
+                    rowNumber: 3,
+                    columnNumber: 2,
+                }
+            );
+            expect(() => c1.move({ rowNumber: 1, columnNumber: 1 })).to.throw(
+                'Column number out of bounds'
+            );
+        });
+        it('errors when moving out of bounds to a row that does not exist', () => {
+            const c1 = new C1(
+                new FactoryC1([
+                    ['1'],
+                    ['2', '3', '4'],
+                    ['5', '6', '7', '8', '9'],
+                    ['A', 'B', 'C'],
+                    ['D'],
+                ]).build(),
+                {
+                    rowNumber: 4,
+                    columnNumber: 2,
+                }
+            );
+            expect(() => c1.move({ rowNumber: 1, columnNumber: 0 })).to.throw(
+                'Row number out of bounds'
+            );
+        });
+        it('expects starting position to be 0,0', () => {
+            it('gets value B when moving 1,0', () => {
+                const c1 = new C1(
+                    new FactoryC1([
+                        ['1'],
+                        ['2', '3', '4'],
+                        ['5', '6', '7', '8', '9'],
+                        ['A', 'B', 'C'],
+                        ['D'],
+                    ]).build(),
+                    {
+                        rowNumber: 2,
+                        columnNumber: 2,
+                    }
+                );
+                expect(c1.getCurrentPositionValue()).to.equal('7');
+            });
+        });
         it('gets value B when moving 1,0', () => {
             const c1 = new C1(
                 new FactoryC1([
@@ -19,68 +88,59 @@ describe('Library Grid NumericGridNavigator C1', () => {
                     columnNumber: 2,
                 }
             );
-            expect(c1.getCurrentPositionValue()).to.equal('7');
             c1.move({ rowNumber: 1, columnNumber: 0 });
             expect(c1.getCurrentPositionValue()).to.equal('B');
         });
-        // it('interprets moving 3,1 from 1,1 on a 10x10 grid as ending at 4,2', () => {
-        //     const c1 = new C1(
-        //         {
-        //             start: 1,
-        //             step: 1,
-        //             width: 10,
-        //             height: 10,
-        //         },
-        //         {
-        //             rowNumber: 1,
-        //             columnNumber: 1,
-        //         }
-        //     );
-        //     c1.move({
-        //         rowNumber: 3,
-        //         columnNumber: 1,
-        //     });
-        //     expect(c1.getCurrentPosition()).to.deep.equal({
-        //         rowNumber: 4,
-        //         columnNumber: 2,
-        //     });
-        //     expect(c1.getCurrentPositionValue()).to.equal(43);
-        // });
+        it('gets value D when moving 2,0', () => {
+            const c1 = new C1(
+                new FactoryC1([
+                    ['1'],
+                    ['2', '3', '4'],
+                    ['5', '6', '7', '8', '9'],
+                    ['A', 'B', 'C'],
+                    ['D'],
+                ]).build(),
+                {
+                    rowNumber: 2,
+                    columnNumber: 2,
+                }
+            );
+            c1.move({ rowNumber: 2, columnNumber: 0 });
+            expect(c1.getCurrentPositionValue()).to.equal('D');
+        });
+        it('gets value 8 when moving 0,1', () => {
+            const c1 = new C1(
+                new FactoryC1([
+                    ['1'],
+                    ['2', '3', '4'],
+                    ['5', '6', '7', '8', '9'],
+                    ['A', 'B', 'C'],
+                    ['D'],
+                ]).build(),
+                {
+                    rowNumber: 2,
+                    columnNumber: 2,
+                }
+            );
+            c1.move({ rowNumber: 0, columnNumber: 1 });
+            expect(c1.getCurrentPositionValue()).to.equal('8');
+        });
+        it('gets value 4 when moving -1,1', () => {
+            const c1 = new C1(
+                new FactoryC1([
+                    ['1'],
+                    ['2', '3', '4'],
+                    ['5', '6', '7', '8', '9'],
+                    ['A', 'B', 'C'],
+                    ['D'],
+                ]).build(),
+                {
+                    rowNumber: 2,
+                    columnNumber: 2,
+                }
+            );
+            c1.move({ rowNumber: -1, columnNumber: 1 });
+            expect(c1.getCurrentPositionValue()).to.equal('4');
+        });
     });
-    // describe('getPositionValue', () => {
-    //     it('interprets 1,1 on \n3\t5\t7\n9\t11\t13\n15\t17\t19\n grid as 11', () => {
-    //         const c1 = new C1(
-    //             {
-    //                 start: 3,
-    //                 step: 2,
-    //                 width: 3,
-    //                 height: 3,
-    //             },
-    //             {
-    //                 rowNumber: 1,
-    //                 columnNumber: 1,
-    //             }
-    //         );
-    //         expect(
-    //             c1.getPositionValue({ rowNumber: 1, columnNumber: 1 })
-    //         ).to.equal(11);
-    //     });
-    //     it('interprets 2,0 on \n3\t5\t7\n9\t11\t13\n15\t17\t19\n grid as 11', () => {
-    //         const c1 = new C1(
-    //             {
-    //                 start: 3,
-    //                 step: 2,
-    //                 width: 3,
-    //                 height: 3,
-    //             },
-    //             {
-    //                 rowNumber: 1,
-    //                 columnNumber: 1,
-    //             }
-    //         );
-    //         expect(
-    //             c1.getPositionValue({ rowNumber: 2, columnNumber: 0 })
-    //         ).to.equal(15);
-    //     });
-    // });
 });

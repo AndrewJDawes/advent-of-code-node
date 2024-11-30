@@ -6,7 +6,16 @@ class C1 implements StringGridNavigator {
     currentPosition: Position;
     constructor(matrix: Matrix, currentPosition: Position) {
         this.matrix = matrix;
+        this.validatePosition(currentPosition);
         this.currentPosition = currentPosition;
+    }
+    validatePosition(position: Position): void {
+        if (!this.matrix.has(position.rowNumber)) {
+            throw new OutOfBoundsException('Row number out of bounds');
+        }
+        if (!this.matrix.get(position.rowNumber)?.has(position.columnNumber)) {
+            throw new OutOfBoundsException('Column number out of bounds');
+        }
     }
     move(deltaPosition: Position): void {
         const newPosition: Position = {
@@ -14,16 +23,7 @@ class C1 implements StringGridNavigator {
             columnNumber:
                 this.currentPosition.columnNumber + deltaPosition.columnNumber,
         };
-        if (!this.matrix.has(newPosition.rowNumber)) {
-            throw new OutOfBoundsException('Row number out of bounds');
-        }
-        if (
-            !this.matrix
-                .get(newPosition.rowNumber)
-                ?.has(newPosition.columnNumber)
-        ) {
-            throw new OutOfBoundsException('Column number out of bounds');
-        }
+        this.validatePosition(newPosition);
         this.currentPosition = newPosition;
     }
     getCurrentPosition(): Position {
