@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Direction } from '../Interfaces.js';
+import { Direction } from './Interfaces.js';
 import { directionToDeltaPosition } from './Helpers.js';
 describe('Library Grid NumericGridNavigator Helpers', () => {
     describe('directionToDeltaPosition', () => {

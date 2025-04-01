@@ -1,4 +1,4 @@
-import { Direction, Position } from '../Interfaces.js';
+import { Direction, Position } from './Interfaces.js';
 
 export function directionToDeltaPosition(direction: Direction): Position {
     switch (direction) {

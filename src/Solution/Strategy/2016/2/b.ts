@@ -1,6 +1,7 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
-import GridNavigator from '../../../../Library/Grid/NumericGridNavigator/C1.js';
+import GridNavigator from '../../../../Library/Grid/PaddedArbitraryGridNavigator/C1.js';
+import FactoryC1 from '../../../../Library/Grid/Matrix/Factory/C1.js';
 import { directionCharacterToDirection } from './Helpers.js';
 import { directionToDeltaPosition } from '../../../../Library/Grid/Helpers.js';
 import { OutOfBoundsException } from '../../../../Library/Grid/Interfaces.js';
@@ -39,17 +40,18 @@ class Solution20162a implements InterfaceSolutionStrategy {
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
-        const buttons: number[] = [];
+        const buttons: string[] = [];
         const gridNavigator = new GridNavigator(
+            new FactoryC1([
+                ['1'],
+                ['2', '3', '4'],
+                ['5', '6', '7', '8', '9'],
+                ['A', 'B', 'C'],
+                ['D'],
+            ]).build(),
             {
-                start: 1,
-                step: 1,
-                width: 3,
-                height: 3,
-            },
-            {
-                rowNumber: 1,
-                columnNumber: 1,
+                rowNumber: 2,
+                columnNumber: 0,
             }
         );
         for await (let line of iterator) {
