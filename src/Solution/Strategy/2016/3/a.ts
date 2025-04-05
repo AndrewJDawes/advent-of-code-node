@@ -1,5 +1,6 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
+import { sideLengthsAreValid } from './Common.js';
 /*
 --- Day 3: Squares With Three Sides ---
 Now that you can think clearly, you move deeper into the labyrinth of hallways and office furniture that makes up this part of Easter Bunny HQ. This must be a graphic design department; the walls are covered in specifications for triangles.
@@ -36,21 +37,7 @@ class Solution20162a implements InterfaceSolutionStrategy {
             // Send the remaining to a (eventually memoized) function that sums all elems in array
             // Compare sum to number
             // Conditionally increment counter
-            let possible = true;
-            for (let index = 0; index < sideLengths.length; index++) {
-                const val = sideLengths[index];
-                if (
-                    val >=
-                    [
-                        ...sideLengths.slice(0, index),
-                        ...sideLengths.slice(index + 1),
-                    ].reduce((summed, toSum) => summed + toSum, 0)
-                ) {
-                    possible = false;
-                    break;
-                }
-            }
-            if (possible) {
+            if (sideLengthsAreValid(sideLengths)) {
                 ++possibleCount;
             }
         }
