@@ -1,6 +1,7 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
 import { sideLengthsAreValid } from './Common.js';
+import C1 from '../../../../Library/Input/Transformer/ColumnToRow/C1.js';
 /*
 --- Day 3: Squares With Three Sides ---
 Now that you can think clearly, you move deeper into the labyrinth of hallways and office furniture that makes up this part of Easter Bunny HQ. This must be a graphic design department; the walls are covered in specifications for triangles.
@@ -21,36 +22,32 @@ class Solution20162a implements InterfaceSolutionStrategy {
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
+        const transformer = new C1(3);
         let possibleCount = 0;
-        let rowWindowCount = 0;
-        let rowWindowSize = 3;
         // Keep track of how many rows we've proccessed
         // Split input line into columns and verify size
         // Use a multidimensional array to rearrange
         // Flush to solver function
-        const sideLengthsByRowBuffer: number[][] = [];
         for await (let line of iterator) {
-            const sideLengthsRaw = line.trim().split(/\s+/);
-            sideLengthsRaw.forEach((sideLength, index) => {
-                const parsed = parseInt(sideLength, 10);
-                if (Number.isNaN(parsed)) {
-                    throw new Error(
-                        `Unable to parse input number! Raw lengths: ${sideLengthsRaw}. Raw length: ${sideLength}. Parsed length: ${parsed}`
-                    );
-                }
-                if (undefined === sideLengthsByRowBuffer[index]) {
-                    sideLengthsByRowBuffer[index] = [];
-                }
-                sideLengthsByRowBuffer[index].push(parsed);
-            });
-            rowWindowCount++;
-            if (rowWindowCount === rowWindowSize) {
-                for (const sideLengths of sideLengthsByRowBuffer.splice(0)) {
-                    if (sideLengthsAreValid(sideLengths)) {
-                        possibleCount++;
+            const columner = line.trim().split(/\s+/);
+            transformer.write(columner);
+            for (const sideLengthsRaw of transformer.read()) {
+                const sideLengths = sideLengthsRaw.map((sideLength) => {
+                    const parsed = parseInt(sideLength, 10);
+                    if (Number.isNaN(parsed)) {
+                        throw new Error(
+                            `Unable to parse input number! Raw lengths: ${sideLengthsRaw}. Raw length: ${sideLength}. Parsed length: ${parsed}`
+                        );
                     }
+                    return parsed;
+                });
+                // Use slice to extract the number at positioin
+                // Send the remaining to a (eventually memoized) function that sums all elems in array
+                // Compare sum to number
+                // Conditionally increment counter
+                if (sideLengthsAreValid(sideLengths)) {
+                    ++possibleCount;
                 }
-                rowWindowCount = 0;
             }
         }
         return possibleCount.toString();

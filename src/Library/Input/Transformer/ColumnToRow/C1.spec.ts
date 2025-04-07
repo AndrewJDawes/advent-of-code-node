@@ -22,8 +22,7 @@ describe('Input Transformer ColumnToRow C1', () => {
         for (const row of input) {
             c1.write(row);
         }
-        const results = c1.read();
-        expect(results).to.deep.equal([
+        expect(c1.read()).to.deep.equal([
             ['4', '419', '424'],
             ['21', '794', '797'],
             ['894', '987', '125'],
@@ -37,5 +36,6 @@ describe('Input Transformer ColumnToRow C1', () => {
             ['173', '792', '737'],
             ['878', '854', '303'],
         ]);
+        expect(c1.read()).to.deep.equal([]);
     });
 });

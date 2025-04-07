@@ -1,4 +1,6 @@
-export default class ColumnToRowInputTransformer {
+import { InputTransformerColumnToRow } from '../Interfaces.js';
+
+export default class C1 implements InputTransformerColumnToRow {
     private windowSize: number;
     private buffer: string[][];
     private interstitialBuffer: string[][];
@@ -25,6 +27,6 @@ export default class ColumnToRowInputTransformer {
         }
     }
     public read(): string[][] {
-        return this.buffer.slice(0);
+        return this.buffer.splice(0);
     }
 }
