@@ -33,9 +33,6 @@ class Solution20162a implements InterfaceSolutionStrategy {
                 }
                 return parsed;
             });
-            // Use slice to extract the number at positioin
-            // Send the remaining to a (eventually memoized) function that sums all elems in array
-            // Compare sum to number
             // Conditionally increment counter
             if (sideLengthsAreValid(sideLengths)) {
                 ++possibleCount;

@@ -24,10 +24,6 @@ class Solution20162a implements InterfaceSolutionStrategy {
         const iterator = await this.inputFetcher.getAsyncIterator();
         const transformer = new C1(3);
         let possibleCount = 0;
-        // Keep track of how many rows we've proccessed
-        // Split input line into columns and verify size
-        // Use a multidimensional array to rearrange
-        // Flush to solver function
         for await (let line of iterator) {
             const columner = line.trim().split(/\s+/);
             transformer.write(columner);
@@ -41,9 +37,6 @@ class Solution20162a implements InterfaceSolutionStrategy {
                     }
                     return parsed;
                 });
-                // Use slice to extract the number at positioin
-                // Send the remaining to a (eventually memoized) function that sums all elems in array
-                // Compare sum to number
                 // Conditionally increment counter
                 if (sideLengthsAreValid(sideLengths)) {
                     ++possibleCount;
