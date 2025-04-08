@@ -27,7 +27,7 @@ export interface Point {
     [Axis.EastWest]: number;
     [Axis.NorthSouth]: number;
 }
-class Solution20161b implements InterfaceSolutionStrategy {
+class Solution implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
     constructor(inputFetcher: InterfaceInputFetcher) {
         this.inputFetcher = inputFetcher;
@@ -76,22 +76,19 @@ class Solution20161b implements InterfaceSolutionStrategy {
                 // exclude the most recent line, because it obviously shares a junction with newest line
                 const consideredLines = lines.slice(0, lines.length - 1);
                 const intersectingLines = consideredLines.filter((line) => {
-                    return Solution20161b.linesIntersect(line, newLine);
+                    return Solution.linesIntersect(line, newLine);
                 });
                 const pointsOfIntersection = intersectingLines.map((line) => {
-                    return Solution20161b.calculatePointOfIntersection(
-                        line,
-                        newLine
-                    );
+                    return Solution.calculatePointOfIntersection(line, newLine);
                 });
 
                 if (pointsOfIntersection.length) {
-                    const closestPoint = Solution20161b.findClosestPoint(
+                    const closestPoint = Solution.findClosestPoint(
                         newLine.from,
                         pointsOfIntersection
                     );
                     if (closestPoint) {
-                        return Solution20161b.calculateDistanceBetweenTwoPoints(
+                        return Solution.calculateDistanceBetweenTwoPoints(
                             originPoint,
                             closestPoint
                         ).toString();
@@ -104,22 +101,22 @@ class Solution20161b implements InterfaceSolutionStrategy {
         return 'No intersection found!';
     }
     static linesIntersect(lineA: Line, lineB: Line): boolean {
-        const o1 = Solution20161b.calculateOrientation(
+        const o1 = Solution.calculateOrientation(
             lineA.from,
             lineA.to,
             lineB.from
         );
-        const o2 = Solution20161b.calculateOrientation(
+        const o2 = Solution.calculateOrientation(
             lineA.from,
             lineA.to,
             lineB.to
         );
-        const o3 = Solution20161b.calculateOrientation(
+        const o3 = Solution.calculateOrientation(
             lineB.from,
             lineB.to,
             lineA.from
         );
-        const o4 = Solution20161b.calculateOrientation(
+        const o4 = Solution.calculateOrientation(
             lineB.from,
             lineB.to,
             lineA.to
@@ -132,7 +129,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
 
         if (
             o1 === Orientation.Collinear &&
-            Solution20161b.collinearPointsAreOnSameSegment(
+            Solution.collinearPointsAreOnSameSegment(
                 lineA.from,
                 lineA.to,
                 lineB.from
@@ -143,7 +140,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
 
         if (
             o2 === Orientation.Collinear &&
-            Solution20161b.collinearPointsAreOnSameSegment(
+            Solution.collinearPointsAreOnSameSegment(
                 lineA.from,
                 lineA.to,
                 lineB.to
@@ -154,7 +151,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
 
         if (
             o3 === Orientation.Collinear &&
-            Solution20161b.collinearPointsAreOnSameSegment(
+            Solution.collinearPointsAreOnSameSegment(
                 lineB.from,
                 lineB.to,
                 lineA.from
@@ -165,7 +162,7 @@ class Solution20161b implements InterfaceSolutionStrategy {
 
         if (
             o4 === Orientation.Collinear &&
-            Solution20161b.collinearPointsAreOnSameSegment(
+            Solution.collinearPointsAreOnSameSegment(
                 lineB.from,
                 lineB.to,
                 lineA.to
@@ -176,11 +173,11 @@ class Solution20161b implements InterfaceSolutionStrategy {
         return false;
     }
     static calculatePointOfIntersection(lineA: Line, lineB: Line): Point {
-        const lineADirection = Solution20161b.calculateLineDirection(lineA);
+        const lineADirection = Solution.calculateLineDirection(lineA);
         if (lineADirection === LineDirection.Sloped) {
             throw new Error('Line is sloped!');
         }
-        const lineBDirection = Solution20161b.calculateLineDirection(lineB);
+        const lineBDirection = Solution.calculateLineDirection(lineB);
         if (lineBDirection === LineDirection.Sloped) {
             throw new Error('Line is sloped!');
         }
@@ -255,11 +252,11 @@ class Solution20161b implements InterfaceSolutionStrategy {
         points.forEach((consideredPoint) => {
             if (
                 closestPoint === null ||
-                Solution20161b.calculateDistanceBetweenTwoPoints(
+                Solution.calculateDistanceBetweenTwoPoints(
                     point,
                     consideredPoint
                 ) <
-                    Solution20161b.calculateDistanceBetweenTwoPoints(
+                    Solution.calculateDistanceBetweenTwoPoints(
                         point,
                         closestPoint
                     )
@@ -282,4 +279,4 @@ class Solution20161b implements InterfaceSolutionStrategy {
         return LineDirection.Sloped;
     }
 }
-export default Solution20161b;
+export default Solution;

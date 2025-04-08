@@ -14,7 +14,7 @@ In a valid triangle, the sum of any two sides must be larger than the remaining 
 In your puzzle input, how many of the listed triangles are possible?
 */
 
-class Solution20162a implements InterfaceSolutionStrategy {
+class Solution implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
     constructor(inputFetcher: InterfaceInputFetcher) {
         this.inputFetcher = inputFetcher;
@@ -41,4 +41,4 @@ class Solution20162a implements InterfaceSolutionStrategy {
         return possibleCount.toString();
     }
 }
-export default Solution20162a;
+export default Solution;

@@ -32,7 +32,7 @@ So, in this example, the bathroom code is 1985.
 Your puzzle input is the instructions from the document you found at the front desk. What is the bathroom code?
 */
 
-class Solution20162a implements InterfaceSolutionStrategy {
+class Solution implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
     constructor(inputFetcher: InterfaceInputFetcher) {
         this.inputFetcher = inputFetcher;
@@ -73,4 +73,4 @@ class Solution20162a implements InterfaceSolutionStrategy {
         return buttons.join('');
     }
 }
-export default Solution20162a;
+export default Solution;
