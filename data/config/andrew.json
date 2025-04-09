@@ -40,5 +40,12 @@
         "part": "b",
         "dataType": "url",
         "dataSource": "https://adventofcode.com/2016/day/3/input"
+    },
+    {
+        "year": "2016",
+        "day": "4",
+        "part": "a",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/4/input"
     }
 ]

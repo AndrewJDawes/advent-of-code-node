@@ -41,7 +41,7 @@ class Solution implements InterfaceSolutionStrategy {
                 const firstFiveCharsJoined = firstFiveChars.join('');
                 // TODO - check if room is "valid"
                 if (firstFiveCharsJoined === checksum) {
-                    realRoomSectorSum++;
+                    realRoomSectorSum += sectorNumber;
                 }
             } catch (e) {
                 console.error(`Skipping room due to error: ${e}`);
