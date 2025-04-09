@@ -1,6 +1,11 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
-import { parseRoomInputParts } from './Common.js';
+import {
+    countCharacterOccurrences,
+    parseRoomInputParts,
+    sanitizeRoom,
+    sortCharNumberMapDesc,
+} from './Common.js';
 /*
 --- Day 3: Squares With Three Sides ---
 Now that you can think clearly, you move deeper into the labyrinth of hallways and office furniture that makes up this part of Easter Bunny HQ. This must be a graphic design department; the walls are covered in specifications for triangles.
@@ -23,10 +28,21 @@ class Solution implements InterfaceSolutionStrategy {
         const iterator = await this.inputFetcher.getAsyncIterator();
         let realRoomSectorSum = 0;
         for await (let line of iterator) {
+            const alphaCounts = new Map<string, number>();
             try {
                 const { room, sector, checksum } = parseRoomInputParts(line);
                 const sectorNumber = parseInt(sector);
+                const sanitizedRoom = sanitizeRoom(room);
+                const occurrences = countCharacterOccurrences(sanitizedRoom);
+                const sortedOccurrences = sortCharNumberMapDesc(occurrences);
+                const firstFiveChars = sortedOccurrences
+                    .slice(0, 5)
+                    .map((occurrence) => occurrence[0]);
+                const firstFiveCharsJoined = firstFiveChars.join('');
                 // TODO - check if room is "valid"
+                if (firstFiveCharsJoined === checksum) {
+                    realRoomSectorSum++;
+                }
             } catch (e) {
                 console.error(`Skipping room due to error: ${e}`);
             }
