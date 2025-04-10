@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {
     countCharacterOccurrences,
     parseRoomInputParts,
+    rotateLetterCaseInsensitive,
     sanitizeRoom,
     sortCharNumberMapDesc,
 } from './Common.js';
@@ -59,5 +60,28 @@ describe('sortCharNumberMapDesc', () => {
             ['y', 1],
             ['z', 1],
         ]);
+    });
+});
+describe('rotateLetterCaseInsensitive', () => {
+    it('rotates "a" + 5 to "f"', () => {
+        expect(rotateLetterCaseInsensitive('a', 5)).to.equal('f');
+    });
+    it('rotates "A" + 5 to "F"', () => {
+        expect(rotateLetterCaseInsensitive('A', 5)).to.equal('F');
+    });
+    it('rotates "a" - 1 to "z"', () => {
+        expect(rotateLetterCaseInsensitive('a', -1)).to.equal('z');
+    });
+    it('rotates "a" - 5 to "v"', () => {
+        expect(rotateLetterCaseInsensitive('a', -5)).to.equal('v');
+    });
+    it('rotates "A" - 5 to "V"', () => {
+        expect(rotateLetterCaseInsensitive('A', -5)).to.equal('V');
+    });
+    it('rotates "a" + 27 to "b"', () => {
+        expect(rotateLetterCaseInsensitive('a', 27)).to.equal('b');
+    });
+    it('rotates "b" - 27 to "a"', () => {
+        expect(rotateLetterCaseInsensitive('b', -27)).to.equal('a');
     });
 });

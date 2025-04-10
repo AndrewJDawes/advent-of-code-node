@@ -37,3 +37,34 @@ export function sortCharNumberMapDesc(input: Map<string, number>) {
         return b[1] - a[1];
     });
 }
+export function rotateLetterCaseInsensitive(letter: string, rotation: number) {
+    if (!/^[A-Za-z]$/.test(letter)) {
+        throw new Error(`Input is not a letter: ${letter}`);
+    }
+    const lowerCase = letter.toLowerCase();
+    const isLower = letter === lowerCase;
+    const lowerBound = 'a'.charCodeAt(0);
+    const upperBound = 'z'.charCodeAt(0);
+    const range = upperBound - lowerBound + 1;
+    const currentCharCode = lowerCase.charCodeAt(0);
+    const flattenedCurrentCharCode = currentCharCode - lowerBound;
+    const rotated = (flattenedCurrentCharCode + rotation) % range;
+    const positive = Math.abs(rotated) === rotated;
+    // If possible, add to lowerbound
+    // If it's negative, subtract from upperBound
+    const newCharCode = positive
+        ? lowerBound + rotated
+        : upperBound + 1 + rotated;
+    // console.log({
+    //     lowerBound,
+    //     upperBound,
+    //     range,
+    //     currentCharCode,
+    //     flattenedCurrentCharCode,
+    //     rotated,
+    //     positive,
+    //     newCharCode,
+    // });
+    const result = String.fromCharCode(newCharCode);
+    return isLower ? result : result.toUpperCase();
+}
