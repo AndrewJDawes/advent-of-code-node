@@ -84,4 +84,7 @@ describe('rotateLetterCaseInsensitive', () => {
     it('rotates "b" - 27 to "a"', () => {
         expect(rotateLetterCaseInsensitive('b', -27)).to.equal('a');
     });
+    it('rotates "b" - 53 to "a"', () => {
+        expect(rotateLetterCaseInsensitive('b', -53)).to.equal('a');
+    });
 });
