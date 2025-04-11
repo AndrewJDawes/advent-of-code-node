@@ -2,8 +2,8 @@ import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
 import {
     countCharacterOccurrences,
+    decode,
     parseRoomInputParts,
-    rotateLetterCaseInsensitive,
     sanitizeRoom,
     sortCharNumberMapDesc,
 } from './Common.js';
@@ -22,46 +22,26 @@ In your puzzle input, how many of the listed triangles are possible?
 
 class Solution implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
-    constructor(inputFetcher: InterfaceInputFetcher) {
+    toFind: string;
+    constructor(inputFetcher: InterfaceInputFetcher, toFind: string) {
         this.inputFetcher = inputFetcher;
+        this.toFind = toFind;
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
-        const decoded: string[] = [];
         for await (let line of iterator) {
-            const alphaCounts = new Map<string, number>();
             try {
                 const { room, sector, checksum } = parseRoomInputParts(line);
                 const sectorNumber = parseInt(sector);
-                const sanitizedRoom = sanitizeRoom(room);
-                const occurrences = countCharacterOccurrences(sanitizedRoom);
-                const sortedOccurrences = sortCharNumberMapDesc(occurrences);
-                const firstFiveChars = sortedOccurrences
-                    .slice(0, 5)
-                    .map((occurrence) => occurrence[0]);
-                const firstFiveCharsJoined = firstFiveChars.join('');
-                // TODO - check if room is "valid"
-                if (firstFiveCharsJoined === checksum) {
-                    // realRoomSectorSum += sectorNumber;
+                const decoded = decode(room, sectorNumber);
+                if (this.toFind === decoded) {
+                    return sectorNumber.toString();
                 }
-                decoded.push(
-                    Array.from(room)
-                        .map((char) => {
-                            if (char === '-') {
-                                return '';
-                            }
-                            return rotateLetterCaseInsensitive(
-                                char,
-                                sectorNumber
-                            );
-                        })
-                        .join('')
-                );
             } catch (e) {
                 console.error(`Skipping room due to error: ${e}`);
             }
         }
-        return decoded.join('\n');
+        return '';
     }
 }
 export default Solution;

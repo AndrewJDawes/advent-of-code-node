@@ -53,3 +53,13 @@ export function rotateLetterCaseInsensitive(letter: string, rotation: number) {
     const result = String.fromCharCode(rotated + lowerBound);
     return isLower ? result : result.toUpperCase();
 }
+export function decode(room: string, sector: number) {
+    return Array.from(room)
+        .map((char) => {
+            if (char === '-') {
+                return ' ';
+            }
+            return rotateLetterCaseInsensitive(char, sector);
+        })
+        .join('');
+}
