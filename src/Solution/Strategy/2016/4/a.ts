@@ -28,7 +28,6 @@ class Solution implements InterfaceSolutionStrategy {
         const iterator = await this.inputFetcher.getAsyncIterator();
         let realRoomSectorSum = 0;
         for await (let line of iterator) {
-            const alphaCounts = new Map<string, number>();
             try {
                 const { room, sector, checksum } = parseRoomInputParts(line);
                 const sectorNumber = parseInt(sector);

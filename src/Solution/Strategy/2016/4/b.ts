@@ -31,7 +31,7 @@ class Solution implements InterfaceSolutionStrategy {
         const iterator = await this.inputFetcher.getAsyncIterator();
         for await (let line of iterator) {
             try {
-                const { room, sector, checksum } = parseRoomInputParts(line);
+                const { room, sector } = parseRoomInputParts(line);
                 const sectorNumber = parseInt(sector);
                 const decoded = decode(room, sectorNumber);
                 if (this.toFind === decoded) {
