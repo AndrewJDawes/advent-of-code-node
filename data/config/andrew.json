@@ -54,5 +54,12 @@
         "part": "b",
         "dataType": "url",
         "dataSource": "https://adventofcode.com/2016/day/4/input"
+    },
+    {
+        "year": "2016",
+        "day": "5",
+        "part": "a",
+        "dataType": "array",
+        "dataSource": ["d4cd2ee1"]
     }
 ]

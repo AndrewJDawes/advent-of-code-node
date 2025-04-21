@@ -14,6 +14,7 @@ import Solution20163a from '../Strategy/2016/3/a.js';
 import Solution20163b from '../Strategy/2016/3/b.js';
 import Solution20164a from '../Strategy/2016/4/a.js';
 import Solution20164b from '../Strategy/2016/4/b.js';
+import Solution20165a from '../Strategy/2016/5/a.js';
 class FromConfig implements InterfaceSolutionFactory {
     inputFetcherFactory: InterfaceInputFetcherFactory;
     constructor(inputFetcherFactory: InterfaceInputFetcherFactory) {
@@ -51,6 +52,8 @@ class FromConfig implements InterfaceSolutionFactory {
                 return new Solution20164a(service);
             case '20164b':
                 return new Solution20164b(service, 'northpole object storage');
+            case '20165a':
+                return new Solution20165a(service);
             default:
                 throw new Error(
                     `Unknown year and day and part: ${yearDayPart}`
