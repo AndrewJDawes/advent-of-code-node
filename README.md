@@ -9,7 +9,7 @@
     -   So if your file was named `34.ts`, name your spec file `34.spec.ts`
 -   Write your unit tests
 -   Run `mocha` and use the `-f` filter to run only your test (by name)
-    -   Example: `node_modules/mocha/bin/mocha.js  -f 'Solution 20151'`
+    -   Example: `node_modules/mocha/bin/mocha.js  -f 'Solution20165b'`
 -   Add your Solution class to: `FromConfig` factory
 -   Add the Problem Input data to a config file - such as: `data/config/andrew.json`
 -   View your results:
