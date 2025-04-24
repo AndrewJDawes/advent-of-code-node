@@ -1,6 +1,14 @@
 import assert from 'assert';
 import md5 from 'md5';
 
+/*
+TODO: Because we can't overwrite previously found results (same index), we have to
+- Track pending/outstanding iterations/requests to workers at parent level
+- Respond with start/end to the parent level (or just the counter at which result was found)
+- Wait at the parent level until all pending/oustanding iterations have died down
+- Reconcile at the parent level, always favoring the earlier start/end
+*/
+
 import {
     Worker,
     MessageChannel,
