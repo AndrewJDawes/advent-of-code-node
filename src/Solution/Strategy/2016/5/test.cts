@@ -23,29 +23,27 @@ interface State {
 const input = 'ugkcyxxp';
 const outputLength = 8;
 const batchSize = 50000;
+const workerCount = 8;
 
 if (isMainThread) {
     console.time();
-    const worker1 = new Worker(__filename);
-    const worker2 = new Worker(__filename);
+    const workers: Worker[] = [];
+    for (let i = 0; i < workerCount; i++) {
+        workers.push(new Worker(__filename));
+    }
     const state: State = {
         requests: 0,
         counter: 0,
         results: new Map(),
     };
-
-    worker1.on('message', (message) =>
-        parentHandleMessage(message, state, worker1)
-    );
-    worker2.on('message', (message) =>
-        parentHandleMessage(message, state, worker2)
-    ); // send it through the pre-existing global channel
-    worker1.postMessage({ eventType: 'AssignPort' });
-    worker2.postMessage({ eventType: 'AssignPort' });
-
-    // while (passwordArray.includes(null)) {
-
-    // }
+    workers.forEach((worker) => {
+        worker.on('message', (message) =>
+            parentHandleMessage(message, state, worker)
+        );
+    });
+    workers.forEach((worker) => {
+        worker.postMessage({ eventType: 'AssignPort' });
+    });
 } else if (parentPort) {
     // receive the custom channel info from the parent thread
     parentPort.on('message', (message) => {
