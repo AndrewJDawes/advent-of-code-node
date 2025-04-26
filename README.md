@@ -8,8 +8,8 @@
 -   Create a mocha test file adjacent to it, with the same name as the file you created, but with `.spec.ts` extension
     -   So if your file was named `34.ts`, name your spec file `34.spec.ts`
 -   Write your unit tests
--   Run `mocha` and use the `-f` filter to run only your test (by name)
-    -   Example: `node_modules/mocha/bin/mocha.js  -f 'Solution20165b'`
+-   Run `npm run test` and use the `-f` filter to run only your test (by name)
+    -   Example: `npm run test -- --args  -f '20165b'`
 -   Add your Solution class to: `FromConfig` factory
 -   Add the Problem Input data to a config file - such as: `data/config/andrew.json`
 -   View your results:

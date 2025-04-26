@@ -8,5 +8,6 @@
         "outDir": "dist"
     },
     "include": ["src/**/*"],
-    "exclude": ["src/**/*.spec.ts"]
+    // Use "transpile then test" to avoid module resolution issues
+    // "exclude": ["src/**/*.spec.ts"]
 }
