@@ -32,7 +32,7 @@ class Solution implements InterfaceSolutionStrategy {
             inputArray.push(line);
         }
         const input = inputArray.join('');
-        return await solve(input, 8, 50000, 8);
+        return await solve(input, 8, 100000, 8);
     }
     async solveNaive() {
         const inputArray: string[] = [];
