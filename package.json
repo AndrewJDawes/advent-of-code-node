@@ -7,7 +7,7 @@
     "scripts": {
         "build": "tsc",
         "dev": "nodemon --watch './src/*' -e ts,js --exec 'npm run build'",
-        "test": "mocha",
+        "test": "npm run build; ./node_modules/mocha/bin/mocha.js",
         "prod": "npm run build && node ./dist/index.js",
         "solve": "node ./dist/index.js"
     },
