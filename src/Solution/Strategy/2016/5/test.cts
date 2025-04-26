@@ -1,6 +1,8 @@
 import assert from 'assert';
+import { resolveCaa } from 'dns';
 import md5 from 'md5';
-import { exit } from 'process';
+import { Worker, isMainThread, parentPort } from 'worker_threads';
+
 /*
 TODO: Because we can't overwrite previously found results (same index), we have to
 - Track pending/outstanding iterations/requests to workers at parent level
@@ -9,7 +11,6 @@ TODO: Because we can't overwrite previously found results (same index), we have 
 - Reconcile at the parent level, always favoring the earlier start/end
 */
 
-import { Worker, isMainThread, parentPort } from 'worker_threads';
 interface Result {
     counter: number;
     value: string;
@@ -20,79 +21,103 @@ interface State {
     counter: number;
     results: ResultsMap;
 }
-const input = 'ugkcyxxp';
-const outputLength = 8;
-const batchSize = 50000;
-const workerCount = 8;
-
-if (isMainThread) {
-    console.time();
-    const workers: Worker[] = [];
-    for (let i = 0; i < workerCount; i++) {
-        workers.push(new Worker(__filename));
-    }
-    const state: State = {
-        requests: 0,
-        counter: 0,
-        results: new Map(),
-    };
-    workers.forEach((worker) => {
-        worker.on('message', (message) =>
-            parentHandleMessage(message, state, worker)
-        );
-    });
-    workers.forEach((worker) => {
-        worker.postMessage({ eventType: 'AssignPort' });
-    });
-} else if (parentPort) {
-    // receive the custom channel info from the parent thread
-    parentPort.on('message', (message) => {
-        switch (message?.eventType) {
-            case 'AssignPort':
-                parentPort?.postMessage({
-                    eventType: 'AssignedPort',
-                });
-                break;
-            case 'AssignWork':
-                const results = solveFromStartToEndOrMinResults(
-                    message.data.input,
-                    message.data.start,
-                    message.data.end,
-                    message.data.minResults
+// const input = 'ugkcyxxp';
+// const outputLength = 8;
+// const batchSize = 50000;
+// const workerCount = 8;
+export function solve(
+    input: string,
+    outputLength: number,
+    batchSize: number,
+    workerCount: number
+) {
+    return new Promise((resolve, reject) => {
+        if (isMainThread) {
+            console.time();
+            const workers: Worker[] = [];
+            for (let i = 0; i < workerCount; i++) {
+                workers.push(new Worker(__filename));
+            }
+            const state: State = {
+                requests: 0,
+                counter: 0,
+                results: new Map(),
+            };
+            workers.forEach((worker) => {
+                worker.on('message', (message) =>
+                    parentHandleMessage(
+                        message,
+                        state,
+                        input,
+                        batchSize,
+                        outputLength,
+                        worker,
+                        resolve,
+                        reject
+                    )
                 );
-                parentPort?.postMessage({
-                    eventType: 'CompletedWork',
-                    data: {
-                        results,
-                    },
-                });
-                break;
-            default:
-                console.error(`Unknown Message Received by Worker: ${message}`);
+            });
+            workers.forEach((worker) => {
+                worker.postMessage({ eventType: 'AssignPort' });
+            });
+        } else if (parentPort) {
+            // receive the custom channel info from the parent thread
+            parentPort.on('message', (message) => {
+                switch (message?.eventType) {
+                    case 'AssignPort':
+                        parentPort?.postMessage({
+                            eventType: 'AssignedPort',
+                        });
+                        break;
+                    case 'AssignWork':
+                        const results = solveFromStartToEndOrMinResults(
+                            message.data.input,
+                            message.data.start,
+                            message.data.end,
+                            message.data.minResults
+                        );
+                        parentPort?.postMessage({
+                            eventType: 'CompletedWork',
+                            data: {
+                                results,
+                            },
+                        });
+                        break;
+                    default:
+                        console.error(
+                            `Unknown Message Received by Worker: ${message}`
+                        );
+                }
+            });
         }
     });
 }
 
-function parentHandleMessage(message: any, state: State, worker: Worker) {
+function parentHandleMessage(
+    message: any,
+    state: State,
+    input: string,
+    batchSize: number,
+    outputLength: number,
+    worker: Worker,
+    resolve: (value: unknown) => void,
+    reject: (reason?: any) => void
+) {
     switch (message?.eventType) {
         case 'AssignedPort':
-            if (!areEnoughResults(state)) {
-                assignWork(state, worker);
+            if (!areEnoughResults(state, outputLength)) {
+                assignWork(state, input, batchSize, outputLength, worker);
             }
             break;
         case 'CompletedWork':
             reconcileWork(state, message.data.results);
-            if (areEnoughResults(state)) {
+            if (areEnoughResults(state, outputLength)) {
                 if (!areOutstandingRequests(state)) {
-                    console.log({
-                        answer: formatResults(state.results),
-                    });
-                    console.timeEnd();
-                    exit();
+                    resolve(formatResults(state.results));
                 }
                 // wait for the requests to process
             } else {
-                assignWork(state, worker);
+                assignWork(state, input, batchSize, outputLength, worker);
             }
             break;
         default:
@@ -116,7 +141,7 @@ function reconcileWork(state: State, newResults: ResultsMap) {
     }
 }
 
-function getRemainingPositions(results: ResultsMap) {
+function getRemainingPositions(results: ResultsMap, outputLength: number) {
     const remainingPositions: number[] = [];
     for (let i = 0; i < outputLength; i++) {
         if (!results.has(i)) {
@@ -133,14 +158,20 @@ function areOutstandingRequests(state: State) {
     return false;
 }
 
-function areEnoughResults(state: State) {
-    if (getRemainingPositions(state.results).length) {
+function areEnoughResults(state: State, outputLength: number) {
+    if (getRemainingPositions(state.results, outputLength).length) {
         return false;
     }
     return true;
 }
 
-function assignWork(state: State, worker: Worker) {
+function assignWork(
+    state: State,
+    input: string,
+    batchSize: number,
+    outputLength: number,
+    worker: Worker
+) {
     const oldStateCounter = state.counter;
     state.counter += batchSize;
     worker.postMessage({
@@ -149,7 +180,8 @@ function assignWork(state: State, worker: Worker) {
             input,
             start: oldStateCounter + 1,
             end: state.counter,
-            minResults: getRemainingPositions(state.results).length,
+            minResults: getRemainingPositions(state.results, outputLength)
+                .length,
         },
     });
     state.requests++;
