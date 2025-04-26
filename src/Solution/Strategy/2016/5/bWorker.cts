@@ -1,16 +1,5 @@
-import assert from 'assert';
-import { resolveCaa } from 'dns';
 import md5 from 'md5';
 import { Worker, isMainThread, parentPort } from 'worker_threads';
-
-/*
-TODO: Because we can't overwrite previously found results (same index), we have to
-- Track pending/outstanding iterations/requests to workers at parent level
-- Respond with start/end to the parent level (or just the counter at which result was found)
-- Wait at the parent level until all pending/oustanding iterations have died down
-- Reconcile at the parent level, always favoring the earlier start/end
-*/
-
 interface Result {
     counter: number;
     value: string;
@@ -21,16 +10,12 @@ interface State {
     counter: number;
     results: ResultsMap;
 }
-// const input = 'ugkcyxxp';
-// const outputLength = 8;
-// const batchSize = 50000;
-// const workerCount = 8;
 export function solve(
     input: string,
     outputLength: number,
     batchSize: number,
     workerCount: number
-) {
+): Promise<string> {
     return new Promise((resolve, reject) => {
         if (isMainThread) {
             console.time();
@@ -63,31 +48,7 @@ export function solve(
         } else if (parentPort) {
             // receive the custom channel info from the parent thread
             parentPort.on('message', (message) => {
-                switch (message?.eventType) {
-                    case 'AssignPort':
-                        parentPort?.postMessage({
-                            eventType: 'AssignedPort',
-                        });
-                        break;
-                    case 'AssignWork':
-                        const results = solveFromStartToEndOrMinResults(
-                            message.data.input,
-                            message.data.start,
-                            message.data.end,
-                            message.data.minResults
-                        );
-                        parentPort?.postMessage({
-                            eventType: 'CompletedWork',
-                            data: {
-                                results,
-                            },
-                        });
-                        break;
-                    default:
-                        console.error(
-                            `Unknown Message Received by Worker: ${message}`
-                        );
-                }
+                childHandleMessage(message);
             });
         }
     });
@@ -100,19 +61,19 @@ function parentHandleMessage(
     batchSize: number,
     outputLength: number,
     worker: Worker,
-    resolve: (value: unknown) => void,
+    resolve: (value: string) => void,
     reject: (reason?: any) => void
 ) {
     switch (message?.eventType) {
         case 'AssignedPort':
-            if (!areEnoughResults(state, outputLength)) {
+            if (!areEnoughResults(state.results, outputLength)) {
                 assignWork(state, input, batchSize, outputLength, worker);
             }
             break;
         case 'CompletedWork':
             reconcileWork(state, message.data.results);
-            if (areEnoughResults(state, outputLength)) {
-                if (!areOutstandingRequests(state)) {
+            if (areEnoughResults(state.results, outputLength)) {
+                if (state.requests <= 0) {
                     resolve(formatResults(state.results));
                 }
                 // wait for the requests to process
@@ -125,44 +86,30 @@ function parentHandleMessage(
     }
 }
 
-function formatResults(results: ResultsMap) {
-    return [...results.entries()]
-        .sort((a, b) => {
-            return a[0] - b[0];
-        })
-        .map((item) => item[1].value)
-        .join('');
-}
-
-function reconcileWork(state: State, newResults: ResultsMap) {
-    state.requests--;
-    for (const [position, result] of newResults.entries()) {
-        addItemToResults(state.results, position, result);
+function childHandleMessage(message: any) {
+    switch (message?.eventType) {
+        case 'AssignPort':
+            parentPort?.postMessage({
+                eventType: 'AssignedPort',
+            });
+            break;
+        case 'AssignWork':
+            const results = solveFromStartToEndOrMinResults(
+                message.data.input,
+                message.data.start,
+                message.data.end,
+                message.data.minResults
+            );
+            parentPort?.postMessage({
+                eventType: 'CompletedWork',
+                data: {
+                    results,
+                },
+            });
+            break;
+        default:
+            console.error(`Unknown Message Received by Worker: ${message}`);
     }
-}
-
-function getRemainingPositions(results: ResultsMap, outputLength: number) {
-    const remainingPositions: number[] = [];
-    for (let i = 0; i < outputLength; i++) {
-        if (!results.has(i)) {
-            remainingPositions.push(i);
-        }
-    }
-    return remainingPositions;
-}
-
-function areOutstandingRequests(state: State) {
-    if (state.requests > 0) {
-        return true;
-    }
-    return false;
-}
-
-function areEnoughResults(state: State, outputLength: number) {
-    if (getRemainingPositions(state.results, outputLength).length) {
-        return false;
-    }
-    return true;
 }
 
 function assignWork(
@@ -185,6 +132,29 @@ function assignWork(
         },
     });
     state.requests++;
+}
+
+function reconcileWork(state: State, newResults: ResultsMap) {
+    state.requests--;
+    for (const [position, result] of newResults.entries()) {
+        addItemToResults(state.results, position, result);
+    }
+}
+
+function getRemainingPositions(results: ResultsMap, outputLength: number) {
+    const remainingPositions: number[] = [];
+    for (let i = 0; i < outputLength; i++) {
+        if (!results.has(i)) {
+            remainingPositions.push(i);
+        }
+    }
+    return remainingPositions;
+}
+function areEnoughResults(results: ResultsMap, outputLength: number) {
+    if (getRemainingPositions(results, outputLength).length) {
+        return false;
+    }
+    return true;
 }
 
 function solveFromStartToEndOrMinResults(
@@ -226,4 +196,13 @@ function addItemToResults(
         resultsMap.set(position, result);
     }
     return resultsMap;
+}
+
+function formatResults(results: ResultsMap) {
+    return [...results.entries()]
+        .sort((a, b) => {
+            return a[0] - b[0];
+        })
+        .map((item) => item[1].value)
+        .join('');
 }
