@@ -1,4 +1,4 @@
-import { Worker, isMainThread, parentPort } from 'worker_threads';
+import { Worker, isMainThread } from 'worker_threads';
 import { addItemToResults } from './bCommon.js';
 import { ResultsMap, State } from './bInterfaces.js';
 import { fileURLToPath } from 'url';
@@ -15,7 +15,6 @@ export function solve(
     workerCount: number
 ): Promise<string> {
     return new Promise((resolve, reject) => {
-        console.time('bWorker');
         if (isMainThread) {
             const workers: Worker[] = [];
             for (let i = 0; i < workerCount; i++) {
@@ -35,6 +34,7 @@ export function solve(
                         batchSize,
                         outputLength,
                         worker,
+                        workers,
                         resolve,
                         reject
                     )
@@ -54,6 +54,7 @@ function parentHandleMessage(
     batchSize: number,
     outputLength: number,
     worker: Worker,
+    workers: Worker[],
     resolve: (value: string) => void,
     reject: (reason?: any) => void
 ) {
@@ -67,7 +68,9 @@ function parentHandleMessage(
             reconcileWork(state, message.data.results);
             if (areEnoughResults(state.results, outputLength)) {
                 if (state.requests <= 0) {
-                    console.timeEnd('bWorker');
+                    workers.forEach((worker) => {
+                        worker.terminate();
+                    });
                     resolve(formatResults(state.results));
                 }
                 // wait for the requests to process
