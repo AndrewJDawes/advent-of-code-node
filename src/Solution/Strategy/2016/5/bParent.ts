@@ -1,15 +1,13 @@
-import md5 from 'md5';
 import { Worker, isMainThread, parentPort } from 'worker_threads';
-interface Result {
-    counter: number;
-    value: string;
-}
-type ResultsMap = Map<number, Result>;
-interface State {
-    requests: number;
-    counter: number;
-    results: ResultsMap;
-}
+import { addItemToResults } from './bCommon.js';
+import { ResultsMap, State } from './bInterfaces.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 export function solve(
     input: string,
     outputLength: number,
@@ -17,11 +15,11 @@ export function solve(
     workerCount: number
 ): Promise<string> {
     return new Promise((resolve, reject) => {
+        console.time('bWorker');
         if (isMainThread) {
-            console.time();
             const workers: Worker[] = [];
             for (let i = 0; i < workerCount; i++) {
-                workers.push(new Worker(__filename));
+                workers.push(new Worker(path.join(__dirname, 'bWorker.js')));
             }
             const state: State = {
                 requests: 0,
@@ -44,11 +42,6 @@ export function solve(
             });
             workers.forEach((worker) => {
                 worker.postMessage({ eventType: 'AssignPort' });
-            });
-        } else if (parentPort) {
-            // receive the custom channel info from the parent thread
-            parentPort.on('message', (message) => {
-                childHandleMessage(message);
             });
         }
     });
@@ -74,6 +67,7 @@ function parentHandleMessage(
             reconcileWork(state, message.data.results);
             if (areEnoughResults(state.results, outputLength)) {
                 if (state.requests <= 0) {
+                    console.timeEnd('bWorker');
                     resolve(formatResults(state.results));
                 }
                 // wait for the requests to process
@@ -83,32 +77,6 @@ function parentHandleMessage(
             break;
         default:
             break;
-    }
-}
-
-function childHandleMessage(message: any) {
-    switch (message?.eventType) {
-        case 'AssignPort':
-            parentPort?.postMessage({
-                eventType: 'AssignedPort',
-            });
-            break;
-        case 'AssignWork':
-            const results = solveFromStartToEndOrMinResults(
-                message.data.input,
-                message.data.start,
-                message.data.end,
-                message.data.minResults
-            );
-            parentPort?.postMessage({
-                eventType: 'CompletedWork',
-                data: {
-                    results,
-                },
-            });
-            break;
-        default:
-            console.error(`Unknown Message Received by Worker: ${message}`);
     }
 }
 
@@ -155,47 +123,6 @@ function areEnoughResults(results: ResultsMap, outputLength: number) {
         return false;
     }
     return true;
-}
-
-function solveFromStartToEndOrMinResults(
-    input: string,
-    start: number,
-    end: number,
-    minResults: number
-) {
-    let counter = start;
-    let resultsMap: ResultsMap = new Map();
-    const pattern = /^[0]{5}([0-7])(.).{25}$/;
-    while (counter < end && [...resultsMap.keys()].length < minResults) {
-        const hashInput = `${input}${counter.toString()}`;
-        const hash = md5(hashInput);
-        const matches = hash.match(pattern);
-        if (matches) {
-            if (undefined !== matches[1] && undefined !== matches[2]) {
-                const position = parseInt(matches[1]);
-                const value = matches[2];
-                addItemToResults(resultsMap, position, { counter, value });
-            }
-        }
-        counter++;
-    }
-    return resultsMap;
-}
-
-function addItemToResults(
-    resultsMap: ResultsMap,
-    position: number,
-    result: Result
-) {
-    const existingResult = resultsMap.get(position);
-    if (
-        undefined === existingResult ||
-        (undefined !== existingResult &&
-            result.counter < existingResult.counter)
-    ) {
-        resultsMap.set(position, result);
-    }
-    return resultsMap;
 }
 
 function formatResults(results: ResultsMap) {
