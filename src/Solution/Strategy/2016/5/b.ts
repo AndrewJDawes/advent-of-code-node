@@ -34,32 +34,5 @@ class Solution implements InterfaceSolutionStrategy {
         const input = inputArray.join('');
         return await solve(input, 8, 100000, 8);
     }
-    async solveNaive() {
-        const inputArray: string[] = [];
-        const iterator = await this.inputFetcher.getAsyncIterator();
-        for await (let line of iterator) {
-            inputArray.push(line);
-        }
-        const input = inputArray.join('');
-        let counter = 0;
-        let passwordArray: (string | null)[] = Array(8).fill(null);
-        const pattern = /^[0]{5}([0-7])(.).{25}$/;
-        while (passwordArray.includes(null)) {
-            const hashInput = `${input}${counter.toString()}`;
-            const hash = md5(hashInput);
-            const matches = hash.match(pattern);
-            if (matches) {
-                if (undefined !== matches[1] && undefined !== matches[2]) {
-                    const position = parseInt(matches[1]);
-                    const char = matches[2];
-                    if (null === passwordArray[position]) {
-                        passwordArray[position] = char;
-                    }
-                }
-            }
-            counter++;
-        }
-        return passwordArray.join('');
-    }
 }
 export default Solution;
