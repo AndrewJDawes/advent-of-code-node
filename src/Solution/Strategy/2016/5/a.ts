@@ -1,6 +1,7 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
 import md5 from 'md5';
+import { solve } from './aParent.js';
 /*
 --- Day 5: How About a Nice Game of Chess? ---
 You are faced with a security door designed by Easter Bunny engineers that seem to have acquired most of their security knowledge by watching hacking movies.
@@ -31,22 +32,7 @@ class Solution implements InterfaceSolutionStrategy {
             inputArray.push(line);
         }
         const input = inputArray.join('');
-        let counter = 0;
-        let passwordArray: string[] = [];
-        const pattern = /^[0]{5}(.).{26}$/;
-        while (passwordArray.length < 8) {
-            const hashInput = `${input}${counter.toString()}`;
-            const hash = md5(hashInput);
-            const matches = hash.match(pattern);
-            if (matches) {
-                const match = matches.pop();
-                if (match) {
-                    passwordArray.push(match[0]);
-                }
-            }
-            counter++;
-        }
-        return passwordArray.join('');
+        return await solve(input, 8, 100000, 8);
     }
 }
 export default Solution;
