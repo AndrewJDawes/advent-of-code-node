@@ -41,8 +41,8 @@ export class PositionalFrequencyCounter<T> implements Iterable<Map<T, number>> {
         return {
             next(): IteratorResult<Map<T, number>, Map<T, number> | undefined> {
                 index++;
-                const done = !(index < values.length - 1);
-                const value = index < values.length ? values[index] : undefined;
+                const done = !(index < values.length);
+                const value = done ? undefined : values[index];
                 if (done) {
                     const result: IteratorReturnResult<
                         Map<T, number> | undefined

@@ -1,6 +1,5 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
-import C1 from '../../../../Library/Input/Transformer/ColumnToRow/C1.js';
 import { PositionalFrequencyCounter } from './Common.js';
 /*
 --- Day 3: Squares With Three Sides ---
