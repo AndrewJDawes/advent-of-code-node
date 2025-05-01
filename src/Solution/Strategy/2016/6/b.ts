@@ -1,6 +1,7 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
 import C1 from '../../../../Library/Input/Transformer/ColumnToRow/C1.js';
+import { PositionalFrequencyCounter } from './Common.js';
 /*
 --- Day 3: Squares With Three Sides ---
 Now that you can think clearly, you move deeper into the labyrinth of hallways and office furniture that makes up this part of Easter Bunny HQ. This must be a graphic design department; the walls are covered in specifications for triangles.
@@ -21,35 +22,15 @@ class Solution implements InterfaceSolutionStrategy {
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
-        const counts: Map<string, number>[] = [];
+        const counter = new PositionalFrequencyCounter();
         for await (let line of iterator) {
             const row = line.trim().split('');
             row.forEach((cell, index) => {
-                let columnMap: Map<string, number>;
-                const existingColumnMap = counts[index];
-                if (undefined === existingColumnMap) {
-                    columnMap = new Map();
-                    counts[index] = columnMap;
-                } else {
-                    columnMap = existingColumnMap;
-                }
-                const existingCount = columnMap.get(cell);
-                if (undefined === existingCount) {
-                    columnMap.set(cell, 0);
-                } else {
-                    columnMap.set(cell, existingCount + 1);
-                }
+                counter.add(index, cell);
             });
         }
-        return counts
-            .map((columnMap) => {
-                const sorted = [...columnMap.entries()].sort(
-                    ([aChar, aCount], [bChar, bCount]) => {
-                        return bCount - aCount;
-                    }
-                );
-                return sorted[sorted.length - 1][0];
-            })
+        return [...counter]
+            .map(PositionalFrequencyCounter.getLeastFrequent)
             .join('');
     }
 }

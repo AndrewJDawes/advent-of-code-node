@@ -3,9 +3,38 @@ export class PositionalFrequencyCounter<T> implements Iterable<Map<T, number>> {
     constructor() {
         this.mapArr = [];
     }
-    add(index: number, value: T) {}
-    getMostFrequent(index: number) {}
-    getLeastFrequent(index: number) {}
+    add(index: number, value: T) {
+        let map: Map<T, number>;
+        const existingMap = this.mapArr[index];
+        if (undefined === existingMap) {
+            map = new Map();
+            this.mapArr[index] = map;
+        } else {
+            map = existingMap;
+        }
+        const existingCount = map.get(value);
+        if (undefined === existingCount) {
+            map.set(value, 0);
+        } else {
+            map.set(value, existingCount + 1);
+        }
+    }
+    static getMostFrequent<T>(map: Map<T, number>) {
+        const sorted = [...map.entries()].sort(
+            ([aChar, aCount], [bChar, bCount]) => {
+                return aCount - bCount;
+            }
+        );
+        return sorted[sorted.length - 1][0];
+    }
+    static getLeastFrequent<T>(map: Map<T, number>) {
+        const sorted = [...map.entries()].sort(
+            ([aChar, aCount], [bChar, bCount]) => {
+                return bCount - aCount;
+            }
+        );
+        return sorted[sorted.length - 1][0];
+    }
     [Symbol.iterator](): Iterator<Map<T, number>, Map<T, number> | undefined> {
         const values = [...this.mapArr];
         let index = -1;
