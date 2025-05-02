@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import C1 from './C1.js';
 describe('CounterFrequencyPositional C1', () => {
-    it('adds and iterate elements', () => {
+    it('adds and iterates elements', () => {
         const counter = new C1<string>();
         counter.add(0, 'a');
         counter.add(0, 'b');
