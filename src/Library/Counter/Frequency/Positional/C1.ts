@@ -1,4 +1,6 @@
-export class PositionalFrequencyCounter<T> implements Iterable<Map<T, number>> {
+import { CounterFrequencyPositional } from '../Interfaces.js';
+
+export default class C1<T> implements CounterFrequencyPositional<T> {
     public mapArr: Map<T, number>[];
     constructor() {
         this.mapArr = [];
