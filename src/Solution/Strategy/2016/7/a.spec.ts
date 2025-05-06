@@ -1,29 +1,19 @@
 import { expect } from 'chai';
 import StringArray from '../../../../InputFetcher/Service/StringArray.js';
-import Solution20166a from './a.js';
-describe('Solution20166a', () => {
+import Solution20167a from './a.js';
+describe('Solution20167a', () => {
     describe('solve', () => {
-        it('interprets eedadn\ndrvtee\neandsr\nraavrd\natevrs\ntsrnev\nsdttsa\nrasrtv\nnssdts\nntnada\nsvetve\ntesnvt\nvntsnd\nvrdear\ndvrsen\nenarar as easter', async () => {
+        it('interprets abba[mnop]qrst\nabcd[bddb]xyyx\naaaaa[qwer]tyui\nioxxoj[asdfgh]zxcvbn\nioxxoj[asdfgh]zxcvbnnbsfs\nioxxoj[abba]zxcvbnnbsfs\n as 3', async () => {
             const input = new StringArray([
-                'eedadn',
-                'drvtee',
-                'eandsr',
-                'raavrd',
-                'atevrs',
-                'tsrnev',
-                'sdttsa',
-                'rasrtv',
-                'nssdts',
-                'ntnada',
-                'svetve',
-                'tesnvt',
-                'vntsnd',
-                'vrdear',
-                'dvrsen',
-                'enarar',
+                'abba[mnop]qrst',
+                'abcd[bddb]xyyx',
+                'aaaaa[qwer]tyui',
+                'ioxxoj[asdfgh]zxcvbn',
+                'ioxxoj[asdfgh]zxcvbnnbsfs',
+                'ioxxoj[abba]zxcvbnnbsfs',
             ]);
-            const solution = await new Solution20166a(input).solve();
-            expect(solution).to.equal('easter');
+            const solution = await new Solution20167a(input).solve();
+            expect(solution).to.equal('3');
         });
     });
 });
