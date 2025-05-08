@@ -1,6 +1,6 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
-import { AutonomousBridgeBypassAnnotationCounter } from './common.js';
+import { ProtocolValidatorTLS } from './common.js';
 /*
 --- Day 3: Squares With Three Sides ---
 Now that you can think clearly, you move deeper into the labyrinth of hallways and office furniture that makes up this part of Easter Bunny HQ. This must be a graphic design department; the walls are covered in specifications for triangles.
@@ -24,14 +24,16 @@ class Solution implements InterfaceSolutionStrategy {
         const iterator = await this.inputFetcher.getAsyncIterator();
         for await (let line of iterator) {
             const address = line.trim().split('');
-            const counter = new AutonomousBridgeBypassAnnotationCounter();
+            const counter = new ProtocolValidatorTLS();
+            let supports: boolean = false;
             for (const character of address) {
                 counter.add(character);
-                if (counter.getInsideHypernetCount() > 0) {
+                if (true === supports && false === counter.isValid()) {
                     break;
                 }
+                supports = counter.isValid();
             }
-            if (counter.supportsABBAProtocol()) {
+            if (counter.isValid()) {
                 count++;
             }
         }

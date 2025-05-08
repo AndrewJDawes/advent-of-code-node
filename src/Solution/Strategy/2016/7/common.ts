@@ -1,4 +1,9 @@
-export class AutonomousBridgeBypassAnnotationCounter {
+export interface ProtocolValidator {
+    add(character: string): void;
+    isValid(): boolean;
+}
+
+export class ProtocolValidatorTLS implements ProtocolValidator {
     private outsideHypernetCount: number;
     private insideHypernetCount: number;
     private window: string[];
@@ -9,17 +14,8 @@ export class AutonomousBridgeBypassAnnotationCounter {
         this.window = [];
         this.isHypernetSequence = false;
     }
-    public supportsABBAProtocol() {
-        return (
-            this.getOutsideHypernetCount() > 0 &&
-            this.getInsideHypernetCount() < 1
-        );
-    }
-    public getOutsideHypernetCount() {
-        return this.outsideHypernetCount;
-    }
-    public getInsideHypernetCount() {
-        return this.insideHypernetCount;
+    public isValid() {
+        return this.outsideHypernetCount > 0 && this.insideHypernetCount < 1;
     }
     public add(character: string) {
         if (!this.isHypernetSequence && character === '[') {
@@ -50,7 +46,7 @@ export class AutonomousBridgeBypassAnnotationCounter {
     }
 }
 
-export class ProtocolValidatorSSL {
+export class ProtocolValidatorSSL implements ProtocolValidator {
     private abaSequencesNormalized: Set<string>;
     private babSequencesNormalized: Set<string>;
     private intersectingNormalizedSequences: Set<string>;
