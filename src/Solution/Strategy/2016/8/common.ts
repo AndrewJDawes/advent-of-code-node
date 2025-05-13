@@ -85,44 +85,37 @@ export class Controller<T, B> {
             }
         }
     }
-    rotateColumn(x: number, factor: number) {
-        for (let i = 0; i < factor; i++) {
-            let itemInFlight = this.pixelatedDisplay.get(
-                x,
-                this.pixelatedDisplay.getHeight() - 1
-            );
-            for (
-                let toReplaceIndexY = 0;
-                toReplaceIndexY < this.pixelatedDisplay.getHeight();
-                toReplaceIndexY++
-            ) {
-                let newItemInFlight = this.pixelatedDisplay.get(
-                    x,
-                    toReplaceIndexY
-                );
-                this.pixelatedDisplay.set(x, toReplaceIndexY, itemInFlight);
-                itemInFlight = newItemInFlight;
-            }
+    rotateColumn(x: number, degree: number) {
+        let itemInFlight = this.pixelatedDisplay.get(x, 0);
+        for (let i = 0; i < this.pixelatedDisplay.getHeight(); i++) {
+            const replaceWithIndex =
+                (i * degree) % this.pixelatedDisplay.getHeight();
+            const toReplaceIndex =
+                (replaceWithIndex + degree) % this.pixelatedDisplay.getHeight();
+            let newItemInFlight = this.pixelatedDisplay.get(x, toReplaceIndex);
+            this.pixelatedDisplay.set(x, toReplaceIndex, itemInFlight);
+            itemInFlight = newItemInFlight;
         }
     }
-    rotateRow(y: number, factor: number) {
-        for (let i = 0; i < factor; i++) {
-            let itemInFlight = this.pixelatedDisplay.get(
-                this.pixelatedDisplay.getWidth() - 1,
-                y
-            );
-            for (
-                let toReplaceIndexX = 0;
-                toReplaceIndexX < this.pixelatedDisplay.getWidth();
-                toReplaceIndexX++
-            ) {
-                let newItemInFlight = this.pixelatedDisplay.get(
-                    toReplaceIndexX,
-                    y
-                );
-                this.pixelatedDisplay.set(toReplaceIndexX, y, itemInFlight);
-                itemInFlight = newItemInFlight;
-            }
+    /*
+    0,1,2,3,4,5,6
+    cache 0;
+    replaceWith -> toReplace
+    0 -> 3; cache 3
+    3 -> 6; cache 6
+    6 -> 2; cache 2
+    2 -> 5; cache 5;
+    */
+    rotateRow(y: number, degree: number) {
+        let itemInFlight = this.pixelatedDisplay.get(0, y);
+        for (let i = 0; i < this.pixelatedDisplay.getWidth(); i++) {
+            const replaceWithIndex =
+                (i * degree) % this.pixelatedDisplay.getWidth();
+            const toReplaceIndex =
+                (replaceWithIndex + degree) % this.pixelatedDisplay.getWidth();
+            let newItemInFlight = this.pixelatedDisplay.get(toReplaceIndex, y);
+            this.pixelatedDisplay.set(toReplaceIndex, y, itemInFlight);
+            itemInFlight = newItemInFlight;
         }
     }
 }
@@ -152,8 +145,8 @@ export class Display<T, B> {
     }
     print(printChar: string, printBlankChar: string) {
         let chars: string[] = [];
-        for (let x = 0; x < this.pixelatedDisplay.getWidth(); x++) {
-            for (let y = 0; y < this.pixelatedDisplay.getHeight(); y++) {
+        for (let y = 0; y < this.pixelatedDisplay.getHeight(); y++) {
+            for (let x = 0; x < this.pixelatedDisplay.getWidth(); x++) {
                 const char = this.pixelatedDisplay.get(x, y);
                 chars.push(
                     char === this.pixelatedDisplay.getBlank()
