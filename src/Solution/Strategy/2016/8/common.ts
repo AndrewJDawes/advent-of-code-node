@@ -85,18 +85,6 @@ export class Controller<T, B> {
             }
         }
     }
-    rotateColumn(x: number, degree: number) {
-        let itemInFlight = this.pixelatedDisplay.get(x, 0);
-        for (let i = 0; i < this.pixelatedDisplay.getHeight(); i++) {
-            const replaceWithIndex =
-                (i * degree) % this.pixelatedDisplay.getHeight();
-            const toReplaceIndex =
-                (replaceWithIndex + degree) % this.pixelatedDisplay.getHeight();
-            let newItemInFlight = this.pixelatedDisplay.get(x, toReplaceIndex);
-            this.pixelatedDisplay.set(x, toReplaceIndex, itemInFlight);
-            itemInFlight = newItemInFlight;
-        }
-    }
     /*
     0,1,2,3,4,5,6
     cache 0;
@@ -106,13 +94,36 @@ export class Controller<T, B> {
     6 -> 2; cache 2
     2 -> 5; cache 5;
     */
+    // Wrap Around: const rotated =(((normalizedCurrentCharCode + rotation) % range) + range) % range;
+    rotateColumn(x: number, degree: number) {
+        let itemInFlight = this.pixelatedDisplay.get(x, 0);
+        for (let i = 0; i < this.pixelatedDisplay.getHeight(); i++) {
+            const replaceWithIndex =
+                ((i * degree) % this.pixelatedDisplay.getHeight()) +
+                (this.pixelatedDisplay.getHeight() %
+                    this.pixelatedDisplay.getHeight());
+            const toReplaceIndex =
+                (((replaceWithIndex + degree) %
+                    this.pixelatedDisplay.getHeight()) +
+                    this.pixelatedDisplay.getHeight()) %
+                this.pixelatedDisplay.getHeight();
+            let newItemInFlight = this.pixelatedDisplay.get(x, toReplaceIndex);
+            this.pixelatedDisplay.set(x, toReplaceIndex, itemInFlight);
+            itemInFlight = newItemInFlight;
+        }
+    }
     rotateRow(y: number, degree: number) {
         let itemInFlight = this.pixelatedDisplay.get(0, y);
         for (let i = 0; i < this.pixelatedDisplay.getWidth(); i++) {
             const replaceWithIndex =
-                (i * degree) % this.pixelatedDisplay.getWidth();
+                ((i * degree) % this.pixelatedDisplay.getWidth()) +
+                (this.pixelatedDisplay.getWidth() %
+                    this.pixelatedDisplay.getWidth());
             const toReplaceIndex =
-                (replaceWithIndex + degree) % this.pixelatedDisplay.getWidth();
+                (((replaceWithIndex + degree) %
+                    this.pixelatedDisplay.getWidth()) +
+                    this.pixelatedDisplay.getWidth()) %
+                this.pixelatedDisplay.getWidth();
             let newItemInFlight = this.pixelatedDisplay.get(toReplaceIndex, y);
             this.pixelatedDisplay.set(toReplaceIndex, y, itemInFlight);
             itemInFlight = newItemInFlight;
@@ -144,18 +155,19 @@ export class Display<T, B> {
         this.pixelatedDisplay = pixelatedDisplay;
     }
     print(printChar: string, printBlankChar: string) {
-        let chars: string[] = [];
+        let chars: string[][] = [];
         for (let y = 0; y < this.pixelatedDisplay.getHeight(); y++) {
+            const row = [];
             for (let x = 0; x < this.pixelatedDisplay.getWidth(); x++) {
                 const char = this.pixelatedDisplay.get(x, y);
-                chars.push(
+                row.push(
                     char === this.pixelatedDisplay.getBlank()
                         ? printBlankChar
                         : printChar
                 );
             }
-            chars.push('\n');
+            chars.push(row);
         }
-        return chars.join('');
+        return chars.map((row) => row.join('')).join('\n');
     }
 }
