@@ -1,6 +1,8 @@
 import { expect } from 'chai';
-import { PixelMap, Controller, Display } from './common.js';
-describe('Controller', () => {
+import PixelMap from '../PixelMap/C1.js';
+import Controller from './C1.js';
+import Display from '../Display/C1.js';
+describe('Graphic BitMap PixelMap Controller C1', () => {
     it('draws a rect and rotates columns and rows a positive amount', () => {
         const pixelMap = new PixelMap<boolean, false>(7, 7, false);
         const controller = new Controller<boolean, false>(pixelMap);
