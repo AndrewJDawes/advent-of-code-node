@@ -17,3 +17,7 @@ export interface Display<T, B> {
 export interface Count<T, B> {
     count(): number;
 }
+
+export interface CommandParser<T, B> {
+    execute(commandString: string, char: T): void;
+}

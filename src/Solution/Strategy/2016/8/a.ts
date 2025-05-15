@@ -1,16 +1,43 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
 /*
---- Day 3: Squares With Three Sides ---
-Now that you can think clearly, you move deeper into the labyrinth of hallways and office furniture that makes up this part of Easter Bunny HQ. This must be a graphic design department; the walls are covered in specifications for triangles.
+--- Day 8: Two-Factor Authentication ---
+You come across a door implementing what you can only assume is an implementation of two-factor authentication after a long game of requirements telephone.
 
-Or are they?
+To get past the door, you first swipe a keycard (no problem; there was one on a nearby desk). Then, it displays a code on a little screen, and you type that code on a keypad. Then, presumably, the door unlocks.
 
-The design document gives the side lengths of each triangle it describes, but... 5 10 25? Some of these aren't triangles. You can't help but mark the impossible ones.
+Unfortunately, the screen has been smashed. After a few minutes, you've taken everything apart and figured out how it works. Now you just have to work out what the screen would have displayed.
 
-In a valid triangle, the sum of any two sides must be larger than the remaining side. For example, the "triangle" given above is impossible, because 5 + 10 is not larger than 25.
+The magnetic strip on the card you swiped encodes a series of instructions for the screen; these instructions are your puzzle input. The screen is 50 pixels wide and 6 pixels tall, all of which start off, and is capable of three somewhat peculiar operations:
 
-In your puzzle input, how many of the listed triangles are possible?
+rect AxB turns on all of the pixels in a rectangle at the top-left of the screen which is A wide and B tall.
+rotate row y=A by B shifts all of the pixels in row A (0 is the top row) right by B pixels. Pixels that would fall off the right end appear at the left end of the row.
+rotate column x=A by B shifts all of the pixels in column A (0 is the left column) down by B pixels. Pixels that would fall off the bottom appear at the top of the column.
+For example, here is a simple sequence on a smaller screen:
+
+rect 3x2 creates a small rectangle in the top-left corner:
+
+###....
+###....
+.......
+rotate column x=1 by 1 rotates the second column down by one pixel:
+
+#.#....
+###....
+.#.....
+rotate row y=0 by 4 rotates the top row right by four pixels:
+
+....#.#
+###....
+.#.....
+rotate column x=1 by 1 again rotates the second column down by one pixel, causing the bottom pixel to wrap back to the top:
+
+.#..#.#
+#.#....
+.#.....
+As you can see, this display technology is extremely powerful, and will soon dominate the tiny-code-displaying-screen market. That's what the advertisement on the back of the display tries to convince you, anyway.
+
+There seems to be an intermediate check of the voltage used by the display: after you swipe your card, if the screen did work, how many pixels should be lit?
 */
 
 class Solution implements InterfaceSolutionStrategy {
@@ -22,7 +49,8 @@ class Solution implements InterfaceSolutionStrategy {
         let count = 0;
         const iterator = await this.inputFetcher.getAsyncIterator();
         for await (let line of iterator) {
-            const address = line.trim().split('');
+            const command = line.trim().split('');
+            // TODO - parse the command
         }
         return count.toString();
     }
