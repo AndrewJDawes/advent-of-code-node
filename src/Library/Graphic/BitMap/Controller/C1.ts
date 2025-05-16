@@ -2,8 +2,8 @@ import { PixelMap, Controller as ControllerInterface } from '../Interfaces.js';
 
 export default class Controller<T, B> implements ControllerInterface<T, B> {
     private pixelMap: PixelMap<T, B>;
-    constructor(pixelatedDisplay: PixelMap<T, B>) {
-        this.pixelMap = pixelatedDisplay;
+    constructor(pixelMap: PixelMap<T, B>) {
+        this.pixelMap = pixelMap;
     }
     rect(x: number, y: number, width: number, height: number, value: T) {
         for (let xi = x; xi < x + width; xi++) {

@@ -1,17 +1,17 @@
 import { PixelMap, Display as DisplayInterface } from '../Interfaces.js';
 export default class Display<T, B> implements DisplayInterface<T, B> {
-    private pixelatedDisplay: PixelMap<T, B>;
-    constructor(pixelatedDisplay: PixelMap<T, B>) {
-        this.pixelatedDisplay = pixelatedDisplay;
+    private pixelMap: PixelMap<T, B>;
+    constructor(pixelMap: PixelMap<T, B>) {
+        this.pixelMap = pixelMap;
     }
     print(printChar: string, printBlankChar: string) {
         let chars: string[][] = [];
-        for (let y = 0; y < this.pixelatedDisplay.getHeight(); y++) {
+        for (let y = 0; y < this.pixelMap.getHeight(); y++) {
             const row = [];
-            for (let x = 0; x < this.pixelatedDisplay.getWidth(); x++) {
-                const char = this.pixelatedDisplay.get(x, y);
+            for (let x = 0; x < this.pixelMap.getWidth(); x++) {
+                const char = this.pixelMap.get(x, y);
                 row.push(
-                    char === this.pixelatedDisplay.getBlank()
+                    char === this.pixelMap.getBlank()
                         ? printBlankChar
                         : printChar
                 );
