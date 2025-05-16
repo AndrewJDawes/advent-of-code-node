@@ -19,5 +19,5 @@ export interface Count<T, B> {
 }
 
 export interface CommandParser<T, B> {
-    execute(commandString: string, char: T): void;
+    execute(commandString: string): void;
 }

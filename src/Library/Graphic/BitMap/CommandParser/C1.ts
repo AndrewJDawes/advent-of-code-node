@@ -6,10 +6,12 @@ export default class CommandParser<T, B>
     implements CommandParserInterface<T, B>
 {
     private controller: Controller<T, B>;
-    constructor(controller: Controller<T, B>) {
+    private value: T;
+    constructor(controller: Controller<T, B>, value: T) {
         this.controller = controller;
+        this.value = value;
     }
-    public execute(commandString: string, char: T) {
+    public execute(commandString: string) {
         const commandArray = commandString
             .split(/\s+/)
             .filter((word) => word !== '');
@@ -40,7 +42,7 @@ export default class CommandParser<T, B>
                         `Command rect requires numeric dimensions in format XxY. Received: ${dimensions}. commandString: ${commandString}`
                     );
                 }
-                this.controller.rect(0, 0, width, height, char);
+                this.controller.rect(0, 0, width, height, this.value);
                 break;
             }
             case 'rotate': {
