@@ -1,16 +1,16 @@
 import { PixelMap, Count as CountInterface } from '../Interfaces.js';
 
 export default class Count<T, B> implements CountInterface<T, B> {
-    private pixelatedDisplay: PixelMap<T, B>;
-    constructor(pixelatedDisplay: PixelMap<T, B>) {
-        this.pixelatedDisplay = pixelatedDisplay;
+    private pixelMap: PixelMap<T, B>;
+    constructor(pixelMap: PixelMap<T, B>) {
+        this.pixelMap = pixelMap;
     }
     count() {
         let count = 0;
-        for (let x = 0; x < this.pixelatedDisplay.getWidth(); x++) {
-            for (let y = 0; y < this.pixelatedDisplay.getHeight(); y++) {
-                const char = this.pixelatedDisplay.get(x, y);
-                if (char !== this.pixelatedDisplay.getBlank()) {
+        for (let x = 0; x < this.pixelMap.getWidth(); x++) {
+            for (let y = 0; y < this.pixelMap.getHeight(); y++) {
+                const char = this.pixelMap.get(x, y);
+                if (char !== this.pixelMap.getBlank()) {
                     count++;
                 }
             }
