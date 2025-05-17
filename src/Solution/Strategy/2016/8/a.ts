@@ -1,5 +1,10 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
+import CommandParser from '../../../../Library/Graphic/BitMap/CommandParser/C1.js';
+import Controller from '../../../../Library/Graphic/BitMap/Controller/C1.js';
+import PixelMap from '../../../../Library/Graphic/BitMap/PixelMap/C1.js';
+import Display from '../../../../Library/Graphic/BitMap/Display/C1.js';
+import Count from '../../../../Library/Graphic/BitMap/Count/C1.js';
 /*
 --- Day 8: Two-Factor Authentication ---
 You come across a door implementing what you can only assume is an implementation of two-factor authentication after a long game of requirements telephone.
@@ -46,13 +51,20 @@ class Solution implements InterfaceSolutionStrategy {
         this.inputFetcher = inputFetcher;
     }
     async solve() {
-        let count = 0;
         const iterator = await this.inputFetcher.getAsyncIterator();
+        const pixelMap = new PixelMap<boolean, null>(50, 6, null);
+        const controller = new Controller<boolean, null>(pixelMap);
+        const display = new Display(pixelMap);
+        const commandParser = new CommandParser<boolean, null>(
+            controller,
+            true
+        );
         for await (let line of iterator) {
-            const command = line.trim().split('');
-            // TODO - parse the command
+            const command = line.trim();
+            commandParser.execute(command);
         }
-        return count.toString();
+        const counter = new Count(pixelMap);
+        return counter.count().toString();
     }
 }
 export default Solution;

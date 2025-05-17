@@ -23,11 +23,10 @@ export default class Controller<T, B> implements ControllerInterface<T, B> {
     */
     // Wrap Around: const rotated =(((normalizedCurrentCharCode + rotation) % range) + range) % range;
     rotateColumn(x: number, degree: number) {
-        let itemInFlight = this.pixelMap.get(x, 0);
+        let loopStart = 0;
+        let replaceWithIndex = loopStart;
+        let itemInFlight = this.pixelMap.get(x, replaceWithIndex);
         for (let i = 0; i < this.pixelMap.getHeight(); i++) {
-            const replaceWithIndex =
-                ((i * degree) % this.pixelMap.getHeight()) +
-                (this.pixelMap.getHeight() % this.pixelMap.getHeight());
             const toReplaceIndex =
                 (((replaceWithIndex + degree) % this.pixelMap.getHeight()) +
                     this.pixelMap.getHeight()) %
@@ -35,14 +34,19 @@ export default class Controller<T, B> implements ControllerInterface<T, B> {
             let newItemInFlight = this.pixelMap.get(x, toReplaceIndex);
             this.pixelMap.set(x, toReplaceIndex, itemInFlight);
             itemInFlight = newItemInFlight;
+            replaceWithIndex = toReplaceIndex;
+            if (replaceWithIndex === loopStart) {
+                loopStart++;
+                replaceWithIndex = loopStart;
+                itemInFlight = this.pixelMap.get(x, replaceWithIndex);
+            }
         }
     }
     rotateRow(y: number, degree: number) {
-        let itemInFlight = this.pixelMap.get(0, y);
+        let loopStart = 0;
+        let replaceWithIndex = loopStart;
+        let itemInFlight = this.pixelMap.get(replaceWithIndex, y);
         for (let i = 0; i < this.pixelMap.getWidth(); i++) {
-            const replaceWithIndex =
-                ((i * degree) % this.pixelMap.getWidth()) +
-                (this.pixelMap.getWidth() % this.pixelMap.getWidth());
             const toReplaceIndex =
                 (((replaceWithIndex + degree) % this.pixelMap.getWidth()) +
                     this.pixelMap.getWidth()) %
@@ -50,6 +54,12 @@ export default class Controller<T, B> implements ControllerInterface<T, B> {
             let newItemInFlight = this.pixelMap.get(toReplaceIndex, y);
             this.pixelMap.set(toReplaceIndex, y, itemInFlight);
             itemInFlight = newItemInFlight;
+            replaceWithIndex = toReplaceIndex;
+            if (replaceWithIndex === loopStart) {
+                loopStart++;
+                replaceWithIndex = loopStart;
+                itemInFlight = this.pixelMap.get(replaceWithIndex, y);
+            }
         }
     }
 }
