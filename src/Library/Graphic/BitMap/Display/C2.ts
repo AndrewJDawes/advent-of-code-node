@@ -1,3 +1,4 @@
+import { OutOfBoundsException } from '../Exceptions.js';
 import { PixelMap, Display as DisplayInterface } from '../Interfaces.js';
 /*
 TODO
@@ -17,16 +18,79 @@ TODO
 -####..##..#..#.#..#..###.#....#..#...#..#..#..##..
 
 */
+interface CharacterTranslation {
+    from: string;
+    to: string;
+}
+const knownLetters: CharacterTranslation[] = [
+    {
+        from: `####.
+        #....
+        ###..
+        #....
+        #....
+        ####.`,
+        to: 'E',
+    },
+];
+
 export default class Display<T, B> implements DisplayInterface<T, B> {
     private pixelMap: PixelMap<T, B>;
-    constructor(pixelMap: PixelMap<T, B>) {
+    private characterWidth: number;
+    private characterHeight: number;
+    constructor(
+        pixelMap: PixelMap<T, B>,
+        characterWidth: number,
+        characterHeight: number
+    ) {
         this.pixelMap = pixelMap;
+        this.characterWidth = characterWidth;
+        this.characterHeight = characterHeight;
     }
-    print(printChar: string, printBlankChar: string) {
+    public getCharacterStartAndEndIndexes(characterIndex: number) {
+        const charsPerRow = this.getCharactersPerRowCount();
+        const xStart = (characterIndex % charsPerRow) * this.characterWidth;
+        const xEnd = xStart + this.characterWidth;
+        const yStart =
+            Math.floor(characterIndex / charsPerRow) * this.characterHeight;
+        const yEnd = yStart + this.characterHeight;
+        return {
+            xStart,
+            xEnd,
+            yStart,
+            yEnd,
+        };
+    }
+    public getCharactersPerRowCount() {
+        return Math.floor(this.pixelMap.getWidth() / this.characterWidth);
+    }
+    public getTotalRowsCount() {
+        return Math.floor(this.pixelMap.getHeight() / this.characterHeight);
+    }
+    public getTotalCharactersCount() {
+        return this.getTotalRowsCount() * this.getCharactersPerRowCount();
+    }
+    public getCharacter(
+        characterIndex: number,
+        printChar: string,
+        printBlankChar: string
+    ) {
+        const { xStart, xEnd, yStart, yEnd } =
+            this.getCharacterStartAndEndIndexes(characterIndex);
+        if (xEnd > this.pixelMap.getWidth()) {
+            throw new OutOfBoundsException(
+                `xEnd is greater than pixel map width. xEnd: ${xEnd}. pixel map width: ${this.pixelMap.getWidth()}`
+            );
+        }
+        if (yEnd > this.pixelMap.getHeight()) {
+            throw new OutOfBoundsException(
+                `yEnd is greater than pixel map height. yEnd: ${yEnd}. pixel map height: ${this.pixelMap.getHeight()}`
+            );
+        }
         let chars: string[][] = [];
-        for (let y = 0; y < this.pixelMap.getHeight(); y++) {
+        for (let y = yStart; y < yEnd; y++) {
             const row = [];
-            for (let x = 0; x < this.pixelMap.getWidth(); x++) {
+            for (let x = xStart; x < xEnd; x++) {
                 const char = this.pixelMap.get(x, y);
                 row.push(
                     char === this.pixelMap.getBlank()
@@ -35,6 +99,13 @@ export default class Display<T, B> implements DisplayInterface<T, B> {
                 );
             }
             chars.push(row);
+        }
+        return chars;
+    }
+    print(printChar: string, printBlankChar: string) {
+        let chars: string[][][] = [];
+        for (let i = 0; i < this.getTotalRowsCount(); i++) {
+            chars.push(this.getCharacter(i, printChar, printBlankChar));
         }
         return chars.map((row) => row.join('')).join('\n');
     }
