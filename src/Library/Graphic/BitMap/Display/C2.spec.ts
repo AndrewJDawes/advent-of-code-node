@@ -31,6 +31,6 @@ describe('Library Graphic BitMap Display C2', () => {
                 );
             });
         });
-        console.log(display.print('#', '.'));
+        expect(display.print('#', '.')).to.equal('EOARGPHYAO');
     });
 });
