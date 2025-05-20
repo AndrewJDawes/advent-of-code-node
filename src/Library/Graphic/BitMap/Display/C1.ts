@@ -1,10 +1,18 @@
 import { PixelMap, Display as DisplayInterface } from '../Interfaces.js';
 export default class Display<T, B> implements DisplayInterface<T, B> {
     private pixelMap: PixelMap<T, B>;
-    constructor(pixelMap: PixelMap<T, B>) {
-        this.pixelMap = pixelMap;
+    private printChar: string;
+    private printBlankChar: string;
+    constructor(props: {
+        pixelMap: PixelMap<T, B>;
+        printChar: string;
+        printBlankChar: string;
+    }) {
+        this.pixelMap = props.pixelMap;
+        this.printChar = props.printChar;
+        this.printBlankChar = props.printBlankChar;
     }
-    print(printChar: string, printBlankChar: string) {
+    print() {
         let chars: string[][] = [];
         for (let y = 0; y < this.pixelMap.getHeight(); y++) {
             const row = [];
@@ -12,8 +20,8 @@ export default class Display<T, B> implements DisplayInterface<T, B> {
                 const char = this.pixelMap.get(x, y);
                 row.push(
                     char === this.pixelMap.getBlank()
-                        ? printBlankChar
-                        : printChar
+                        ? this.printBlankChar
+                        : this.printChar
                 );
             }
             chars.push(row);

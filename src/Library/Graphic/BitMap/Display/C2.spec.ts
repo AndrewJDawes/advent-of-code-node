@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import PixelMap from '../PixelMap/C1.js';
 import Display from './C2.js';
-import { knownLetters } from './C2.js';
+import { characterTranslation } from '../CharacterTranslation/C1.js';
 describe('Library Graphic BitMap Display C2', () => {
     it('prints grid', () => {
         // prettier-ignore
@@ -19,7 +19,9 @@ describe('Library Graphic BitMap Display C2', () => {
             pixelMap,
             characterHeight: 6,
             characterWidth: 5,
-            dictionary: knownLetters,
+            dictionary: characterTranslation,
+            printChar: '#',
+            printBlankChar: '.',
         });
 
         bitmap.forEach((row, rowIndex) => {
@@ -31,6 +33,6 @@ describe('Library Graphic BitMap Display C2', () => {
                 );
             });
         });
-        expect(display.print('#', '.')).to.equal('EOARGPHYAO');
+        expect(display.print()).to.equal('EOARGPHYAO');
     });
 });

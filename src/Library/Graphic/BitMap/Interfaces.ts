@@ -12,7 +12,7 @@ export interface Controller<T, B> {
     rotateRow(y: number, degree: number): void;
 }
 export interface Display<T, B> {
-    print(printChar: string, printBlankChar: string): string;
+    print(): string;
 }
 export interface Count<T, B> {
     count(): number;
@@ -20,4 +20,9 @@ export interface Count<T, B> {
 
 export interface CommandParser<T, B> {
     execute(commandString: string): void;
+}
+
+export interface CharacterTranslation {
+    from: string;
+    to: string;
 }

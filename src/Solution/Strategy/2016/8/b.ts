@@ -3,8 +3,8 @@ import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js
 import CommandParser from '../../../../Library/Graphic/BitMap/CommandParser/C1.js';
 import Controller from '../../../../Library/Graphic/BitMap/Controller/C1.js';
 import PixelMap from '../../../../Library/Graphic/BitMap/PixelMap/C1.js';
-import Display from '../../../../Library/Graphic/BitMap/Display/C1.js';
-import Count from '../../../../Library/Graphic/BitMap/Count/C1.js';
+import Display from '../../../../Library/Graphic/BitMap/Display/C2.js';
+import { characterTranslation } from '../../../../Library/Graphic/BitMap/CharacterTranslation/C1.js';
 /*
 --- Part Two ---
 You notice that the screen is only capable of displaying capital letters; in the font it uses, each letter is 5 pixels wide and 6 tall.
@@ -21,7 +21,14 @@ class Solution implements InterfaceSolutionStrategy {
         const iterator = await this.inputFetcher.getAsyncIterator();
         const pixelMap = new PixelMap<boolean, null>(50, 6, null);
         const controller = new Controller<boolean, null>(pixelMap);
-        const display = new Display(pixelMap);
+        const display = new Display({
+            pixelMap,
+            printChar: '#',
+            printBlankChar: '.',
+            characterHeight: 6,
+            characterWidth: 5,
+            dictionary: characterTranslation,
+        });
         const commandParser = new CommandParser<boolean, null>(
             controller,
             true
@@ -30,7 +37,7 @@ class Solution implements InterfaceSolutionStrategy {
             const command = line.trim();
             commandParser.execute(command);
         }
-        return display.print('#', '.');
+        return display.print();
     }
 }
 export default Solution;

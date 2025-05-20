@@ -1,5 +1,9 @@
 import { OutOfBoundsException } from '../Exceptions.js';
-import { PixelMap, Display as DisplayInterface } from '../Interfaces.js';
+import {
+    PixelMap,
+    Display as DisplayInterface,
+    CharacterTranslation,
+} from '../Interfaces.js';
 /*
 TODO
 - Accept Pixel Map as input
@@ -25,401 +29,28 @@ TODO
 ..#..
 
 */
-interface CharacterTranslation {
-    from: string;
-    to: string;
-}
-
-export const knownLetters: CharacterTranslation[] = [
-    // A  (already in your list)
-    {
-        // prettier-ignore
-        from: [
-        '.##..',
-        '#..#.',
-        '#..#.',
-        '####.',
-        '#..#.',
-        '#..#.',
-      ].join('\n'),
-        to: 'A',
-    },
-
-    // B
-    {
-        // prettier-ignore
-        from: [
-        '###..',
-        '#..#.',
-        '#..#.',
-        '###..',
-        '#..#.',
-        '###..',
-      ].join('\n'),
-        to: 'B',
-    },
-
-    // C
-    {
-        // prettier-ignore
-        from: [
-        '.###.',
-        '#...#',
-        '#....',
-        '#....',
-        '#...#',
-        '.###.',
-      ].join('\n'),
-        to: 'C',
-    },
-
-    // D
-    {
-        // prettier-ignore
-        from: [
-        '###..',
-        '#..#.',
-        '#..#.',
-        '#..#.',
-        '#..#.',
-        '###..',
-      ].join('\n'),
-        to: 'D',
-    },
-
-    // E  (already in your list)
-    {
-        // prettier-ignore
-        from: [
-        '####.',
-        '#....',
-        '###..',
-        '#....',
-        '#....',
-        '####.',
-      ].join('\n'),
-        to: 'E',
-    },
-
-    // F
-    {
-        // prettier-ignore
-        from: [
-        '####.',
-        '#....',
-        '###..',
-        '#....',
-        '#....',
-        '#....',
-        ].join('\n'),
-        to: 'F',
-    },
-
-    // G (you already have this one – shown here just for completeness)
-    {
-        // prettier-ignore
-
-        from: [
-        '.##..',
-        '#..#.',
-        '#....',
-        '#.##.',
-        '#..#.',
-        '.###.',
-        ].join('\n'),
-        to: 'G',
-    },
-
-    // H (already supplied)
-    {
-        // prettier-ignore
-
-        from: [
-            '#..#.',
-            '#..#.',
-            '####.',
-            '#..#.',
-            '#..#.',
-            '#..#.',
-          ].join('\n'),
-        to: 'H',
-    },
-
-    // I
-    {
-        from: ['.###.', '..#..', '..#..', '..#..', '..#..', '.###.'].join('\n'),
-        to: 'I',
-    },
-
-    // J
-    {
-        // prettier-ignore
-
-        from: [
-            '..###',
-            '...#.',
-            '...#.',
-            '...#.',
-            '#..#.',
-            '.##..',
-          ].join('\n'),
-        to: 'J',
-    },
-
-    // K
-    {
-        // prettier-ignore
-
-        from: [
-            '#..#.',
-            '#.#..',
-            '##...',
-            '#.#..',
-            '#.#..',
-            '#..#.',
-          ].join('\n'),
-        to: 'K',
-    },
-
-    // L
-    {
-        // prettier-ignore
-
-        from: [
-            '#....',
-            '#....',
-            '#....',
-            '#....',
-            '#....',
-            '####.',
-          ].join('\n'),
-        to: 'L',
-    },
-    // M
-    {
-        // prettier-ignore
-
-        from: [
-            '#...#',
-            '##.##',
-            '#.#.#',
-            '#...#',
-            '#...#',
-            '#...#',
-          ].join('\n'),
-        to: 'M',
-    },
-
-    // N
-    {
-        // prettier-ignore
-
-        from: [
-            '#...#',
-            '##..#',
-            '#.#.#',
-            '#..##',
-            '#...#',
-            '#...#',
-          ].join('\n'),
-        to: 'N',
-    },
-
-    // O  (already in your list)
-    {
-        // prettier-ignore
-
-        from: [
-            '.##..',
-            '#..#.',
-            '#..#.',
-            '#..#.',
-            '#..#.',
-            '.##..',
-          ].join('\n'),
-        to: 'O',
-    },
-
-    // P  (already in your list)
-    {
-        // prettier-ignore
-
-        from: [
-            '###..',
-            '#..#.',
-            '#..#.',
-            '###..',
-            '#....',
-            '#....',
-          ].join('\n'),
-        to: 'P',
-    },
-
-    // Q
-    {
-        // prettier-ignore
-
-        from: [
-            '.##..',
-            '#..#.',
-            '#..#.',
-            '#..#.',
-            '#.#..',
-            '.#.#.',
-          ].join('\n'),
-        to: 'Q',
-    },
-
-    // R  (already in your list)
-    {
-        // prettier-ignore
-
-        from: [
-            '###..',
-            '#..#.',
-            '#..#.',
-            '###..',
-            '#.#..',
-            '#..#.',
-          ].join('\n'),
-        to: 'R',
-    },
-    // S
-    {
-        // prettier-ignore
-
-        from: [
-            '.###.',
-            '#....',
-            '.##..',
-            '...#.',
-            '#...#',
-            '.###.',
-          ].join('\n'),
-        to: 'S',
-    },
-
-    // T
-    {
-        // prettier-ignore
-
-        from: [
-            '#####',
-            '..#..',
-            '..#..',
-            '..#..',
-            '..#..',
-            '..#..',
-          ].join('\n'),
-        to: 'T',
-    },
-
-    // U
-    {
-        // prettier-ignore
-
-        from: [
-            '#..#.',
-            '#..#.',
-            '#..#.',
-            '#..#.',
-            '#..#.',
-            '.##..',
-          ].join('\n'),
-        to: 'U',
-    },
-
-    // V
-    {
-        // prettier-ignore
-
-        from: [
-            '#...#',
-            '#...#',
-            '#...#',
-            '#...#',
-            '.#.#.',
-            '..#..',
-          ].join('\n'),
-        to: 'V',
-    },
-
-    // W
-    {
-        // prettier-ignore
-
-        from: [
-            '#...#',
-            '#...#',
-            '#.#.#',
-            '#.#.#',
-            '##.##',
-            '#...#',
-          ].join('\n'),
-        to: 'W',
-    },
-
-    // X
-    {
-        // prettier-ignore
-
-        from: [
-            '#...#',
-            '.#.#.',
-            '..#..',
-            '..#..',
-            '.#.#.',
-            '#...#',
-          ].join('\n'),
-        to: 'X',
-    },
-
-    // Y  (already in your list)
-    {
-        // prettier-ignore
-
-        from: [
-            '#...#',
-            '#...#',
-            '.#.#.',
-            '..#..',
-            '..#..',
-            '..#..',
-          ].join('\n'),
-        to: 'Y',
-    },
-
-    // Z
-    {
-        // prettier-ignore
-
-        from: [
-            '#####',
-            '...#.',
-            '..#..',
-            '.#...',
-            '#....',
-            '#####',
-          ].join('\n'),
-        to: 'Z',
-    },
-];
 
 export default class Display<T, B> implements DisplayInterface<T, B> {
     private pixelMap: PixelMap<T, B>;
     private characterWidth: number;
     private characterHeight: number;
     private dictionary: CharacterTranslation[];
+    private printChar: string;
+    private printBlankChar: string;
     constructor(props: {
         pixelMap: PixelMap<T, B>;
         characterWidth: number;
         characterHeight: number;
         dictionary: CharacterTranslation[];
+        printChar: string;
+        printBlankChar: string;
     }) {
         this.pixelMap = props.pixelMap;
         this.characterWidth = props.characterWidth;
         this.characterHeight = props.characterHeight;
         this.dictionary = props.dictionary;
+        this.printChar = props.printChar;
+        this.printBlankChar = props.printBlankChar;
     }
     public getCharacterStartAndEndIndexes(characterIndex: number) {
         const charsPerRow = this.getCharactersPerRowCount();
@@ -444,11 +75,7 @@ export default class Display<T, B> implements DisplayInterface<T, B> {
     public getTotalCharactersCount() {
         return this.getTotalRowsCount() * this.getCharactersPerRowCount();
     }
-    public getCharacter(
-        characterIndex: number,
-        printChar: string,
-        printBlankChar: string
-    ) {
+    public getCharacter(characterIndex: number) {
         const { xStart, xEnd, yStart, yEnd } =
             this.getCharacterStartAndEndIndexes(characterIndex);
         if (xEnd > this.pixelMap.getWidth()) {
@@ -468,18 +95,18 @@ export default class Display<T, B> implements DisplayInterface<T, B> {
                 const char = this.pixelMap.get(x, y);
                 row.push(
                     char === this.pixelMap.getBlank()
-                        ? printBlankChar
-                        : printChar
+                        ? this.printBlankChar
+                        : this.printChar
                 );
             }
             chars.push(row);
         }
         return chars;
     }
-    print(printChar: string, printBlankChar: string) {
+    print() {
         let chars: string[][][] = [];
         for (let i = 0; i < this.getTotalCharactersCount(); i++) {
-            chars.push(this.getCharacter(i, printChar, printBlankChar));
+            chars.push(this.getCharacter(i));
         }
         return chars
             .map((char) => char.map((row) => row.join('')).join('\n'))

@@ -54,7 +54,6 @@ class Solution implements InterfaceSolutionStrategy {
         const iterator = await this.inputFetcher.getAsyncIterator();
         const pixelMap = new PixelMap<boolean, null>(50, 6, null);
         const controller = new Controller<boolean, null>(pixelMap);
-        const display = new Display(pixelMap);
         const commandParser = new CommandParser<boolean, null>(
             controller,
             true
