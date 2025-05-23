@@ -47,8 +47,16 @@ export function handleOpenDelimiter(props: {
             parseInt(inputCharacter);
         return '';
     }
-    decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
-    return decompressionStateMachineStateObject.buffer.splice(0).join('');
+    const returnValue = decompressionStateMachineStateObject.buffer
+        .splice(0)
+        .join('');
+    Object.assign(decompressionStateMachineStateObject, {
+        decompressionState: 'PASSTHROUGH',
+        readLength: null,
+        readFactor: null,
+        buffer: [],
+    });
+    return returnValue;
 }
 
 export function handleReadLength(props: {
@@ -60,7 +68,7 @@ export function handleReadLength(props: {
     decompressionStateMachineStateObject.buffer.push(inputCharacter);
     if (/\d/.test(inputCharacter)) {
         decompressionStateMachineStateObject.readLength =
-            (decompressionStateMachineStateObject.readLength ?? 0 * 10) +
+            (decompressionStateMachineStateObject.readLength ?? 0) * 10 +
             parseInt(inputCharacter);
         return '';
     }
@@ -69,8 +77,16 @@ export function handleReadLength(props: {
             'OPENOPERATOR';
         return '';
     }
-    decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
-    return decompressionStateMachineStateObject.buffer.splice(0).join('');
+    const returnValue = decompressionStateMachineStateObject.buffer
+        .splice(0)
+        .join('');
+    Object.assign(decompressionStateMachineStateObject, {
+        decompressionState: 'PASSTHROUGH',
+        readLength: null,
+        readFactor: null,
+        buffer: [],
+    });
+    return returnValue;
 }
 
 export function handleOpenOperator(props: {
@@ -87,8 +103,16 @@ export function handleOpenOperator(props: {
             parseInt(inputCharacter);
         return '';
     }
-    decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
-    return decompressionStateMachineStateObject.buffer.splice(0).join('');
+    const returnValue = decompressionStateMachineStateObject.buffer
+        .splice(0)
+        .join('');
+    Object.assign(decompressionStateMachineStateObject, {
+        decompressionState: 'PASSTHROUGH',
+        readLength: null,
+        readFactor: null,
+        buffer: [],
+    });
+    return returnValue;
 }
 
 export function handleReadFactor(props: {
@@ -100,7 +124,7 @@ export function handleReadFactor(props: {
     decompressionStateMachineStateObject.buffer.push(inputCharacter);
     if (/\d/.test(inputCharacter)) {
         decompressionStateMachineStateObject.readFactor =
-            (decompressionStateMachineStateObject.readFactor ?? 0 * 10) +
+            (decompressionStateMachineStateObject.readFactor ?? 0) * 10 +
             parseInt(inputCharacter);
         return '';
     }
@@ -108,11 +132,21 @@ export function handleReadFactor(props: {
         decompressionStateMachineStateObject.decompressionState =
             'GATHERSUBJECT';
         // empty the buffer
-        decompressionStateMachineStateObject.buffer.splice(0);
+        Object.assign(decompressionStateMachineStateObject, {
+            buffer: [],
+        });
         return '';
     }
-    decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
-    return decompressionStateMachineStateObject.buffer.splice(0).join('');
+    const returnValue = decompressionStateMachineStateObject.buffer
+        .splice(0)
+        .join('');
+    Object.assign(decompressionStateMachineStateObject, {
+        decompressionState: 'PASSTHROUGH',
+        readLength: null,
+        readFactor: null,
+        buffer: [],
+    });
+    return returnValue;
 }
 
 export function handleGatherSubject(props: {
@@ -123,21 +157,28 @@ export function handleGatherSubject(props: {
     validateInputLength(inputCharacter);
     decompressionStateMachineStateObject.buffer.push(inputCharacter);
     if (
-        decompressionStateMachineStateObject.buffer.length ===
+        decompressionStateMachineStateObject.buffer.length >=
         (decompressionStateMachineStateObject.readLength ?? 0)
     ) {
         decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
         let toRepeat = decompressionStateMachineStateObject.buffer
             .splice(0)
             .join('');
+        let repeated = '';
         for (
             let i = 0;
             i < (decompressionStateMachineStateObject.readFactor ?? 0);
             i++
         ) {
-            toRepeat = toRepeat + toRepeat;
+            repeated = repeated + toRepeat;
         }
-        return toRepeat;
+        Object.assign(decompressionStateMachineStateObject, {
+            decompressionState: 'PASSTHROUGH',
+            readLength: null,
+            readFactor: null,
+            buffer: [],
+        });
+        return repeated;
     }
     return '';
 }
@@ -152,6 +193,7 @@ export class DecompressionStateMachine {
             buffer: [],
         };
     }
+
     public input(inputCharacter: string) {
         validateInputLength(inputCharacter);
         switch (this.decompressionStateMachineStateObject.decompressionState) {
