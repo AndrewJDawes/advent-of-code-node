@@ -270,4 +270,78 @@ describe('DecompressionStateMachine', () => {
             });
         });
     });
+    describe('input', () => {
+        it('interprets ADVENT as ADVENT', () => {
+            const decompressionStateMachine = new DecompressionStateMachine();
+            const input = 'ADVENT';
+            const aggregator = [];
+            for (const char of input.split('')) {
+                const output = decompressionStateMachine.input(char);
+                if (null !== output) {
+                    aggregator.push(output);
+                }
+            }
+            expect(aggregator.join('')).to.equal('ADVENT');
+        });
+        it('interprets A(1x5)BC as ABBBBBC', () => {
+            const decompressionStateMachine = new DecompressionStateMachine();
+            const input = 'A(1x5)BC';
+            const aggregator = [];
+            for (const char of input.split('')) {
+                const output = decompressionStateMachine.input(char);
+                if (null !== output) {
+                    aggregator.push(output);
+                }
+            }
+            expect(aggregator.join('')).to.equal('ABBBBBC');
+        });
+        it('interprets (3x3)XYZ as XYZXYZXYZ', () => {
+            const decompressionStateMachine = new DecompressionStateMachine();
+            const input = '(3x3)XYZ';
+            const aggregator = [];
+            for (const char of input.split('')) {
+                const output = decompressionStateMachine.input(char);
+                if (null !== output) {
+                    aggregator.push(output);
+                }
+            }
+            expect(aggregator.join('')).to.equal('XYZXYZXYZ');
+        });
+        it('interprets A(2x2)BCD(2x2)EFG as ABCBCDEFEFG', () => {
+            const decompressionStateMachine = new DecompressionStateMachine();
+            const input = 'A(2x2)BCD(2x2)EFG';
+            const aggregator = [];
+            for (const char of input.split('')) {
+                const output = decompressionStateMachine.input(char);
+                if (null !== output) {
+                    aggregator.push(output);
+                }
+            }
+            expect(aggregator.join('')).to.equal('ABCBCDEFEFG');
+        });
+        it('interprets (6x1)(1x3)A as (1x3)A', () => {
+            const decompressionStateMachine = new DecompressionStateMachine();
+            const input = '(6x1)(1x3)A';
+            const aggregator = [];
+            for (const char of input.split('')) {
+                const output = decompressionStateMachine.input(char);
+                if (null !== output) {
+                    aggregator.push(output);
+                }
+            }
+            expect(aggregator.join('')).to.equal('(1x3)A');
+        });
+        it('interprets X(8x2)(3x3)ABCY as X(3x3)ABC(3x3)ABCY', () => {
+            const decompressionStateMachine = new DecompressionStateMachine();
+            const input = 'X(8x2)(3x3)ABCY';
+            const aggregator = [];
+            for (const char of input.split('')) {
+                const output = decompressionStateMachine.input(char);
+                if (null !== output) {
+                    aggregator.push(output);
+                }
+            }
+            expect(aggregator.join('')).to.equal('X(3x3)ABC(3x3)ABCY');
+        });
+    });
 });

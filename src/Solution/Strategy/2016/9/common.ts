@@ -218,6 +218,13 @@ export class DecompressionStateMachine {
                     inputCharacter,
                 });
             }
+            case 'OPENOPERATOR': {
+                return handleOpenOperator({
+                    decompressionStateMachineStateObject:
+                        this.decompressionStateMachineStateObject,
+                    inputCharacter,
+                });
+            }
             case 'READFACTOR': {
                 return handleReadFactor({
                     decompressionStateMachineStateObject:
