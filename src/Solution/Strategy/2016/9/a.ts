@@ -1,5 +1,6 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
+import { DecompressionStateMachine } from './common.js';
 /*
 --- Day 9: Explosives in Cyberspace ---
 Wandering around a secure area, you come across a datalink port to a new part of the network. After briefly scanning it for interesting files, you find one file in particular that catches your attention. It's compressed with an experimental format, but fortunately, the documentation for the format is nearby.
@@ -26,206 +27,22 @@ class Solution implements InterfaceSolutionStrategy {
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
+        const decompressionStateMachine = new DecompressionStateMachine();
+        const aggregator = [];
         for await (let line of iterator) {
+            for (const char of line.split('')) {
+                const output = decompressionStateMachine.input(char);
+                if (null !== output) {
+                    output
+                        .split('')
+                        .filter((outputItem) => !/\s/.test(outputItem))
+                        .forEach((outputItem) => {
+                            aggregator.push(outputItem);
+                        });
+                }
+            }
         }
-        return '';
+        return aggregator.length.toString();
     }
 }
 export default Solution;
-
-type DecompressionState =
-    | 'PASSTHROUGH'
-    | 'OPENDELIMITER'
-    | 'READLENGTH'
-    | 'OPENOPERATOR'
-    | 'READFACTOR'
-    | 'GATHERSUBJECT';
-interface DecompressionStateMachineStateObject {
-    decompressionState: DecompressionState;
-    readLength: null | number;
-    readFactor: null | number;
-    buffer: string[];
-}
-
-function validateInputLength(inputCharacter: string) {
-    if (inputCharacter.length !== 1) {
-        throw new Error(`inputCharacter length must be 1: ${inputCharacter}`);
-    }
-}
-class DecompressionStateMachine {
-    private decompressionStateMachineStateObject: DecompressionStateMachineStateObject;
-    constructor() {
-        this.decompressionStateMachineStateObject = {
-            decompressionState: 'PASSTHROUGH',
-            readLength: null,
-            readFactor: null,
-            buffer: [],
-        };
-    }
-    public input(inputCharacter: string) {
-        validateInputLength(inputCharacter);
-        switch (this.decompressionStateMachineStateObject.decompressionState) {
-            case 'PASSTHROUGH': {
-                return this.handlePassthrough({
-                    decompressionStateMachineStateObject:
-                        this.decompressionStateMachineStateObject,
-                    inputCharacter,
-                });
-            }
-            case 'OPENDELIMITER': {
-                return this.handleOpenDelimiter({
-                    decompressionStateMachineStateObject:
-                        this.decompressionStateMachineStateObject,
-                    inputCharacter,
-                });
-            }
-            case 'READLENGTH': {
-                return this.handleReadLength({
-                    decompressionStateMachineStateObject:
-                        this.decompressionStateMachineStateObject,
-                    inputCharacter,
-                });
-            }
-            case 'READFACTOR': {
-                return this.handleReadFactor({
-                    decompressionStateMachineStateObject:
-                        this.decompressionStateMachineStateObject,
-                    inputCharacter,
-                });
-            }
-            case 'GATHERSUBJECT': {
-                return this.handleGatherSubject({
-                    decompressionStateMachineStateObject:
-                        this.decompressionStateMachineStateObject,
-                    inputCharacter,
-                });
-            }
-            default: {
-                throw new Error(
-                    `Unknown state: ${this.decompressionStateMachineStateObject.decompressionState}`
-                );
-            }
-        }
-    }
-    public handlePassthrough(props: {
-        decompressionStateMachineStateObject: DecompressionStateMachineStateObject;
-        inputCharacter: string;
-    }) {
-        const { decompressionStateMachineStateObject, inputCharacter } = props;
-        validateInputLength(inputCharacter);
-        if ('(' === inputCharacter) {
-            decompressionStateMachineStateObject.decompressionState =
-                'OPENDELIMITER';
-            decompressionStateMachineStateObject.buffer.push(inputCharacter);
-            return '';
-        }
-        return inputCharacter;
-    }
-    public handleOpenDelimiter(props: {
-        decompressionStateMachineStateObject: DecompressionStateMachineStateObject;
-        inputCharacter: string;
-    }) {
-        const { decompressionStateMachineStateObject, inputCharacter } = props;
-        validateInputLength(inputCharacter);
-        decompressionStateMachineStateObject.buffer.push(inputCharacter);
-        if (/\d/.test(inputCharacter)) {
-            decompressionStateMachineStateObject.decompressionState =
-                'READLENGTH';
-            decompressionStateMachineStateObject.readLength =
-                (decompressionStateMachineStateObject.readLength ?? 0 * 10) +
-                parseInt(inputCharacter);
-            return '';
-        }
-        decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
-        return decompressionStateMachineStateObject.buffer.splice(0).join('');
-    }
-    public handleReadLength(props: {
-        decompressionStateMachineStateObject: DecompressionStateMachineStateObject;
-        inputCharacter: string;
-    }) {
-        const { decompressionStateMachineStateObject, inputCharacter } = props;
-        validateInputLength(inputCharacter);
-        decompressionStateMachineStateObject.buffer.push(inputCharacter);
-        if (/\d/.test(inputCharacter)) {
-            decompressionStateMachineStateObject.readLength =
-                (decompressionStateMachineStateObject.readLength ?? 0 * 10) +
-                parseInt(inputCharacter);
-            return '';
-        }
-        if ('x' === inputCharacter) {
-            decompressionStateMachineStateObject.decompressionState =
-                'OPENOPERATOR';
-            return '';
-        }
-        decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
-        return decompressionStateMachineStateObject.buffer.splice(0).join('');
-    }
-    public handleOpenOperator(props: {
-        decompressionStateMachineStateObject: DecompressionStateMachineStateObject;
-        inputCharacter: string;
-    }) {
-        const { decompressionStateMachineStateObject, inputCharacter } = props;
-        validateInputLength(inputCharacter);
-        decompressionStateMachineStateObject.buffer.push(inputCharacter);
-        if (/\d/.test(inputCharacter)) {
-            decompressionStateMachineStateObject.decompressionState =
-                'READFACTOR';
-            decompressionStateMachineStateObject.readFactor =
-                (decompressionStateMachineStateObject.readFactor ?? 0 * 10) +
-                parseInt(inputCharacter);
-            return '';
-        }
-        decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
-        return decompressionStateMachineStateObject.buffer.splice(0).join('');
-    }
-    public handleReadFactor(props: {
-        decompressionStateMachineStateObject: DecompressionStateMachineStateObject;
-        inputCharacter: string;
-    }) {
-        const { decompressionStateMachineStateObject, inputCharacter } = props;
-        validateInputLength(inputCharacter);
-        decompressionStateMachineStateObject.buffer.push(inputCharacter);
-        if (/\d/.test(inputCharacter)) {
-            decompressionStateMachineStateObject.readFactor =
-                (decompressionStateMachineStateObject.readFactor ?? 0 * 10) +
-                parseInt(inputCharacter);
-            return '';
-        }
-        if (')' === inputCharacter) {
-            decompressionStateMachineStateObject.decompressionState =
-                'GATHERSUBJECT';
-            // empty the buffer
-            decompressionStateMachineStateObject.buffer.splice(0);
-            return '';
-        }
-        decompressionStateMachineStateObject.decompressionState = 'PASSTHROUGH';
-        return decompressionStateMachineStateObject.buffer.splice(0).join('');
-    }
-    public handleGatherSubject(props: {
-        decompressionStateMachineStateObject: DecompressionStateMachineStateObject;
-        inputCharacter: string;
-    }) {
-        const { decompressionStateMachineStateObject, inputCharacter } = props;
-        validateInputLength(inputCharacter);
-        decompressionStateMachineStateObject.buffer.push(inputCharacter);
-        if (
-            decompressionStateMachineStateObject.buffer.length ===
-            (decompressionStateMachineStateObject.readLength ?? 0)
-        ) {
-            decompressionStateMachineStateObject.decompressionState =
-                'PASSTHROUGH';
-            let toRepeat = decompressionStateMachineStateObject.buffer
-                .splice(0)
-                .join('');
-            for (
-                let i = 0;
-                i < (decompressionStateMachineStateObject.readFactor ?? 0);
-                i++
-            ) {
-                toRepeat = toRepeat + toRepeat;
-            }
-            return toRepeat;
-        }
-        return '';
-    }
-}
