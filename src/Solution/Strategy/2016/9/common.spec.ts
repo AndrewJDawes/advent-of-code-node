@@ -23,7 +23,7 @@ describe('DecompressionStateMachine', () => {
                 decompressionStateMachineStateObject: state,
                 inputCharacter: '(',
             });
-            expect(output).to.equal('');
+            expect(output).to.equal(null);
             expect(state).to.eql({
                 decompressionState: 'OPENDELIMITER',
                 readLength: null,
@@ -31,6 +31,8 @@ describe('DecompressionStateMachine', () => {
                 buffer: ['('],
             });
         });
+    });
+    describe('handleOpenDelimiter', () => {
         it('handles receiving a X character while in OPENDELIMITER', async () => {
             const state: DecompressionStateMachineStateObject = {
                 decompressionState: 'OPENDELIMITER',
@@ -61,7 +63,7 @@ describe('DecompressionStateMachine', () => {
                 decompressionStateMachineStateObject: state,
                 inputCharacter: '1',
             });
-            expect(output).to.equal('');
+            expect(output).to.equal(null);
             expect(state).to.eql({
                 decompressionState: 'READLENGTH',
                 readLength: 1,
@@ -69,6 +71,8 @@ describe('DecompressionStateMachine', () => {
                 buffer: ['(', '1'],
             });
         });
+    });
+    describe('handleReadLength', () => {
         it('handles receiving a d character while in READLENGTH', async () => {
             const state: DecompressionStateMachineStateObject = {
                 decompressionState: 'READLENGTH',
@@ -99,7 +103,7 @@ describe('DecompressionStateMachine', () => {
                 decompressionStateMachineStateObject: state,
                 inputCharacter: '2',
             });
-            expect(output).to.equal('');
+            expect(output).to.equal(null);
             expect(state).to.eql({
                 decompressionState: 'READLENGTH',
                 readLength: 12,
@@ -118,7 +122,7 @@ describe('DecompressionStateMachine', () => {
                 decompressionStateMachineStateObject: state,
                 inputCharacter: 'x',
             });
-            expect(output).to.equal('');
+            expect(output).to.equal(null);
             expect(state).to.eql({
                 decompressionState: 'OPENOPERATOR',
                 readLength: 12,
@@ -145,6 +149,8 @@ describe('DecompressionStateMachine', () => {
                 buffer: [],
             });
         });
+    });
+    describe('handleOpenOperator', () => {
         it('handles receiving a numeric character while in OPENOPERATOR', async () => {
             const state: DecompressionStateMachineStateObject = {
                 decompressionState: 'OPENOPERATOR',
@@ -156,7 +162,7 @@ describe('DecompressionStateMachine', () => {
                 decompressionStateMachineStateObject: state,
                 inputCharacter: '1',
             });
-            expect(output).to.equal('');
+            expect(output).to.equal(null);
             expect(state).to.eql({
                 decompressionState: 'READFACTOR',
                 readLength: 12,
@@ -164,6 +170,8 @@ describe('DecompressionStateMachine', () => {
                 buffer: ['(', '1', '2', 'x', '1'],
             });
         });
+    });
+    describe('handleReadFactor', () => {
         it('handles receiving a z character while in READFACTOR', async () => {
             const state: DecompressionStateMachineStateObject = {
                 decompressionState: 'READFACTOR',
@@ -194,7 +202,7 @@ describe('DecompressionStateMachine', () => {
                 decompressionStateMachineStateObject: state,
                 inputCharacter: '3',
             });
-            expect(output).to.equal('');
+            expect(output).to.equal(null);
             expect(state).to.eql({
                 decompressionState: 'READFACTOR',
                 readLength: 12,
@@ -213,7 +221,7 @@ describe('DecompressionStateMachine', () => {
                 decompressionStateMachineStateObject: state,
                 inputCharacter: ')',
             });
-            expect(output).to.equal('');
+            expect(output).to.equal(null);
             expect(state).to.eql({
                 decompressionState: 'GATHERSUBJECT',
                 readLength: 12,
@@ -221,6 +229,8 @@ describe('DecompressionStateMachine', () => {
                 buffer: [],
             });
         });
+    });
+    describe('handleGatherSubject', () => {
         it('handles receiving a ( character while in GATHERSUBJECT', async () => {
             const state: DecompressionStateMachineStateObject = {
                 decompressionState: 'GATHERSUBJECT',
@@ -232,7 +242,7 @@ describe('DecompressionStateMachine', () => {
                 decompressionStateMachineStateObject: state,
                 inputCharacter: '(',
             });
-            expect(output).to.equal('');
+            expect(output).to.equal(null);
             expect(state).to.eql({
                 decompressionState: 'GATHERSUBJECT',
                 readLength: 2,

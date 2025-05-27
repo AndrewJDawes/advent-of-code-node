@@ -28,7 +28,7 @@ export function handlePassthrough(props: {
         decompressionStateMachineStateObject.decompressionState =
             'OPENDELIMITER';
         decompressionStateMachineStateObject.buffer.push(inputCharacter);
-        return '';
+        return null;
     }
     return inputCharacter;
 }
@@ -45,7 +45,7 @@ export function handleOpenDelimiter(props: {
         decompressionStateMachineStateObject.readLength =
             (decompressionStateMachineStateObject.readLength ?? 0 * 10) +
             parseInt(inputCharacter);
-        return '';
+        return null;
     }
     const returnValue = decompressionStateMachineStateObject.buffer
         .splice(0)
@@ -70,12 +70,12 @@ export function handleReadLength(props: {
         decompressionStateMachineStateObject.readLength =
             (decompressionStateMachineStateObject.readLength ?? 0) * 10 +
             parseInt(inputCharacter);
-        return '';
+        return null;
     }
     if ('x' === inputCharacter) {
         decompressionStateMachineStateObject.decompressionState =
             'OPENOPERATOR';
-        return '';
+        return null;
     }
     const returnValue = decompressionStateMachineStateObject.buffer
         .splice(0)
@@ -101,7 +101,7 @@ export function handleOpenOperator(props: {
         decompressionStateMachineStateObject.readFactor =
             (decompressionStateMachineStateObject.readFactor ?? 0 * 10) +
             parseInt(inputCharacter);
-        return '';
+        return null;
     }
     const returnValue = decompressionStateMachineStateObject.buffer
         .splice(0)
@@ -126,7 +126,7 @@ export function handleReadFactor(props: {
         decompressionStateMachineStateObject.readFactor =
             (decompressionStateMachineStateObject.readFactor ?? 0) * 10 +
             parseInt(inputCharacter);
-        return '';
+        return null;
     }
     if (')' === inputCharacter) {
         decompressionStateMachineStateObject.decompressionState =
@@ -135,7 +135,7 @@ export function handleReadFactor(props: {
         Object.assign(decompressionStateMachineStateObject, {
             buffer: [],
         });
-        return '';
+        return null;
     }
     const returnValue = decompressionStateMachineStateObject.buffer
         .splice(0)
@@ -180,7 +180,7 @@ export function handleGatherSubject(props: {
         });
         return repeated;
     }
-    return '';
+    return null;
 }
 
 export class DecompressionStateMachine {
