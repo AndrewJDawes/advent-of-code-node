@@ -18,6 +18,37 @@ Unfortunately, the computer you brought probably doesn't have enough memory to a
 What is the decompressed length of the file using this improved format?
 */
 
+/*
+Does it matter whether we split parentheses as we encounter them (in order)?
+
+- (5x3)ABC(5x2)XYZ12
+
+In order:
+
+- (5x3)ABC(5x2)XYZ12
+- ABC(5xABC(5xABC(5x2)XYZ12
+- ABC(5xABC(5xABCXYZ12XYZ12
+
+Out of order:
+
+- (5x3)ABC(5x2)XYZ12
+- (5x3)ABCXYZ12XYZ12
+- ABCXYABCXYABCXYZ12XYZ12
+
+*/
+/*
+
+TODO:
+
+- Create a tree datastructure
+- Objects can be markers OR they can be characters (or just count: 1 or maybe 1x1)
+- Markers at least can have children
+- For each marker, start parsing its own letters
+- For each marker encountered, recursively start a new child that will parse its own letters (to see if there are any more submarkers)
+- Free letters should be counted differently
+- Then we can recursively multiply
+
+*/
 class Solution implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
     constructor(inputFetcher: InterfaceInputFetcher) {
