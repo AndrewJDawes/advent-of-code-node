@@ -1,6 +1,6 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
-import { DecompressionStateMachine } from './common.js';
+import { DecompressionStateMachineRecursive } from './common.js';
 /*
 --- Part Two ---
 Apparently, the file actually uses version two of the format.
@@ -25,7 +25,8 @@ class Solution implements InterfaceSolutionStrategy {
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
-        const decompressionStateMachine = new DecompressionStateMachine();
+        const decompressionStateMachine =
+            new DecompressionStateMachineRecursive();
         let counter = 0;
         for await (let line of iterator) {
             for (const char of line.split('')) {
