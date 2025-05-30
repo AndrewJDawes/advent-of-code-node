@@ -1,9 +1,11 @@
 import { expect } from 'chai';
 import {
     DecompressionStateMachine,
+    DecompressionStateMachineCounter,
     DecompressionStateMachineRecursive,
     DecompressionStateMachineStateObject,
     handleGatherSubject,
+    handleGatherSubjectCounter,
     handleGatherSubjectRecursive,
     handleOpenDelimiter,
     handleOpenOperator,
@@ -683,6 +685,91 @@ describe('DecompressionStateMachineRecursive', () => {
                 }
             }
             expect(aggregator.join('')).to.equal('X(3x3)ABC(3x3)ABCY');
+        });
+    });
+});
+describe('DecompressionStateMachineCounter', () => {
+    describe('handleGatherSubjectCounter', () => {
+        it('handles receiving a ( character while in GATHERSUBJECT', async () => {
+            const state: DecompressionStateMachineStateObject = {
+                decompressionState: 'GATHERSUBJECT',
+                readLength: 2,
+                readFactor: 3,
+                buffer: [],
+            };
+            const output = handleGatherSubjectCounter({
+                decompressionStateMachineStateObject: state,
+                inputCharacter: '(',
+            });
+            expect(output).to.equal(null);
+            expect(state).to.eql({
+                decompressionState: 'GATHERSUBJECT',
+                readLength: 2,
+                readFactor: 3,
+                buffer: ['('],
+            });
+        });
+        it('handles receiving a x character while in GATHERSUBJECT', async () => {
+            const state: DecompressionStateMachineStateObject = {
+                decompressionState: 'GATHERSUBJECT',
+                readLength: 2,
+                readFactor: 3,
+                buffer: ['('],
+            };
+            const output = handleGatherSubjectCounter({
+                decompressionStateMachineStateObject: state,
+                inputCharacter: 'x',
+            });
+            expect(output).to.equal('(x');
+            expect(state).to.eql({
+                decompressionState: 'PASSTHROUGH',
+                readLength: null,
+                readFactor: null,
+                buffer: [],
+            });
+        });
+    });
+    describe('input', () => {
+        it('interprets (3x3)XYZ as 9', async () => {
+            const decompressionStateMachine =
+                new DecompressionStateMachineCounter({ multiplier: 1 });
+            const input = '(3x3)XYZ';
+            for (const char of input.split('')) {
+                decompressionStateMachine.input(char);
+            }
+            expect(decompressionStateMachine.count().toString()).to.equal('9');
+        });
+        it('interprets X(8x2)(3x3)ABCY as 20', async () => {
+            const decompressionStateMachine =
+                new DecompressionStateMachineCounter({ multiplier: 1 });
+            const input = 'X(8x2)(3x3)ABCY';
+            for (const char of input.split('')) {
+                decompressionStateMachine.input(char);
+            }
+            expect(decompressionStateMachine.count().toString()).to.equal('20');
+        });
+        it('interprets (27x12)(20x12)(13x14)(7x10)(1x12)A as 241920', async () => {
+            const decompressionStateMachine =
+                new DecompressionStateMachineCounter({ multiplier: 1 });
+            const input = '(27x12)(20x12)(13x14)(7x10)(1x12)A';
+            for (const char of input.split('')) {
+                decompressionStateMachine.input(char);
+            }
+            expect(decompressionStateMachine.count().toString()).to.equal(
+                '241920'
+            );
+        });
+        it('interprets (25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN as 445', async () => {
+            const decompressionStateMachine =
+                new DecompressionStateMachineCounter({ multiplier: 1 });
+            const input =
+                '(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN';
+            for (const char of input.split('')) {
+                decompressionStateMachine.input(char);
+            }
+            expect(decompressionStateMachine.count().toString()).to.equal(
+                '445'
+            );
         });
     });
 });
