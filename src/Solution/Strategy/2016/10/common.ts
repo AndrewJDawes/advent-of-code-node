@@ -48,6 +48,7 @@ export class Bot {
     private maxMicrochips: number;
     private microchips: number[];
     private handlers: BotEventHandlerMap;
+
     constructor({
         maxMicrochips = 2,
         microchips = [],
@@ -67,5 +68,35 @@ export class Bot {
 
     emit<K extends keyof BotEvents>(type: K, event: BotEvents[K]) {
         this.handlers.get(type).forEach((handler) => handler(event));
+    }
+
+    addMicrochip(microchip: number) {}
+
+    compareAndReturnHighAndLowMicrochips() {
+        let lowValue: number | null = null;
+        let lowIndex: number | null = null;
+        let highValue: number | null = null;
+        let highIndex: number | null = null;
+
+        this.microchips.forEach((item, index) => {
+            if (null === lowValue || item < lowValue) {
+                lowValue = item;
+                lowIndex = index;
+            }
+            if (null === highValue || item > highValue) {
+                highValue = item;
+                highIndex = item;
+            }
+        });
+        if (null !== lowIndex) {
+            this.microchips.splice(lowIndex, 1);
+        }
+        if (null !== highIndex && highIndex !== lowIndex) {
+            this.microchips.splice(highIndex, 1);
+        }
+        return {
+            lowValue,
+            highValue,
+        };
     }
 }
