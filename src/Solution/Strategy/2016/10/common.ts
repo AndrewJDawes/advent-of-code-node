@@ -1,83 +1,89 @@
-type BotMicrochipComparisonEvent = {
-    type: 'BotMicrochipComparisonEvent';
-    payload: {
-        microchips: number[];
-    };
+type SinkMicrochipComparisonEventPayload = {
+    microchips: number[];
 };
-type BotAddNewMicrochipEvent = {
-    type: 'BotAddNewMicrochipEvent';
-    payload: {
-        microchips: number[];
-    };
+type SinkAddNewMicrochipEventPayload = {
+    microchips: number[];
 };
 
-type BotEvents = {
-    BotMicrochipComparisonEvent: BotMicrochipComparisonEvent;
-    BotAddNewMicrochipEvent: BotAddNewMicrochipEvent;
+type SinkEvents = {
+    sinkMicrochipComparisonEvent: SinkMicrochipComparisonEventPayload;
+    sinkAddNewMicrochipEvent: SinkAddNewMicrochipEventPayload;
 };
 
 // Event handler type
-type BotEventHandler<K extends keyof BotEvents> = (event: BotEvents[K]) => void;
+type SinkEventHandler<K extends keyof SinkEvents> = (
+    event: SinkEvents[K]
+) => void;
 
 // A class to store handlers by event key with perfect typing
-class BotEventHandlerMap {
-    private map = new Map<keyof BotEvents, BotEventHandler<any>[]>();
+class SinkEventHandlerMap {
+    private map = new Map<keyof SinkEvents, SinkEventHandler<any>[]>();
 
     // Add handler for event type K
-    add<K extends keyof BotEvents>(type: K, handler: BotEventHandler<K>) {
+    public add<K extends keyof SinkEvents>(
+        type: K,
+        handler: SinkEventHandler<K>
+    ) {
         if (!this.map.has(type)) {
             this.map.set(type, []);
         }
         // TS requires a cast here, but usage is safe:
-        (this.map.get(type) as BotEventHandler<K>[]).push(handler);
+        (this.map.get(type) as SinkEventHandler<K>[]).push(handler);
     }
 
     // Get handlers for event type K
-    get<K extends keyof BotEvents>(type: K): BotEventHandler<K>[] {
-        return (this.map.get(type) ?? []) as BotEventHandler<K>[];
+    public get<K extends keyof SinkEvents>(type: K): SinkEventHandler<K>[] {
+        return (this.map.get(type) ?? []) as SinkEventHandler<K>[];
     }
 }
 
-interface BotProps {
+interface SinkProps {
     maxMicrochips?: number;
     microchips?: number[];
-    handlers?: BotEventHandlerMap;
+    handlers?: SinkEventHandlerMap;
 }
 
-export class Bot {
+export class Sink {
     private maxMicrochips: number;
     private microchips: number[];
-    private handlers: BotEventHandlerMap;
+    private handlers: SinkEventHandlerMap;
 
     constructor({
         maxMicrochips = 2,
         microchips = [],
-        handlers = new BotEventHandlerMap(),
-    }: BotProps) {
+        handlers = new SinkEventHandlerMap(),
+    }: SinkProps) {
         this.maxMicrochips = maxMicrochips;
         this.microchips = microchips;
         this.handlers = handlers;
     }
 
-    addEventHandler<K extends keyof BotEvents>(
+    public addEventHandler<K extends keyof SinkEvents>(
         type: K,
-        handler: BotEventHandler<K>
+        handler: SinkEventHandler<K>
     ) {
         this.handlers.add(type, handler);
     }
 
-    emit<K extends keyof BotEvents>(type: K, event: BotEvents[K]) {
+    public emit<K extends keyof SinkEvents>(type: K, event: SinkEvents[K]) {
         this.handlers.get(type).forEach((handler) => handler(event));
     }
 
-    addMicrochip(microchip: number) {}
+    public addMicrochip(microchip: number) {
+        if (this.microchips.length === this.maxMicrochips) {
+            throw new Error(
+                `Unable to add new microchip: ${microchip}. Sink has reached maxMicrochips: ${this.maxMicrochips}`
+            );
+        }
+        this.microchips.push(microchip);
+    }
 
-    compareAndReturnHighAndLowMicrochips() {
+    public compareAndReturnHighAndLowMicrochips() {
         let lowValue: number | null = null;
         let lowIndex: number | null = null;
         let highValue: number | null = null;
         let highIndex: number | null = null;
-
+        const microchipsCopy = this.microchips.slice();
         this.microchips.forEach((item, index) => {
             if (null === lowValue || item < lowValue) {
                 lowValue = item;
@@ -94,9 +100,167 @@ export class Bot {
         if (null !== highIndex && highIndex !== lowIndex) {
             this.microchips.splice(highIndex, 1);
         }
+        this.emit('sinkMicrochipComparisonEvent', {
+            microchips: microchipsCopy,
+        });
         return {
             lowValue,
             highValue,
         };
+    }
+}
+
+export interface ControllerProps {
+    bots: Map<number, Sink>;
+    bins: Map<number, Sink>;
+    botMaxMicrochips: number;
+    binMaxMicrochips: number;
+}
+export class Controller {
+    private bots: Map<number, Sink>;
+    private bins: Map<number, Sink>;
+    private botMaxMicrochips: number;
+    private binMaxMicrochips: number;
+    constructor({
+        bots = new Map(),
+        bins = new Map(),
+        botMaxMicrochips = 2,
+        binMaxMicrochips = 1,
+    }: ControllerProps) {
+        this.bots = bots;
+        this.bins = bins;
+        this.botMaxMicrochips = botMaxMicrochips;
+        this.binMaxMicrochips = binMaxMicrochips;
+    }
+    public ensureBot(botId: number) {
+        let bot = this.bots.get(botId);
+        if (undefined === bot) {
+            bot = new Sink({ maxMicrochips: this.botMaxMicrochips });
+            this.bots.set(botId, bot);
+        }
+        return bot;
+    }
+    public ensureBin(binId: number) {
+        let bin = this.bins.get(binId);
+        if (undefined === bin) {
+            bin = new Sink({ maxMicrochips: this.binMaxMicrochips });
+            this.bins.set(binId, bin);
+        }
+        return bin;
+    }
+    public giveValueToBot(botId: number, value: number) {
+        const bot = this.ensureBot(botId);
+        bot.addMicrochip(value);
+    }
+    public transferFromBotToBin(fromBotId: number, toBinId: number) {}
+    public transferFromBotToBot(fromBotId: number, toBotId: number) {}
+}
+export class CommandParser {
+    private controller: Controller;
+    constructor(controller: Controller) {
+        this.controller = controller;
+    }
+    public execute(commandString: string) {
+        const commandArray = commandString
+            .split(/\s+/)
+            .filter((word) => word !== '');
+        const command = commandArray.shift();
+        switch (command) {
+            case 'value': {
+                const dimensions = commandArray.shift();
+                if (dimensions === undefined) {
+                    throw new Error(
+                        `Command rect requires dimensions. Received: ${dimensions}. commandString: ${commandString}`
+                    );
+                }
+                const dimensionsArray = dimensions.split('x');
+                if (dimensionsArray.length !== 2) {
+                    throw new Error(
+                        `Command rect requires dimensions in format XxY. Received: ${dimensions}. commandString: ${commandString}`
+                    );
+                }
+                const width = parseInt(dimensionsArray[0]);
+                if (isNaN(width)) {
+                    throw new Error(
+                        `Command rect requires numeric dimensions in format XxY. Received: ${dimensions}. commandString: ${commandString}`
+                    );
+                }
+                const height = parseInt(dimensionsArray[1]);
+                if (isNaN(height)) {
+                    throw new Error(
+                        `Command rect requires numeric dimensions in format XxY. Received: ${dimensions}. commandString: ${commandString}`
+                    );
+                }
+                // this.controller.rect(0, 0, width, height, this.value);
+                break;
+            }
+            case 'bot': {
+                const dimension = commandArray.shift();
+                if (
+                    undefined === dimension ||
+                    !['row', 'column'].includes(dimension)
+                ) {
+                    throw new Error(
+                        `Command rotate requires indicator of dimension row or column. Received: ${commandString}`
+                    );
+                }
+                const planeIndicator = commandArray.shift();
+                if (undefined === planeIndicator) {
+                    throw new Error(
+                        `Command rotate requires plane indicator in format x|y=n. Received: ${commandString}`
+                    );
+                }
+                const planeArray = planeIndicator.split('=');
+                const planeArrayPlane = planeArray[0];
+                const planeArrayIndex = parseInt(planeArray[1]);
+                if (isNaN(planeArrayIndex)) {
+                    throw new Error(
+                        `Command rotate requires numeric plane index indicator in format x|y=n. Received: ${commandString}`
+                    );
+                }
+                const byThrowaway = commandArray.shift();
+                const degree = commandArray.shift();
+                if (undefined === degree) {
+                    throw new Error(
+                        `Command rotate requires degree. Received ${commandString}`
+                    );
+                }
+                const degreeNumeric = parseInt(degree);
+                if (isNaN(degreeNumeric)) {
+                    throw new Error(
+                        `Command rotate requires numeric degree. Received ${commandString}`
+                    );
+                }
+                switch (dimension) {
+                    case 'row': {
+                        // this.controller.rotateRow(
+                        //     planeArrayIndex,
+                        //     degreeNumeric
+                        // );
+                        break;
+                    }
+                    case 'column': {
+                        // this.controller.rotateColumn(
+                        //     planeArrayIndex,
+                        //     degreeNumeric
+                        // );
+                        break;
+                    }
+                    default: {
+                        throw new Error(
+                            `Command rotate requires dimension to be row or column. Received: ${commandString}`
+                        );
+                        break;
+                    }
+                }
+                break;
+            }
+            default: {
+                throw new Error(
+                    `Unknown command: ${command}. commandString: ${commandString}`
+                );
+                break;
+            }
+        }
     }
 }
