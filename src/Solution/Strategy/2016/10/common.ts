@@ -1,78 +1,99 @@
-type SinkMicrochipComparisonEventPayload = {
+type CollectorMicrochipComparisonEventPayload = {
     microchips: number[];
 };
-type SinkAddNewMicrochipEventPayload = {
+type CollectorAddNewMicrochipEventPayload = {
     microchips: number[];
 };
 
-type SinkEvents = {
-    sinkMicrochipComparisonEvent: SinkMicrochipComparisonEventPayload;
-    sinkAddNewMicrochipEvent: SinkAddNewMicrochipEventPayload;
+type CollectorMicrochipComparisonEvent = {
+    type: 'CollectorMicrochipComparisonEvent';
+    payload: CollectorMicrochipComparisonEventPayload;
+};
+
+type CollectorAddNewMicrochipEvent = {
+    type: 'CollectorAddNewMicrochipEvent';
+    payload: CollectorAddNewMicrochipEventPayload;
+};
+
+type CollectorEvents = {
+    collectorMicrochipComparisonEvent: CollectorMicrochipComparisonEventPayload;
+    collectorAddNewMicrochipEvent: CollectorAddNewMicrochipEventPayload;
+    collectorAnyEvent:
+        | CollectorMicrochipComparisonEvent
+        | CollectorAddNewMicrochipEvent;
 };
 
 // Event handler type
-type SinkEventHandler<K extends keyof SinkEvents> = (
-    event: SinkEvents[K]
+type CollectorEventHandler<K extends keyof CollectorEvents> = (
+    event: CollectorEvents[K]
 ) => void;
 
 // A class to store handlers by event key with perfect typing
-class SinkEventHandlerMap {
-    private map = new Map<keyof SinkEvents, SinkEventHandler<any>[]>();
+class CollectorEventHandlerMap {
+    private map = new Map<
+        keyof CollectorEvents,
+        CollectorEventHandler<any>[]
+    >();
 
     // Add handler for event type K
-    public add<K extends keyof SinkEvents>(
+    public add<K extends keyof CollectorEvents>(
         type: K,
-        handler: SinkEventHandler<K>
+        handler: CollectorEventHandler<K>
     ) {
         if (!this.map.has(type)) {
             this.map.set(type, []);
         }
         // TS requires a cast here, but usage is safe:
-        (this.map.get(type) as SinkEventHandler<K>[]).push(handler);
+        (this.map.get(type) as CollectorEventHandler<K>[]).push(handler);
     }
 
     // Get handlers for event type K
-    public get<K extends keyof SinkEvents>(type: K): SinkEventHandler<K>[] {
-        return (this.map.get(type) ?? []) as SinkEventHandler<K>[];
+    public get<K extends keyof CollectorEvents>(
+        type: K
+    ): CollectorEventHandler<K>[] {
+        return (this.map.get(type) ?? []) as CollectorEventHandler<K>[];
     }
 }
 
-interface SinkProps {
+interface CollectorProps {
     maxMicrochips?: number;
     microchips?: number[];
-    handlers?: SinkEventHandlerMap;
+    handlers?: CollectorEventHandlerMap;
 }
 
-export class Sink {
+export class Collector {
     private maxMicrochips: number;
     private microchips: number[];
-    private handlers: SinkEventHandlerMap;
+    private handlers: CollectorEventHandlerMap;
 
     constructor({
         maxMicrochips = 2,
         microchips = [],
-        handlers = new SinkEventHandlerMap(),
-    }: SinkProps) {
+        handlers = new CollectorEventHandlerMap(),
+    }: CollectorProps) {
         this.maxMicrochips = maxMicrochips;
         this.microchips = microchips;
         this.handlers = handlers;
     }
 
-    public addEventHandler<K extends keyof SinkEvents>(
+    public addEventHandler<K extends keyof CollectorEvents>(
         type: K,
-        handler: SinkEventHandler<K>
+        handler: CollectorEventHandler<K>
     ) {
         this.handlers.add(type, handler);
     }
 
-    public emit<K extends keyof SinkEvents>(type: K, event: SinkEvents[K]) {
+    public emit<K extends keyof CollectorEvents>(
+        type: K,
+        event: CollectorEvents[K]
+    ) {
         this.handlers.get(type).forEach((handler) => handler(event));
     }
 
     public addMicrochip(microchip: number) {
         if (this.microchips.length === this.maxMicrochips) {
             throw new Error(
-                `Unable to add new microchip: ${microchip}. Sink has reached maxMicrochips: ${this.maxMicrochips}`
+                `Unable to add new microchip: ${microchip}. Collector has reached maxMicrochips: ${this.maxMicrochips}`
             );
         }
         this.microchips.push(microchip);
@@ -84,7 +105,8 @@ export class Sink {
         let highValue: number | null = null;
         let highIndex: number | null = null;
         const microchipsCopy = this.microchips.slice();
-        this.microchips.forEach((item, index) => {
+        for (let index = 0; index < this.microchips.length; index++) {
+            let item = this.microchips[index];
             if (null === lowValue || item < lowValue) {
                 lowValue = item;
                 lowIndex = index;
@@ -93,14 +115,14 @@ export class Sink {
                 highValue = item;
                 highIndex = item;
             }
-        });
+        }
         if (null !== lowIndex) {
             this.microchips.splice(lowIndex, 1);
         }
         if (null !== highIndex && highIndex !== lowIndex) {
             this.microchips.splice(highIndex, 1);
         }
-        this.emit('sinkMicrochipComparisonEvent', {
+        this.emit('collectorMicrochipComparisonEvent', {
             microchips: microchipsCopy,
         });
         return {
@@ -111,31 +133,51 @@ export class Sink {
 }
 
 export interface ControllerProps {
-    bots: Map<number, Sink>;
-    bins: Map<number, Sink>;
+    bots: Map<number, Collector>;
+    bins: Map<number, Collector>;
     botMaxMicrochips: number;
     binMaxMicrochips: number;
+    handlers: CollectorEventHandlerMap;
 }
 export class Controller {
-    private bots: Map<number, Sink>;
-    private bins: Map<number, Sink>;
+    private bots: Map<number, Collector>;
+    private bins: Map<number, Collector>;
     private botMaxMicrochips: number;
     private binMaxMicrochips: number;
+    private handlers: CollectorEventHandlerMap;
+
     constructor({
         bots = new Map(),
         bins = new Map(),
         botMaxMicrochips = 2,
         binMaxMicrochips = 1,
+        handlers = new CollectorEventHandlerMap(),
     }: ControllerProps) {
         this.bots = bots;
         this.bins = bins;
         this.botMaxMicrochips = botMaxMicrochips;
         this.binMaxMicrochips = binMaxMicrochips;
+        this.handlers = handlers;
+    }
+    public addEventHandler<K extends keyof CollectorEvents>(
+        type: K,
+        handler: CollectorEventHandler<K>
+    ) {
+        this.handlers.add(type, handler);
+    }
+    public emit<K extends keyof CollectorEvents>(
+        type: K,
+        event: CollectorEvents[K]
+    ) {
+        this.handlers.get(type).forEach((handler) => handler(event));
     }
     public ensureBot(botId: number) {
         let bot = this.bots.get(botId);
         if (undefined === bot) {
-            bot = new Sink({ maxMicrochips: this.botMaxMicrochips });
+            bot = new Collector({ maxMicrochips: this.botMaxMicrochips });
+            bot.addEventHandler('collectorAnyEvent', (event) => {
+                this.emit('collectorAnyEvent', event);
+            });
             this.bots.set(botId, bot);
         }
         return bot;
@@ -143,7 +185,10 @@ export class Controller {
     public ensureBin(binId: number) {
         let bin = this.bins.get(binId);
         if (undefined === bin) {
-            bin = new Sink({ maxMicrochips: this.binMaxMicrochips });
+            bin = new Collector({ maxMicrochips: this.binMaxMicrochips });
+            bin.addEventHandler('collectorAnyEvent', (event) => {
+                this.emit('collectorAnyEvent', event);
+            });
             this.bins.set(binId, bin);
         }
         return bin;
@@ -152,8 +197,30 @@ export class Controller {
         const bot = this.ensureBot(botId);
         bot.addMicrochip(value);
     }
-    public transferFromBotToBin(fromBotId: number, toBinId: number) {}
-    public transferFromBotToBot(fromBotId: number, toBotId: number) {}
+    public transferFromBotToBin(fromBotId: number, toBinId: number) {
+        const fromBot = this.ensureBot(fromBotId);
+        const toBin = this.ensureBin(toBinId);
+        const { highValue, lowValue } =
+            fromBot.compareAndReturnHighAndLowMicrochips();
+        if (null !== highValue) {
+            toBin.addMicrochip(highValue);
+        }
+        if (null !== lowValue) {
+            toBin.addMicrochip(lowValue);
+        }
+    }
+    public transferFromBotToBot(fromBotId: number, toBotId: number) {
+        const fromBot = this.ensureBot(fromBotId);
+        const toBot = this.ensureBot(toBotId);
+        const { highValue, lowValue } =
+            fromBot.compareAndReturnHighAndLowMicrochips();
+        if (null !== highValue) {
+            toBot.addMicrochip(highValue);
+        }
+        if (null !== lowValue) {
+            toBot.addMicrochip(lowValue);
+        }
+    }
 }
 export class CommandParser {
     private controller: Controller;
