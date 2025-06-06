@@ -5,22 +5,9 @@ type CollectorAddNewMicrochipEventPayload = {
     microchips: number[];
 };
 
-type CollectorMicrochipComparisonEvent = {
-    type: 'CollectorMicrochipComparisonEvent';
-    payload: CollectorMicrochipComparisonEventPayload;
-};
-
-type CollectorAddNewMicrochipEvent = {
-    type: 'CollectorAddNewMicrochipEvent';
-    payload: CollectorAddNewMicrochipEventPayload;
-};
-
 type CollectorEvents = {
-    collectorMicrochipComparisonEvent: CollectorMicrochipComparisonEventPayload;
-    collectorAddNewMicrochipEvent: CollectorAddNewMicrochipEventPayload;
-    collectorAnyEvent:
-        | CollectorMicrochipComparisonEvent
-        | CollectorAddNewMicrochipEvent;
+    microchipsCompared: CollectorMicrochipComparisonEventPayload;
+    microchipAdded: CollectorAddNewMicrochipEventPayload;
 };
 
 // Event handler type
@@ -122,7 +109,7 @@ export class Collector {
         if (null !== highIndex && highIndex !== lowIndex) {
             this.microchips.splice(highIndex, 1);
         }
-        this.emit('collectorMicrochipComparisonEvent', {
+        this.emit('microchipsCompared', {
             microchips: microchipsCopy,
         });
         return {
@@ -132,26 +119,75 @@ export class Collector {
     }
 }
 
+type ControllerBotMicrochipComparisonEventPayload = {
+    microchips: number[];
+};
+type ControllerBotAddNewMicrochipEventPayload = {
+    microchips: number[];
+};
+
+type ControllerBinAddNewMicrochipEventPayload = {
+    microchips: number[];
+};
+
+type ControllerEvents = {
+    'bot:microchipsCompared': ControllerBotMicrochipComparisonEventPayload;
+    'bot:microchipAdded': ControllerBotAddNewMicrochipEventPayload;
+    'bin:microchipAdded': ControllerBinAddNewMicrochipEventPayload;
+};
+
+// Event handler type
+type ControllerEventHandler<K extends keyof ControllerEvents> = (
+    event: ControllerEvents[K]
+) => void;
+
+// A class to store handlers by event key with perfect typing
+class ControllerEventHandlerMap {
+    private map = new Map<
+        keyof ControllerEvents,
+        ControllerEventHandler<any>[]
+    >();
+
+    // Add handler for event type K
+    public add<K extends keyof ControllerEvents>(
+        type: K,
+        handler: ControllerEventHandler<K>
+    ) {
+        if (!this.map.has(type)) {
+            this.map.set(type, []);
+        }
+        // TS requires a cast here, but usage is safe:
+        (this.map.get(type) as ControllerEventHandler<K>[]).push(handler);
+    }
+
+    // Get handlers for event type K
+    public get<K extends keyof ControllerEvents>(
+        type: K
+    ): ControllerEventHandler<K>[] {
+        return (this.map.get(type) ?? []) as ControllerEventHandler<K>[];
+    }
+}
+
 export interface ControllerProps {
     bots: Map<number, Collector>;
     bins: Map<number, Collector>;
     botMaxMicrochips: number;
     binMaxMicrochips: number;
-    handlers: CollectorEventHandlerMap;
+    handlers: ControllerEventHandlerMap;
 }
 export class Controller {
     private bots: Map<number, Collector>;
     private bins: Map<number, Collector>;
     private botMaxMicrochips: number;
     private binMaxMicrochips: number;
-    private handlers: CollectorEventHandlerMap;
+    private handlers: ControllerEventHandlerMap;
 
     constructor({
         bots = new Map(),
         bins = new Map(),
         botMaxMicrochips = 2,
         binMaxMicrochips = 1,
-        handlers = new CollectorEventHandlerMap(),
+        handlers = new ControllerEventHandlerMap(),
     }: ControllerProps) {
         this.bots = bots;
         this.bins = bins;
@@ -159,15 +195,15 @@ export class Controller {
         this.binMaxMicrochips = binMaxMicrochips;
         this.handlers = handlers;
     }
-    public addEventHandler<K extends keyof CollectorEvents>(
+    public addEventHandler<K extends keyof ControllerEvents>(
         type: K,
-        handler: CollectorEventHandler<K>
+        handler: ControllerEventHandler<K>
     ) {
         this.handlers.add(type, handler);
     }
-    public emit<K extends keyof CollectorEvents>(
+    public emit<K extends keyof ControllerEvents>(
         type: K,
-        event: CollectorEvents[K]
+        event: ControllerEvents[K]
     ) {
         this.handlers.get(type).forEach((handler) => handler(event));
     }
@@ -175,8 +211,11 @@ export class Controller {
         let bot = this.bots.get(botId);
         if (undefined === bot) {
             bot = new Collector({ maxMicrochips: this.botMaxMicrochips });
-            bot.addEventHandler('collectorAnyEvent', (event) => {
-                this.emit('collectorAnyEvent', event);
+            bot.addEventHandler('microchipAdded', (event) => {
+                this.emit('bot:microchipAdded', event);
+            });
+            bot.addEventHandler('microchipsCompared', (event) => {
+                this.emit('bot:microchipsCompared', event);
             });
             this.bots.set(botId, bot);
         }
@@ -186,8 +225,8 @@ export class Controller {
         let bin = this.bins.get(binId);
         if (undefined === bin) {
             bin = new Collector({ maxMicrochips: this.binMaxMicrochips });
-            bin.addEventHandler('collectorAnyEvent', (event) => {
-                this.emit('collectorAnyEvent', event);
+            bin.addEventHandler('microchipAdded', (event) => {
+                this.emit('bin:microchipAdded', event);
             });
             this.bins.set(binId, bin);
         }
