@@ -63,6 +63,10 @@ export class Collector {
         this.handlers = handlers;
     }
 
+    public getMicrochips() {
+        return this.microchips;
+    }
+
     public addEventHandler<K extends keyof CollectorEvents>(
         type: K,
         handler: CollectorEventHandler<K>
@@ -100,13 +104,16 @@ export class Collector {
             }
             if (null === highValue || item > highValue) {
                 highValue = item;
-                highIndex = item;
+                highIndex = index;
             }
         }
         if (null !== lowIndex) {
             this.microchips.splice(lowIndex, 1);
         }
         if (null !== highIndex && highIndex !== lowIndex) {
+            if (null !== lowIndex && lowIndex < highIndex) {
+                highIndex--;
+            }
             this.microchips.splice(highIndex, 1);
         }
         this.emit('microchipsCompared', {
@@ -169,11 +176,11 @@ class ControllerEventHandlerMap {
 }
 
 export interface ControllerProps {
-    bots: Map<number, Collector>;
-    outputs: Map<number, Collector>;
-    botMaxMicrochips: number;
-    outputMaxMicrochips: number;
-    handlers: ControllerEventHandlerMap;
+    bots?: Map<number, Collector>;
+    outputs?: Map<number, Collector>;
+    botMaxMicrochips?: number;
+    outputMaxMicrochips?: number;
+    handlers?: ControllerEventHandlerMap;
 }
 
 export interface CommandParserControllerInterface {
@@ -206,6 +213,12 @@ export class Controller implements CommandParserControllerInterface {
         this.botMaxMicrochips = botMaxMicrochips;
         this.outputMaxMicrochips = outputMaxMicrochips;
         this.handlers = handlers;
+    }
+    public getBots() {
+        return this.bots;
+    }
+    public getOutputs() {
+        return this.outputs;
     }
     public addEventHandler<K extends keyof ControllerEvents>(
         type: K,
@@ -253,6 +266,7 @@ export class Controller implements CommandParserControllerInterface {
             }
             case 'bot': {
                 sink = this.ensureBot(sinkId);
+                break;
             }
             default: {
                 throw new Error(`Invalid sinkType: ${sinkType}`);
@@ -285,6 +299,7 @@ export class Controller implements CommandParserControllerInterface {
             }
             case 'bot': {
                 source = this.ensureBot(fromId);
+                break;
             }
             default: {
                 throw new Error(`Invalid fromType: ${fromType}`);
@@ -297,6 +312,7 @@ export class Controller implements CommandParserControllerInterface {
             }
             case 'bot': {
                 highToSink = this.ensureBot(highToId);
+                break;
             }
             default: {
                 throw new Error(`Invalid highToType: ${highToType}`);
@@ -309,6 +325,7 @@ export class Controller implements CommandParserControllerInterface {
             }
             case 'bot': {
                 lowToSink = this.ensureBot(lowToId);
+                break;
             }
             default: {
                 throw new Error(`Invalid lowToType: ${lowToType}`);

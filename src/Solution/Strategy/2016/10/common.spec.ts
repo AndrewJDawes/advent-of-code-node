@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 use(sinonChai);
-import { CommandParser } from './common.js';
+import { Collector, CommandParser, Controller } from './common.js';
 describe('201610 CommandParser', () => {
     const commandText1 = 'bot 59 gives low to bot 176 and high to bot 120';
     it(`interprets "${commandText1}"`, () => {
@@ -47,5 +47,76 @@ describe('201610 CommandParser', () => {
         const commandParser = new CommandParser(controller);
         commandParser.execute(commandText3);
         expect(controller.giveValue).to.have.been.calledWith('bot', 114, 31);
+    });
+});
+describe('201610 Controller', () => {
+    it('creates bots on giveValue', () => {
+        const controller = new Controller({});
+        controller.giveValue('bot', 23, 45);
+        const bots = controller.getBots();
+        const bot = bots.get(23);
+        expect(bot).not.to.be.undefined;
+        expect(bot?.getMicrochips()).to.eql([45]);
+    });
+    it('appends new values on giveValue', () => {
+        const controller = new Controller({});
+        controller.giveValue('bot', 23, 45);
+        controller.giveValue('bot', 23, 48);
+        const bots = controller.getBots();
+        const bot = bots.get(23);
+        expect(bot).not.to.be.undefined;
+        expect(bot?.getMicrochips()).to.eql([45, 48]);
+    });
+    it('rejects appends beyond max', () => {
+        const controller = new Controller({ botMaxMicrochips: 2 });
+        controller.giveValue('bot', 23, 45);
+        controller.giveValue('bot', 23, 48);
+        expect(() => {
+            controller.giveValue('bot', 23, 51);
+        }).to.throw(
+            `Unable to add new microchip: ${51}. Collector has reached maxMicrochips: ${2}`
+        );
+        const bots = controller.getBots();
+        const bot = bots.get(23);
+        expect(bot).not.to.be.undefined;
+        expect(bot?.getMicrochips()).to.eql([45, 48]);
+    });
+    it('transfers low and high to output and bot', () => {
+        // bot 161 gives low to output 14 and high to bot 185
+        const controller = new Controller({ botMaxMicrochips: 3 });
+        controller.giveValue('bot', 161, 5);
+        controller.giveValue('bot', 161, 10);
+        controller.giveValue('bot', 161, 25);
+        controller.transferHighAndLow({
+            fromType: 'bot',
+            fromId: 161,
+            lowToType: 'output',
+            lowToId: 14,
+            highToType: 'bot',
+            highToId: 185,
+        });
+        const bots = controller.getBots();
+        const outputs = controller.getOutputs();
+        const bot161 = bots.get(161);
+        const bot185 = bots.get(185);
+        const output14 = outputs.get(14);
+        expect(bot161).not.to.be.undefined;
+        expect(bot185).not.to.be.undefined;
+        expect(output14).not.to.be.undefined;
+        expect(bot161?.getMicrochips()).to.eql([10]);
+        expect(output14?.getMicrochips()).to.eql([5]);
+        expect(bot185?.getMicrochips()).to.eql([25]);
+    });
+});
+describe('201610 Collector', () => {
+    it('compareAndReturnHighAndLowMicrochips', () => {
+        const collector = new Collector({});
+        collector.addMicrochip(1);
+        collector.addMicrochip(2);
+        const { lowValue, highValue } =
+            collector.compareAndReturnHighAndLowMicrochips();
+        expect(lowValue).to.equal(1);
+        expect(highValue).to.equal(2);
+        expect(collector.getMicrochips()).to.deep.eq([]);
     });
 });
