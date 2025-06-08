@@ -129,21 +129,21 @@ export class Collector {
     }
 }
 
-type ControllerBotMicrochipComparisonEventPayload = {
+type ControllerMicrochipComparisonEventPayload = {
+    collectorType: CollectorType;
+    collectorId: number;
     microchips: number[];
 };
-type ControllerBotAddNewMicrochipEventPayload = {
-    microchips: number[];
-};
-
-type ControllerOutputAddNewMicrochipEventPayload = {
+type ControllerAddNewMicrochipEventPayload = {
+    collectorType: CollectorType;
+    collectorId: number;
     microchips: number[];
 };
 
 type ControllerEvents = {
-    'bot:microchipsCompared': ControllerBotMicrochipComparisonEventPayload;
-    'bot:microchipAdded': ControllerBotAddNewMicrochipEventPayload;
-    'output:microchipAdded': ControllerOutputAddNewMicrochipEventPayload;
+    'bot:microchipsCompared': ControllerMicrochipComparisonEventPayload;
+    'bot:microchipAdded': ControllerAddNewMicrochipEventPayload;
+    'output:microchipAdded': ControllerAddNewMicrochipEventPayload;
 };
 
 // Event handler type
@@ -240,10 +240,18 @@ export class Controller implements CommandParserControllerInterface {
         if (undefined === bot) {
             bot = new Collector({ maxMicrochips: this.botMaxMicrochips });
             bot.addEventHandler('microchipAdded', (event) => {
-                this.emit('bot:microchipAdded', event);
+                this.emit('bot:microchipAdded', {
+                    ...event,
+                    collectorId: botId,
+                    collectorType: 'bot',
+                });
             });
             bot.addEventHandler('microchipsCompared', (event) => {
-                this.emit('bot:microchipsCompared', event);
+                this.emit('bot:microchipsCompared', {
+                    ...event,
+                    collectorId: botId,
+                    collectorType: 'bot',
+                });
             });
             this.bots.set(botId, bot);
         }
@@ -254,7 +262,11 @@ export class Controller implements CommandParserControllerInterface {
         if (undefined === output) {
             output = new Collector({ maxMicrochips: this.outputMaxMicrochips });
             output.addEventHandler('microchipAdded', (event) => {
-                this.emit('output:microchipAdded', event);
+                this.emit('output:microchipAdded', {
+                    ...event,
+                    collectorId: outputId,
+                    collectorType: 'output',
+                });
             });
             this.outputs.set(outputId, output);
         }
@@ -345,7 +357,8 @@ export class Controller implements CommandParserControllerInterface {
     }
 }
 
-type SinkType = 'bot' | 'output';
+type CollectorType = 'bot' | 'output';
+type SinkType = CollectorType;
 type SourceType = SinkType;
 
 type OutputType = 'low' | 'high';
