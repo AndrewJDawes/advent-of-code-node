@@ -88,6 +88,9 @@ export class Collector {
             );
         }
         this.microchips.push(microchip);
+        this.emit('microchipAdded', {
+            microchips: this.microchips,
+        });
     }
 
     public compareAndReturnHighAndLowMicrochips() {

@@ -109,7 +109,7 @@ describe('201610 Controller', () => {
     });
 });
 describe('201610 Collector', () => {
-    it('compareAndReturnHighAndLowMicrochips', () => {
+    it('compareAndReturnHighAndLowMicrochips with 2', () => {
         const collector = new Collector({});
         collector.addMicrochip(1);
         collector.addMicrochip(2);
@@ -118,5 +118,40 @@ describe('201610 Collector', () => {
         expect(lowValue).to.equal(1);
         expect(highValue).to.equal(2);
         expect(collector.getMicrochips()).to.deep.eq([]);
+    });
+    it('compareAndReturnHighAndLowMicrochips', () => {
+        const collector = new Collector({ maxMicrochips: 4 });
+        collector.addMicrochip(2);
+        collector.addMicrochip(3);
+        collector.addMicrochip(1);
+        collector.addMicrochip(4);
+        const { lowValue, highValue } =
+            collector.compareAndReturnHighAndLowMicrochips();
+        expect(lowValue).to.equal(1);
+        expect(highValue).to.equal(4);
+        expect(collector.getMicrochips()).to.deep.eq([2, 3]);
+    });
+    it('dispatches microchipAdded and microchipsCompared', () => {
+        const collector = new Collector({});
+        const handler1 = sinon.spy();
+        const handler2 = sinon.spy();
+        const handler3 = sinon.spy();
+        collector.addEventHandler('microchipAdded', handler1);
+        collector.addEventHandler('microchipAdded', handler2);
+        collector.addEventHandler('microchipsCompared', handler3);
+        collector.addMicrochip(1);
+        expect(handler1).to.have.been.calledWith({ microchips: [1] });
+        expect(handler2).to.have.been.calledWith({ microchips: [1] });
+        expect(handler3).not.to.have.been.called;
+        collector.addMicrochip(2);
+        expect(handler1).to.have.been.calledWith({ microchips: [1, 2] });
+        expect(handler2).to.have.been.calledWith({ microchips: [1, 2] });
+        expect(handler3).not.to.have.been.called;
+        collector.compareAndReturnHighAndLowMicrochips();
+        expect(handler1).to.have.callCount(2);
+        expect(handler2).to.have.callCount(2);
+        expect(handler3).to.have.been.calledWith({
+            microchips: [1, 2],
+        });
     });
 });
