@@ -524,3 +524,44 @@ export class CommandParser {
         throw new Error(`Unrecognized command: ${command}`);
     }
 }
+
+export interface MonitorForResultsController {
+    addEventHandler<K extends keyof ControllerEvents>(
+        type: K,
+        handler: ControllerEventHandler<K>
+    ): void;
+}
+export class MonitorForResultsWatchForComparison {
+    private controller: MonitorForResultsController;
+    private comparisons: Set<number>;
+    private comparerId: number | null;
+    private done: boolean;
+    constructor({
+        controller,
+        comparisons,
+    }: {
+        controller: MonitorForResultsController;
+        comparisons: Set<number>;
+    }) {
+        this.controller = controller;
+        this.comparisons = comparisons;
+        this.done = false;
+        this.comparerId = null;
+        this.controller.addEventHandler('bot:microchipsCompared', (event) => {
+            const compared = new Set(event.microchips);
+            for (const comparison of this.comparisons) {
+                if (!compared.has(comparison)) {
+                    return;
+                }
+            }
+            this.done = true;
+            this.comparerId = event.collectorId;
+        });
+    }
+    public getResults() {
+        return this.comparerId;
+    }
+    public isDone() {
+        return this.done;
+    }
+}

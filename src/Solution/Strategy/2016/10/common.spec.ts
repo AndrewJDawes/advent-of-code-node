@@ -2,7 +2,12 @@ import sinon from 'sinon';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 use(sinonChai);
-import { Collector, CommandParser, Controller } from './common.js';
+import {
+    Collector,
+    CommandParser,
+    Controller,
+    MonitorForResultsWatchForComparison,
+} from './common.js';
 describe('201610', () => {
     describe('201610 CommandParser', () => {
         const commandText1 = 'bot 59 gives low to bot 176 and high to bot 120';
@@ -245,6 +250,60 @@ describe('201610', () => {
             expect(handler3).to.have.been.calledWith({
                 microchips: [1, 2],
             });
+        });
+    });
+    describe('201610 MonitorForResultsWatchForComparison', () => {
+        it('knows which bot compared', () => {
+            const controller = new Controller({});
+            const watcher = new MonitorForResultsWatchForComparison({
+                controller,
+                comparisons: new Set([2, 5]),
+            });
+            // value 5 goes to bot 2
+            controller.giveValue('bot', 2, 5);
+            expect(watcher.isDone()).to.be.false;
+            expect(watcher.getResults()).to.be.null;
+            // bot 2 gives low to bot 1 and high to bot 0
+            controller.transferHighAndLow({
+                fromType: 'bot',
+                fromId: 2,
+                lowToType: 'bot',
+                lowToId: 1,
+                highToType: 'bot',
+                highToId: 0,
+            });
+            expect(watcher.isDone()).to.be.false;
+            expect(watcher.getResults()).to.be.null;
+            // value 3 goes to bot 1
+            controller.giveValue('bot', 1, 3);
+            expect(watcher.isDone()).to.be.false;
+            expect(watcher.getResults()).to.be.null;
+            // bot 1 gives low to output 1 and high to bot 0
+            controller.transferHighAndLow({
+                fromType: 'bot',
+                fromId: 1,
+                lowToType: 'output',
+                lowToId: 1,
+                highToType: 'bot',
+                highToId: 0,
+            });
+            expect(watcher.isDone()).to.be.false;
+            expect(watcher.getResults()).to.be.null;
+            // bot 0 gives low to output 2 and high to output 0
+            controller.transferHighAndLow({
+                fromType: 'bot',
+                fromId: 0,
+                lowToType: 'output',
+                lowToId: 2,
+                highToType: 'output',
+                highToId: 0,
+            });
+            expect(watcher.isDone()).to.be.false;
+            expect(watcher.getResults()).to.be.null;
+            // value 2 goes to bot 2
+            controller.giveValue('bot', 2, 2);
+            expect(watcher.isDone()).to.be.true;
+            expect(watcher.getResults()).to.equal(2);
         });
     });
 });
