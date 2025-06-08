@@ -175,7 +175,19 @@ export interface ControllerProps {
     outputMaxMicrochips: number;
     handlers: ControllerEventHandlerMap;
 }
-export class Controller {
+
+export interface CommandParserControllerInterface {
+    giveValue(sinkType: SinkType, sinkId: number, value: number): void;
+    transferHighAndLow(props: {
+        fromType: SourceType;
+        fromId: number;
+        highToType: SinkType;
+        highToId: number;
+        lowToType: SinkType;
+        lowToId: number;
+    }): void;
+}
+export class Controller implements CommandParserControllerInterface {
     private bots: Map<number, Collector>;
     private outputs: Map<number, Collector>;
     private botMaxMicrochips: number;
@@ -248,14 +260,21 @@ export class Controller {
         }
         sink.addMicrochip(value);
     }
-    public transferHighAndLow(
-        fromType: SourceType,
-        fromId: number,
-        highToType: SinkType,
-        highToId: number,
-        lowToType: SinkType,
-        lowToId: number
-    ) {
+    public transferHighAndLow({
+        fromType,
+        fromId,
+        highToType,
+        highToId,
+        lowToType,
+        lowToId,
+    }: {
+        fromType: SourceType;
+        fromId: number;
+        highToType: SinkType;
+        highToId: number;
+        lowToType: SinkType;
+        lowToId: number;
+    }) {
         let source: Collector | null = null;
         let highToSink: Collector | null = null;
         let lowToSink: Collector | null = null;
@@ -313,8 +332,8 @@ type OutputType = 'low' | 'high';
 type InputType = OutputType;
 // TODO: Build a way to transfer high/low to two separate sinks
 export class CommandParser {
-    private controller: Controller;
-    constructor(controller: Controller) {
+    private controller: CommandParserControllerInterface;
+    constructor(controller: CommandParserControllerInterface) {
         this.controller = controller;
     }
     public isValidSinkType(type: string): type is SinkType {
@@ -363,6 +382,7 @@ export class CommandParser {
                 throw new Error(`sinkId is NaN`);
             }
             this.controller.giveValue(sinkTypeRaw, sinkId, value);
+            return;
         }
         const resultsTransfer =
             /^(?<sourceType>bot|output)\s+(?<sourceId>\d+)\s+gives\s+(?<sinkALowOrHigh>low|high)\s+to\s+(?<sinkAType>bot|output)\s+(?<sinkAId>\d+)\s+and\s+(?<sinkBLowOrHigh>low|high)\s+to\s+(?<sinkBType>bot|output)\s+(?<sinkBId>\d+)$/.exec(
@@ -456,27 +476,18 @@ export class CommandParser {
                     `Invalid: sinkALowOrHighRaw === sinkBLowOrHighRaw: ${sinkALowOrHighRaw}, ${sinkBLowOrHighRaw}`
                 );
             }
+            const sinkAIsHigh = sinkALowOrHighRaw === 'high';
+            this.controller.transferHighAndLow({
+                fromType: sourceTypeRaw,
+                fromId: sourceId,
+                highToType: sinkAIsHigh ? sinkATypeRaw : sinkBTypeRaw,
+                highToId: sinkAIsHigh ? sinkAId : sinkBId,
+                lowToType: sinkAIsHigh ? sinkBTypeRaw : sinkATypeRaw,
+                lowToId: sinkAIsHigh ? sinkBId : sinkAId,
+            });
 
-            if (sinkALowOrHighRaw === 'high') {
-                this.controller.transferHighAndLow(
-                    sourceTypeRaw,
-                    sourceId,
-                    sinkATypeRaw,
-                    sinkAId,
-                    sinkBTypeRaw,
-                    sinkBId
-                );
-            } else {
-                this.controller.transferHighAndLow(
-                    sourceTypeRaw,
-                    sourceId,
-                    sinkBTypeRaw,
-                    sinkBId,
-                    sinkATypeRaw,
-                    sinkAId
-                );
-            }
             return;
         }
+        throw new Error(`Unrecognized command: ${command}`);
     }
 }
