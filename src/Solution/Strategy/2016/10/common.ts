@@ -126,14 +126,14 @@ type ControllerBotAddNewMicrochipEventPayload = {
     microchips: number[];
 };
 
-type ControllerBinAddNewMicrochipEventPayload = {
+type ControllerOutputAddNewMicrochipEventPayload = {
     microchips: number[];
 };
 
 type ControllerEvents = {
     'bot:microchipsCompared': ControllerBotMicrochipComparisonEventPayload;
     'bot:microchipAdded': ControllerBotAddNewMicrochipEventPayload;
-    'bin:microchipAdded': ControllerBinAddNewMicrochipEventPayload;
+    'output:microchipAdded': ControllerOutputAddNewMicrochipEventPayload;
 };
 
 // Event handler type
@@ -170,29 +170,29 @@ class ControllerEventHandlerMap {
 
 export interface ControllerProps {
     bots: Map<number, Collector>;
-    bins: Map<number, Collector>;
+    outputs: Map<number, Collector>;
     botMaxMicrochips: number;
-    binMaxMicrochips: number;
+    outputMaxMicrochips: number;
     handlers: ControllerEventHandlerMap;
 }
 export class Controller {
     private bots: Map<number, Collector>;
-    private bins: Map<number, Collector>;
+    private outputs: Map<number, Collector>;
     private botMaxMicrochips: number;
-    private binMaxMicrochips: number;
+    private outputMaxMicrochips: number;
     private handlers: ControllerEventHandlerMap;
 
     constructor({
         bots = new Map(),
-        bins = new Map(),
+        outputs = new Map(),
         botMaxMicrochips = 2,
-        binMaxMicrochips = 1,
+        outputMaxMicrochips = 1,
         handlers = new ControllerEventHandlerMap(),
     }: ControllerProps) {
         this.bots = bots;
-        this.bins = bins;
+        this.outputs = outputs;
         this.botMaxMicrochips = botMaxMicrochips;
-        this.binMaxMicrochips = binMaxMicrochips;
+        this.outputMaxMicrochips = outputMaxMicrochips;
         this.handlers = handlers;
     }
     public addEventHandler<K extends keyof ControllerEvents>(
@@ -221,64 +221,261 @@ export class Controller {
         }
         return bot;
     }
-    public ensureBin(binId: number) {
-        let bin = this.bins.get(binId);
-        if (undefined === bin) {
-            bin = new Collector({ maxMicrochips: this.binMaxMicrochips });
-            bin.addEventHandler('microchipAdded', (event) => {
-                this.emit('bin:microchipAdded', event);
+    public ensureOutput(outputId: number) {
+        let output = this.outputs.get(outputId);
+        if (undefined === output) {
+            output = new Collector({ maxMicrochips: this.outputMaxMicrochips });
+            output.addEventHandler('microchipAdded', (event) => {
+                this.emit('output:microchipAdded', event);
             });
-            this.bins.set(binId, bin);
+            this.outputs.set(outputId, output);
         }
-        return bin;
+        return output;
     }
-    public giveValueToBot(botId: number, value: number) {
-        const bot = this.ensureBot(botId);
-        bot.addMicrochip(value);
+    public giveValue(sinkType: SinkType, sinkId: number, value: number) {
+        let sink: Collector | null = null;
+        switch (sinkType) {
+            case 'output': {
+                sink = this.ensureOutput(sinkId);
+                break;
+            }
+            case 'bot': {
+                sink = this.ensureBot(sinkId);
+            }
+            default: {
+                throw new Error(`Invalid sinkType: ${sinkType}`);
+            }
+        }
+        sink.addMicrochip(value);
     }
-    public transferFromBotToBin(fromBotId: number, toBinId: number) {
-        const fromBot = this.ensureBot(fromBotId);
-        const toBin = this.ensureBin(toBinId);
+    public transferHighAndLow(
+        fromType: SourceType,
+        fromId: number,
+        highToType: SinkType,
+        highToId: number,
+        lowToType: SinkType,
+        lowToId: number
+    ) {
+        let source: Collector | null = null;
+        let highToSink: Collector | null = null;
+        let lowToSink: Collector | null = null;
+        switch (fromType) {
+            case 'output': {
+                source = this.ensureOutput(fromId);
+                break;
+            }
+            case 'bot': {
+                source = this.ensureBot(fromId);
+            }
+            default: {
+                throw new Error(`Invalid fromType: ${fromType}`);
+            }
+        }
+        switch (highToType) {
+            case 'output': {
+                highToSink = this.ensureOutput(highToId);
+                break;
+            }
+            case 'bot': {
+                highToSink = this.ensureBot(highToId);
+            }
+            default: {
+                throw new Error(`Invalid highToType: ${highToType}`);
+            }
+        }
+        switch (lowToType) {
+            case 'output': {
+                lowToSink = this.ensureOutput(lowToId);
+                break;
+            }
+            case 'bot': {
+                lowToSink = this.ensureBot(lowToId);
+            }
+            default: {
+                throw new Error(`Invalid lowToType: ${lowToType}`);
+            }
+        }
         const { highValue, lowValue } =
-            fromBot.compareAndReturnHighAndLowMicrochips();
+            source.compareAndReturnHighAndLowMicrochips();
         if (null !== highValue) {
-            toBin.addMicrochip(highValue);
+            highToSink.addMicrochip(highValue);
         }
         if (null !== lowValue) {
-            toBin.addMicrochip(lowValue);
-        }
-    }
-    public transferFromBotToBot(fromBotId: number, toBotId: number) {
-        const fromBot = this.ensureBot(fromBotId);
-        const toBot = this.ensureBot(toBotId);
-        const { highValue, lowValue } =
-            fromBot.compareAndReturnHighAndLowMicrochips();
-        if (null !== highValue) {
-            toBot.addMicrochip(highValue);
-        }
-        if (null !== lowValue) {
-            toBot.addMicrochip(lowValue);
+            lowToSink.addMicrochip(lowValue);
         }
     }
 }
+
+type SinkType = 'bot' | 'output';
+type SourceType = SinkType;
+
+type OutputType = 'low' | 'high';
+type InputType = OutputType;
+// TODO: Build a way to transfer high/low to two separate sinks
 export class CommandParser {
     private controller: Controller;
     constructor(controller: Controller) {
         this.controller = controller;
     }
+    public isValidSinkType(type: string): type is SinkType {
+        return type === 'bot' || type === 'output';
+    }
+    public isValidSourceType(type: string): type is SourceType {
+        return this.isValidSinkType(type);
+    }
+    public isValidOutputType(type: string): type is OutputType {
+        return type === 'low' || type === 'high';
+    }
+    public isValidInputType(type: string): type is InputType {
+        return this.isValidOutputType(type);
+    }
     public execute(commandString: string) {
         const command = commandString.trim();
-
-        const patternTransfer =
-            /bot\s+(\d+)\s+gives\s+(low|high)\s+to\s+(bot|output)\s+(\d+)\s+and\s+(low|high)\s+to\s+(bot|output)\s+(\d+)/;
-        const resultsTransfer = patternTransfer.exec(command);
-        if (null !== resultsTransfer) {
-            return;
-        }
-
-        const patternAdd = /value\s+(\d+)\s+goes\s+to\s+(bot|output)\s+(\d+)/;
-        const resultsAdd = patternAdd.exec(command);
+        const resultsAdd =
+            /^value\s+(?<value>\d+)\s+goes\s+to\s+(?<sinkType>bot|output)\s+(?<sinkId>\d+)$/.exec(
+                command
+            );
         if (null !== resultsAdd) {
+            const valueRaw = resultsAdd?.groups?.value;
+            const sinkTypeRaw = resultsAdd?.groups?.sinkType;
+            const sinkIdRaw = resultsAdd?.groups?.sinkId;
+            if (undefined === valueRaw) {
+                throw new Error(`valueRaw is undefined`);
+            }
+            const value = parseInt(valueRaw);
+            if (isNaN(value)) {
+                throw new Error(`value is NaN`);
+            }
+
+            if (undefined === sinkTypeRaw) {
+                throw new Error(`sinkType is undefined`);
+            }
+
+            if (!this.isValidSinkType(sinkTypeRaw)) {
+                throw new Error(`Unknown sinkType: ${sinkTypeRaw}`);
+            }
+
+            if (undefined === sinkIdRaw) {
+                throw new Error(`sinkIdRaw is undefined`);
+            }
+            const sinkId = parseInt(sinkIdRaw);
+            if (isNaN(sinkId)) {
+                throw new Error(`sinkId is NaN`);
+            }
+            this.controller.giveValue(sinkTypeRaw, sinkId, value);
+        }
+        const resultsTransfer =
+            /^(?<sourceType>bot|output)\s+(?<sourceId>\d+)\s+gives\s+(?<sinkALowOrHigh>low|high)\s+to\s+(?<sinkAType>bot|output)\s+(?<sinkAId>\d+)\s+and\s+(?<sinkBLowOrHigh>low|high)\s+to\s+(?<sinkBType>bot|output)\s+(?<sinkBId>\d+)$/.exec(
+                command
+            );
+        if (null !== resultsTransfer) {
+            const sourceTypeRaw = resultsTransfer?.groups?.sourceType;
+            const sourceIdRaw = resultsTransfer?.groups?.sourceId;
+
+            const sinkALowOrHighRaw = resultsTransfer?.groups?.sinkALowOrHigh;
+            const sinkATypeRaw = resultsTransfer?.groups?.sinkAType;
+            const sinkAIdRaw = resultsTransfer?.groups?.sinkAId;
+            const sinkBLowOrHighRaw = resultsTransfer?.groups?.sinkBLowOrHigh;
+            const sinkBTypeRaw = resultsTransfer?.groups?.sinkBType;
+            const sinkBIdRaw = resultsTransfer?.groups?.sinkBId;
+
+            if (undefined === sourceTypeRaw) {
+                throw new Error(`sourceType is undefined`);
+            }
+
+            if (!this.isValidSourceType(sourceTypeRaw)) {
+                throw new Error(`Unknown sourceType: ${sourceTypeRaw}`);
+            }
+
+            if (undefined === sourceIdRaw) {
+                throw new Error(`sourceIdRaw is undefined`);
+            }
+
+            const sourceId = parseInt(sourceIdRaw);
+
+            if (isNaN(sourceId)) {
+                throw new Error(`sourceId is NaN`);
+            }
+
+            if (undefined === sinkATypeRaw) {
+                throw new Error(`sinkAType is undefined`);
+            }
+
+            if (!this.isValidSinkType(sinkATypeRaw)) {
+                throw new Error(`Unknown sinkAType: ${sinkATypeRaw}`);
+            }
+
+            if (undefined === sinkAIdRaw) {
+                throw new Error(`sinkAIdRaw is undefined`);
+            }
+
+            const sinkAId = parseInt(sinkAIdRaw);
+
+            if (isNaN(sinkAId)) {
+                throw new Error(`sinkAId is NaN`);
+            }
+
+            if (undefined === sinkALowOrHighRaw) {
+                throw new Error(`sinkALowOrHighRaw is undefined`);
+            }
+            if (!this.isValidOutputType(sinkALowOrHighRaw)) {
+                throw new Error(
+                    `Unknown sinkALowOrHighRaw: ${sinkALowOrHighRaw}`
+                );
+            }
+
+            if (undefined === sinkBTypeRaw) {
+                throw new Error(`sinkBType is undefined`);
+            }
+
+            if (!this.isValidSinkType(sinkBTypeRaw)) {
+                throw new Error(`Unknown sinkBType: ${sinkBTypeRaw}`);
+            }
+
+            if (undefined === sinkBIdRaw) {
+                throw new Error(`sinkBIdRaw is undefined`);
+            }
+
+            const sinkBId = parseInt(sinkBIdRaw);
+
+            if (isNaN(sinkBId)) {
+                throw new Error(`sinkBId is NaN`);
+            }
+
+            if (undefined === sinkBLowOrHighRaw) {
+                throw new Error(`sinkBLowOrHighRaw is undefined`);
+            }
+            if (!this.isValidOutputType(sinkBLowOrHighRaw)) {
+                throw new Error(
+                    `Unknown sinkBLowOrHighRaw: ${sinkBLowOrHighRaw}`
+                );
+            }
+
+            if (sinkALowOrHighRaw === sinkBLowOrHighRaw) {
+                throw new Error(
+                    `Invalid: sinkALowOrHighRaw === sinkBLowOrHighRaw: ${sinkALowOrHighRaw}, ${sinkBLowOrHighRaw}`
+                );
+            }
+
+            if (sinkALowOrHighRaw === 'high') {
+                this.controller.transferHighAndLow(
+                    sourceTypeRaw,
+                    sourceId,
+                    sinkATypeRaw,
+                    sinkAId,
+                    sinkBTypeRaw,
+                    sinkBId
+                );
+            } else {
+                this.controller.transferHighAndLow(
+                    sourceTypeRaw,
+                    sourceId,
+                    sinkBTypeRaw,
+                    sinkBId,
+                    sinkATypeRaw,
+                    sinkAId
+                );
+            }
             return;
         }
     }
