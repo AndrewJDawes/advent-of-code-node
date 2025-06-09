@@ -1,6 +1,10 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
-import { CommandParser, Controller } from './common.js';
+import {
+    CommandParser,
+    Controller,
+    MonitorForResultsWatchForComparison,
+} from './common.js';
 /*
 --- Day 9: Explosives in Cyberspace ---
 Wandering around a secure area, you come across a datalink port to a new part of the network. After briefly scanning it for interesting files, you find one file in particular that catches your attention. It's compressed with an experimental format, but fortunately, the documentation for the format is nearby.
@@ -29,10 +33,22 @@ class Solution implements InterfaceSolutionStrategy {
         const iterator = await this.inputFetcher.getAsyncIterator();
         const controller = new Controller({});
         const commandParser = new CommandParser(controller);
+        const watcher = new MonitorForResultsWatchForComparison({
+            controller,
+            comparisons: new Set([2, 5]),
+        });
         const aggregator = [];
         for await (let line of iterator) {
+            commandParser.execute(line);
+            if (watcher.isDone()) {
+                break;
+            }
         }
-        return aggregator.length.toString();
+        const results = watcher.getResults();
+        if (null === results || !watcher.isDone()) {
+            throw new Error(`Unable to solve!`);
+        }
+        return results.toString();
     }
 }
 export default Solution;
