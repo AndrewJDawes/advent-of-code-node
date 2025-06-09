@@ -41,26 +41,44 @@ class CollectorEventHandlerMap {
         return (this.map.get(type) ?? []) as CollectorEventHandler<K>[];
     }
 }
-
-interface CollectorProps {
-    maxMicrochips?: number;
-    microchips?: number[];
-    handlers?: CollectorEventHandlerMap;
-}
-
 export class Collector {
     private maxMicrochips: number;
     private microchips: number[];
     private handlers: CollectorEventHandlerMap;
-
+    private processingQueue: ((collector: Collector) => void)[];
+    private minMicrochips: number;
     constructor({
+        minMicrochips = 2,
         maxMicrochips = 2,
         microchips = [],
         handlers = new CollectorEventHandlerMap(),
-    }: CollectorProps) {
+        processingQueue = [],
+    }: {
+        maxMicrochips?: number;
+        minMicrochips?: number;
+        microchips?: number[];
+        handlers?: CollectorEventHandlerMap;
+        processingQueue?: ((collector: Collector) => void)[];
+    }) {
+        this.minMicrochips = minMicrochips;
         this.maxMicrochips = maxMicrochips;
         this.microchips = microchips;
         this.handlers = handlers;
+        this.processingQueue = processingQueue;
+    }
+
+    public enqueueProcess(process: (collector: Collector) => void) {
+        this.processingQueue.push(process);
+        this.processQueue();
+    }
+
+    public processQueue() {
+        for (const process of this.processingQueue) {
+            if (!(this.microchips.length >= this.minMicrochips)) {
+                return;
+            }
+            process(this);
+        }
     }
 
     public getMicrochips() {
@@ -91,6 +109,7 @@ export class Collector {
         this.emit('microchipAdded', {
             microchips: this.microchips,
         });
+        this.processQueue();
     }
 
     public compareAndReturnHighAndLowMicrochips() {
