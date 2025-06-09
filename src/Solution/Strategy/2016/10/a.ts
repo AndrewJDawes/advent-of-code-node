@@ -26,8 +26,10 @@ What is the decompressed length of the file (your puzzle input)? Don't count whi
 
 class Solution implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
-    constructor(inputFetcher: InterfaceInputFetcher) {
+    comparisons: Set<number>;
+    constructor(inputFetcher: InterfaceInputFetcher, comparisons: Set<number>) {
         this.inputFetcher = inputFetcher;
+        this.comparisons = comparisons;
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
@@ -35,7 +37,7 @@ class Solution implements InterfaceSolutionStrategy {
         const commandParser = new CommandParser(controller);
         const watcher = new MonitorForResultsWatchForComparison({
             controller,
-            comparisons: new Set([2, 5]),
+            comparisons: this.comparisons,
         });
         const aggregator = [];
         for await (let line of iterator) {

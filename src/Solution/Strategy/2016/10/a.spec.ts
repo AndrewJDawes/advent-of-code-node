@@ -11,7 +11,10 @@ describe('Solution201610a', () => {
             'bot 0 gives low to output 2 and high to output 0',
             'value 2 goes to bot 2',
         ]);
-        const solution = await new Solution201610a(input).solve();
+        const solution = await new Solution201610a(
+            input,
+            new Set([2, 5])
+        ).solve();
         expect(solution).to.eql('2');
     });
 });
