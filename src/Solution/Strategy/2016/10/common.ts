@@ -339,40 +339,42 @@ export class Controller implements CommandParserControllerInterface {
                 throw new Error(`Invalid fromType: ${fromType}`);
             }
         }
-        switch (highToType) {
-            case 'output': {
-                highToSink = this.ensureOutput(highToId);
-                break;
+        source.enqueueProcess((collector) => {
+            switch (highToType) {
+                case 'output': {
+                    highToSink = this.ensureOutput(highToId);
+                    break;
+                }
+                case 'bot': {
+                    highToSink = this.ensureBot(highToId);
+                    break;
+                }
+                default: {
+                    throw new Error(`Invalid highToType: ${highToType}`);
+                }
             }
-            case 'bot': {
-                highToSink = this.ensureBot(highToId);
-                break;
+            switch (lowToType) {
+                case 'output': {
+                    lowToSink = this.ensureOutput(lowToId);
+                    break;
+                }
+                case 'bot': {
+                    lowToSink = this.ensureBot(lowToId);
+                    break;
+                }
+                default: {
+                    throw new Error(`Invalid lowToType: ${lowToType}`);
+                }
             }
-            default: {
-                throw new Error(`Invalid highToType: ${highToType}`);
+            const { highValue, lowValue } =
+                collector.compareAndReturnHighAndLowMicrochips();
+            if (null !== highValue) {
+                highToSink.addMicrochip(highValue);
             }
-        }
-        switch (lowToType) {
-            case 'output': {
-                lowToSink = this.ensureOutput(lowToId);
-                break;
+            if (null !== lowValue) {
+                lowToSink.addMicrochip(lowValue);
             }
-            case 'bot': {
-                lowToSink = this.ensureBot(lowToId);
-                break;
-            }
-            default: {
-                throw new Error(`Invalid lowToType: ${lowToType}`);
-            }
-        }
-        const { highValue, lowValue } =
-            source.compareAndReturnHighAndLowMicrochips();
-        if (null !== highValue) {
-            highToSink.addMicrochip(highValue);
-        }
-        if (null !== lowValue) {
-            lowToSink.addMicrochip(lowValue);
-        }
+        });
     }
 }
 
