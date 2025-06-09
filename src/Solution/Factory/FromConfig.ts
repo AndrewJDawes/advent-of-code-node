@@ -25,6 +25,7 @@ import Solution20168b from '../Strategy/2016/8/b.js';
 import Solution20169a from '../Strategy/2016/9/a.js';
 import Solution20169b from '../Strategy/2016/9/b.js';
 import Solution201610a from '../Strategy/2016/10/a.js';
+import Solution201610b from '../Strategy/2016/10/b.js';
 class FromConfig implements InterfaceSolutionFactory {
     inputFetcherFactory: InterfaceInputFetcherFactory;
     constructor(inputFetcherFactory: InterfaceInputFetcherFactory) {
@@ -84,6 +85,8 @@ class FromConfig implements InterfaceSolutionFactory {
                 return new Solution20169b(service);
             case '201610a':
                 return new Solution201610a(service, new Set([17, 61]));
+            case '201610b':
+                return new Solution201610b(service, new Set([0, 1, 2]));
             default:
                 throw new Error(
                     `Unknown year and day and part: ${yearDayPart}`
