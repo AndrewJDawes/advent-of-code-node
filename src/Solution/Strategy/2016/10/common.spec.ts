@@ -117,6 +117,37 @@ describe('201610', () => {
             expect(output14?.getMicrochips()).to.eql([5]);
             expect(bot185?.getMicrochips()).to.eql([25]);
         });
+        it('does not transfer until minMicrochips is satisfied', () => {
+            const controller = new Controller({});
+            controller.giveValue('bot', 1, 1);
+            controller.transferHighAndLow({
+                fromType: 'bot',
+                fromId: 1,
+                lowToType: 'output',
+                lowToId: 2,
+                highToType: 'bot',
+                highToId: 3,
+            });
+            const bots = controller.getBots();
+            const outputs = controller.getOutputs();
+            const bot1 = bots.get(1);
+            const output2 = outputs.get(2);
+            const bot3 = bots.get(3);
+            expect(bot1).not.to.be.undefined;
+            expect(output2).not.to.be.undefined;
+            expect(bot3).not.to.be.undefined;
+            expect(bot1?.getMicrochips()).to.eql([1]);
+            expect(output2?.getMicrochips()).to.eql([]);
+            expect(bot3?.getMicrochips()).to.eql([]);
+            controller.giveValue('bot', 1, 2);
+            expect(bot1?.getMicrochips()).to.eql([]);
+            expect(output2?.getMicrochips()).to.eql([1]);
+            expect(bot3?.getMicrochips()).to.eql([2]);
+            controller.giveValue('bot', 1, 3);
+            expect(bot1?.getMicrochips()).to.eql([3]);
+            expect(output2?.getMicrochips()).to.eql([1]);
+            expect(bot3?.getMicrochips()).to.eql([2]);
+        });
         it('emits bot:microchipAdded', () => {
             const controller = new Controller({ botMaxMicrochips: 3 });
             const handler1 = sinon.spy();
@@ -214,7 +245,7 @@ describe('201610', () => {
                 collector.compareAndReturnHighAndLowMicrochips();
             expect(lowValue).to.equal(1);
             expect(highValue).to.equal(2);
-            expect(collector.getMicrochips()).to.deep.eq([]);
+            expect(collector.getMicrochips()).to.eql([]);
         });
         it('compareAndReturnHighAndLowMicrochips', () => {
             const collector = new Collector({ maxMicrochips: 4 });
@@ -226,7 +257,7 @@ describe('201610', () => {
                 collector.compareAndReturnHighAndLowMicrochips();
             expect(lowValue).to.equal(1);
             expect(highValue).to.equal(4);
-            expect(collector.getMicrochips()).to.deep.eq([2, 3]);
+            expect(collector.getMicrochips()).to.eql([2, 3]);
         });
         it('emits microchipAdded and microchipsCompared', () => {
             const collector = new Collector({});
