@@ -308,6 +308,21 @@ export class Controller implements CommandParserControllerInterface {
         }
         sink.addMicrochip(value);
     }
+    public ensureCollector(collectorType: CollectorType, collectorId: number) {
+        switch (collectorType) {
+            case 'output': {
+                return this.ensureOutput(collectorId);
+                break;
+            }
+            case 'bot': {
+                return this.ensureBot(collectorId);
+                break;
+            }
+            default: {
+                throw new Error(`Invalid collectorType: ${collectorType}`);
+            }
+        }
+    }
     public transferHighAndLow({
         fromType,
         fromId,
@@ -323,49 +338,10 @@ export class Controller implements CommandParserControllerInterface {
         lowToType: SinkType;
         lowToId: number;
     }) {
-        let source: Collector | null = null;
-        let highToSink: Collector | null = null;
-        let lowToSink: Collector | null = null;
-        switch (fromType) {
-            case 'output': {
-                source = this.ensureOutput(fromId);
-                break;
-            }
-            case 'bot': {
-                source = this.ensureBot(fromId);
-                break;
-            }
-            default: {
-                throw new Error(`Invalid fromType: ${fromType}`);
-            }
-        }
+        const source = this.ensureCollector(fromType, fromId);
+        const highToSink = this.ensureCollector(highToType, highToId);
+        const lowToSink = this.ensureCollector(lowToType, lowToId);
         source.enqueueProcess((collector) => {
-            switch (highToType) {
-                case 'output': {
-                    highToSink = this.ensureOutput(highToId);
-                    break;
-                }
-                case 'bot': {
-                    highToSink = this.ensureBot(highToId);
-                    break;
-                }
-                default: {
-                    throw new Error(`Invalid highToType: ${highToType}`);
-                }
-            }
-            switch (lowToType) {
-                case 'output': {
-                    lowToSink = this.ensureOutput(lowToId);
-                    break;
-                }
-                case 'bot': {
-                    lowToSink = this.ensureBot(lowToId);
-                    break;
-                }
-                default: {
-                    throw new Error(`Invalid lowToType: ${lowToType}`);
-                }
-            }
             const { highValue, lowValue } =
                 collector.compareAndReturnHighAndLowMicrochips();
             if (null !== highValue) {
