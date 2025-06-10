@@ -1,7 +1,10 @@
-import { expect } from 'chai';
+import { expect, use } from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+use(sinonChai);
 import StringArray from '../../../../InputFetcher/Service/StringArray.js';
-import Solution20157a, { SimpleGraph } from './a.js';
-import exp from 'constants';
+import Solution20157a, { SimpleGraph, Vertex } from './a.js';
+import { Verify } from 'crypto';
 
 describe('Solution 20157a', () => {
     const sampleCircuit = [
@@ -18,12 +21,18 @@ describe('Solution 20157a', () => {
         describe('getVertexEdges', () => {
             it('gets all edges of the given vertex', () => {
                 const mySimpleGraph = new SimpleGraph();
-                mySimpleGraph.addVertex('a');
-                mySimpleGraph.addVertex('b');
-                mySimpleGraph.addVertex('c');
+                const vertexA = new Vertex('a');
+                const vertexB = new Vertex('b');
+                const vertexC = new Vertex('c');
+
+                mySimpleGraph.addVertex(vertexA);
+                mySimpleGraph.addVertex(vertexB);
+                mySimpleGraph.addVertex(vertexC);
                 mySimpleGraph.addEdge('a', 'b');
                 mySimpleGraph.addEdge('c', 'a');
-                const targetEdges = mySimpleGraph.getVertexEdges('a');
+
+                const targetEdges = mySimpleGraph.getVertexEdges(vertexA);
+
                 expect(targetEdges).to.eql([
                     {
                         from: mySimpleGraph.getVertex('a'),
@@ -37,46 +46,15 @@ describe('Solution 20157a', () => {
             });
         });
     });
-    // describe('solve', () => {
-    //     it('interprets sampleCircuit.d as 72', async () => {
-    //         const stringArr = new StringArray(sampleCircuit);
-    //         const solution = await new Solution20157a(stringArr).solve();
-    //         expect(solution).to.equal('72');
-    //     });
-    //     it('interprets sampleCircuit.e as 507', async () => {
-    //         const stringArr = new StringArray(sampleCircuit);
-    //         const solution = await new Solution20157a(stringArr).solve();
-    //         expect(solution).to.equal('507');
-    //     });
-    //     it('interprets sampleCircuit.f as 492', async () => {
-    //         const stringArr = new StringArray(sampleCircuit);
-    //         const solution = await new Solution20157a(stringArr).solve();
-    //         expect(solution).to.equal('492');
-    //     });
-    //     it('interprets sampleCircuit.g as 114', async () => {
-    //         const stringArr = new StringArray(sampleCircuit);
-    //         const solution = await new Solution20157a(stringArr).solve();
-    //         expect(solution).to.equal('114');
-    //     });
-    //     it('interprets sampleCircuit.h as 65412', async () => {
-    //         const stringArr = new StringArray(sampleCircuit);
-    //         const solution = await new Solution20157a(stringArr).solve();
-    //         expect(solution).to.equal('65412');
-    //     });
-    //     it('interprets sampleCircuit.i as 65079', async () => {
-    //         const stringArr = new StringArray(sampleCircuit);
-    //         const solution = await new Solution20157a(stringArr).solve();
-    //         expect(solution).to.equal('65079');
-    //     });
-    //     it('interprets sampleCircuit.x as 123', async () => {
-    //         const stringArr = new StringArray(sampleCircuit);
-    //         const solution = await new Solution20157a(stringArr).solve();
-    //         expect(solution).to.equal('123');
-    //     });
-    //     it('interprets sampleCircuit.y as 456', async () => {
-    //         const stringArr = new StringArray(sampleCircuit);
-    //         const solution = await new Solution20157a(stringArr).solve();
-    //         expect(solution).to.equal('456');
-    //     });
-    // });
+    describe('Vertex class', () => {
+        describe('onSetValue', () => {
+            it('notifies of value change', () => {
+                const myCallback = sinon.spy();
+                const myVertex = new Vertex('a');
+                myVertex.onSetValue(myCallback);
+                myVertex.setValue(123);
+                expect(myCallback).to.have.been.calledWith(myVertex);
+            });
+        });
+    });
 });

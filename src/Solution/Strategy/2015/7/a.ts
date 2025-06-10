@@ -40,34 +40,44 @@ y: 456
 In little Bobby's kit's instructions booklet (provided as your puzzle input), what signal is ultimately provided to wire a?
 */
 
-type Bit = 0 | 1;
-type Binary16Tuple = [
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit,
-    Bit
-];
-
-interface Vertex {
-    name: string;
-    edges?: Edge[];
-}
-
 interface Edge {
     from: Vertex;
     to: Vertex;
+}
+
+export class Vertex {
+    private name: string;
+    private value: number | null = null;
+    private callbacks: ((vertex: Vertex) => void)[];
+
+    constructor(name: string, value: number | null = null) {
+        this.name = name;
+        this.value = value;
+        this.callbacks = [];
+    }
+
+    onSetValue(callback: (vertex: Vertex) => void) {
+        this.callbacks.push(callback);
+    }
+
+    getName() {
+        return this.name;
+    }
+
+    getValue() {
+        return this.value;
+    }
+
+    setName(name: string) {
+        this.name = name;
+    }
+
+    setValue(value: number | null) {
+        this.value = value;
+        this.callbacks.forEach((c) => {
+            c(this);
+        });
+    }
 }
 
 export class SimpleGraph {
@@ -79,24 +89,39 @@ export class SimpleGraph {
         this.edges = [];
     }
 
-    addVertex(name: string) {
-        if (this.getVertex(name)) {
-            throw new Error(`Vertex already exists: ${name}`);
+    addVertex(vertex: Vertex) {
+        if (this.getVertex(vertex.getName())) {
+            throw new Error(`Vertex already exists: ${vertex.getName()}`);
         }
-        this.vertices.push({ name });
+        this.vertices.push(vertex);
     }
 
     getVertex(name: string) {
-        return this.vertices.find((v) => v.name === name);
+        return this.vertices.find((v) => v.getName() === name);
     }
 
-    getVertexEdges(name: string) {
+    getVertexEdges(vertex: Vertex) {
         return this.edges.filter((edge) => {
-            if (edge.from.name === name || edge.to.name == name) {
+            if (
+                edge.from.getName() === vertex.getName() ||
+                edge.to.getName() == vertex.getName()
+            ) {
                 return true;
             }
             return false;
         });
+    }
+
+    propagateVertex(vertex: Vertex) {
+        const edges = this.getVertexEdges(vertex);
+        edges
+            .filter((e) => {
+                e.from === vertex;
+            })
+            .forEach((e) => {
+                // Will need to calculate value
+                e.to.setValue(vertex.getValue());
+            });
     }
 
     addEdge(fromName: string, toName: string) {
@@ -109,37 +134,37 @@ export class SimpleGraph {
         }
         const edge: Edge = { from: fromVertex, to: toVertex };
         this.edges.push(edge);
-        if (!fromVertex.edges) {
-            fromVertex.edges = [];
-        }
-        fromVertex.edges.push(edge);
-        if (!toVertex.edges) {
-            toVertex.edges = [];
-        }
-        toVertex.edges.push(edge);
     }
 
-    deleteVertex(name: string) {
-        const vertex = this.getVertex(name);
-        if (!vertex) {
+    deleteVertex(vertex: Vertex) {
+        if (
+            -1 ===
+            this.vertices.findIndex((v) => {
+                v === vertex;
+            })
+        ) {
             throw new Error(`Vertex not found: ${name}`);
         }
-        this.vertices = this.vertices.filter((v) => v.name !== name);
+        this.vertices = this.vertices.filter(
+            (v) => v.getName() !== vertex.getName()
+        );
         this.edges = this.edges.filter(
-            (e) => e.from.name !== name && e.to.name !== name
+            (e) =>
+                e.from.getName() !== vertex.getName() &&
+                e.to.getName() !== vertex.getName()
         );
     }
 
     deleteEdge(fromName: string, toName: string) {
         this.edges = this.edges.filter(
-            (e) => !(e.from.name === fromName && e.to.name === toName)
+            (e) => !(e.from.getName() === fromName && e.to.getName() === toName)
         );
     }
 }
 
 class Solution20157a implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
-    wires: Record<string, Binary16Tuple>;
+    wires: Record<string, number>;
 
     constructor(inputFetcher: InterfaceInputFetcher) {
         this.inputFetcher = inputFetcher;
@@ -159,8 +184,6 @@ class Solution20157a implements InterfaceSolutionStrategy {
 
         return result.toString();
     }
-
-    // Parse line
 }
 
 export default Solution20157a;
