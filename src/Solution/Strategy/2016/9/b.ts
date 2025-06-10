@@ -1,0 +1,73 @@
+import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
+import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
+import {
+    DecompressionStateMachineCounter,
+    DecompressionStateMachineRecursive,
+} from './common.js';
+/*
+--- Part Two ---
+Apparently, the file actually uses version two of the format.
+
+In version two, the only difference is that markers within decompressed data are decompressed. This, the documentation explains, provides much more substantial compression capabilities, allowing many-gigabyte files to be stored in only a few kilobytes.
+
+For example:
+
+(3x3)XYZ still becomes XYZXYZXYZ, as the decompressed section contains no markers.
+X(8x2)(3x3)ABCY becomes XABCABCABCABCABCABCY, because the decompressed data from the (8x2) marker is then further decompressed, thus triggering the (3x3) marker twice for a total of six ABC sequences.
+(27x12)(20x12)(13x14)(7x10)(1x12)A decompresses into a string of A repeated 241920 times.
+(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN becomes 445 characters long.
+Unfortunately, the computer you brought probably doesn't have enough memory to actually decompress the file; you'll have to come up with another way to get its decompressed length.
+
+What is the decompressed length of the file using this improved format?
+*/
+
+/*
+Does it matter whether we split parentheses as we encounter them (in order)?
+
+- (5x3)ABC(5x2)XYZ12
+
+In order:
+
+- (5x3)ABC(5x2)XYZ12
+- ABC(5xABC(5xABC(5x2)XYZ12
+- ABC(5xABC(5xABCXYZ12XYZ12
+
+Out of order:
+
+- (5x3)ABC(5x2)XYZ12
+- (5x3)ABCXYZ12XYZ12
+- ABCXYABCXYABCXYZ12XYZ12
+
+*/
+/*
+
+TODO:
+
+- Create a tree datastructure
+- Objects can be markers OR they can be characters (or just count: 1 or maybe 1x1)
+- Markers at least can have children
+- For each marker, start parsing its own letters
+- For each marker encountered, recursively start a new child that will parse its own letters (to see if there are any more submarkers)
+- Free letters should be counted differently
+- Then we can recursively multiply
+
+*/
+class Solution implements InterfaceSolutionStrategy {
+    inputFetcher: InterfaceInputFetcher;
+    constructor(inputFetcher: InterfaceInputFetcher) {
+        this.inputFetcher = inputFetcher;
+    }
+    async solve() {
+        const iterator = await this.inputFetcher.getAsyncIterator();
+        const decompressionStateMachine = new DecompressionStateMachineCounter({
+            multiplier: 1,
+        });
+        for await (let line of iterator) {
+            for (const char of line.split('')) {
+                decompressionStateMachine.input(char);
+            }
+        }
+        return decompressionStateMachine.count().toString();
+    }
+}
+export default Solution;

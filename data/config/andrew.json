@@ -82,5 +82,61 @@
         "part": "b",
         "dataType": "url",
         "dataSource": "https://adventofcode.com/2016/day/6/input"
+    },
+    {
+        "year": "2016",
+        "day": "7",
+        "part": "a",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/7/input"
+    },
+    {
+        "year": "2016",
+        "day": "7",
+        "part": "b",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/7/input"
+    },
+    {
+        "year": "2016",
+        "day": "8",
+        "part": "a",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/8/input"
+    },
+    {
+        "year": "2016",
+        "day": "8",
+        "part": "b",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/8/input"
+    },
+    {
+        "year": "2016",
+        "day": "9",
+        "part": "a",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/9/input"
+    },
+    {
+        "year": "2016",
+        "day": "9",
+        "part": "b",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/9/input"
+    },
+    {
+        "year": "2016",
+        "day": "10",
+        "part": "a",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/10/input"
+    },
+    {
+        "year": "2016",
+        "day": "10",
+        "part": "b",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/10/input"
     }
 ]
