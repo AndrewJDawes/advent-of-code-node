@@ -45,6 +45,24 @@ describe('Solution 20157a', () => {
                 ]);
             });
         });
+        describe('propagateVertex', () => {
+            it('update related vertices when vertex is updated', () => {
+                const mySimpleGraph = new SimpleGraph();
+                const vertexA = new Vertex('a');
+                const vertexB = new Vertex('b');
+                const vertexC = new Vertex('c');
+
+                mySimpleGraph.addVertex(vertexA);
+                mySimpleGraph.addVertex(vertexB);
+                mySimpleGraph.addVertex(vertexC);
+                mySimpleGraph.addEdge('a', 'b');
+                mySimpleGraph.addEdge('c', 'a');
+
+                vertexA.setValue(456);
+                expect(vertexB.getValue()).to.eql(456);
+                expect(vertexC.getValue()).to.eql(null);
+            });
+        });
     });
     describe('Vertex class', () => {
         describe('onSetValue', () => {

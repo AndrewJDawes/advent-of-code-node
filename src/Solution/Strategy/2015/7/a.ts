@@ -94,6 +94,7 @@ export class SimpleGraph {
             throw new Error(`Vertex already exists: ${vertex.getName()}`);
         }
         this.vertices.push(vertex);
+        vertex.onSetValue(this.propagateVertex.bind(this));
     }
 
     getVertex(name: string) {
@@ -116,7 +117,7 @@ export class SimpleGraph {
         const edges = this.getVertexEdges(vertex);
         edges
             .filter((e) => {
-                e.from === vertex;
+                return e.from === vertex;
             })
             .forEach((e) => {
                 // Will need to calculate value
