@@ -34,6 +34,8 @@ interface ItemSet extends Iterable<Item> {
     deleteItem(item: Item): void;
     copy(): ItemSet;
     difference(itemSet: ItemSet): ItemSet;
+    equals(itemSet: ItemSet): boolean;
+    length(): number;
 }
 
 class ItemSetConcrete implements ItemSet {
@@ -98,110 +100,84 @@ class ItemSetConcrete implements ItemSet {
         }
         return differenceSet;
     }
+    length(): number {
+        return this.items.length;
+    }
+    equals(itemSet: ItemSet): boolean {
+        return this.difference(itemSet).length() === 0;
+    }
 }
 
-// function itemSetDifference(itemSetA: ItemSet, itemSetB: ItemSet) {
-//     const differenceSet = new ItemSetConcrete();
-//     const itemListA = [...itemSetA];
-//     const itemListB = [...itemSetB];
-//     for (let i = 0; i < itemListA.length; i++) {
-//         const itemListBCopy = [...itemListB];
-//         let removedCount = 0;
-//         for (let j = 0; j < itemListBCopy.length; j++) {
-//             if (itemsAreEqual(itemListA[i], itemListBCopy[j])) {
-//                 itemListB.splice(j - removedCount, 1);
-//                 removedCount++;
-//             } else {
-//                 differenceSet.addItem(itemListA[i]);
-//             }
-//         }
-//     }
-//     itemListB.forEach((item) => differenceSet.addItem(item));
-//     return differenceSet;
-// }
-
-// function itemSetDifferenceOptimized(itemSetA: ItemSet, itemSetB: ItemSet) {
-//     const differenceSet = new ItemSetConcrete();
-//     const itemSetBCopy = itemSetB.copy();
-//     for (const itemA of itemSetA) {
-//         for (const itemB of itemSetBCopy) {
-//             if (itemsAreEqual(itemA, itemB)) {
-//                 itemSetBCopy.deleteItem(itemB);
-//             } else {
-//                 differenceSet.addItem(itemA);
-//             }
-//         }
-//     }
-//     for (const itemB of itemSetBCopy) {
-//         differenceSet.addItem(itemB);
-//     }
-//     return differenceSet;
-// }
-
-// function itemSetDifferenceNaive(itemSetA: ItemSet, itemSetB: ItemSet) {
-//     const differenceSet = new ItemSetConcrete();
-//     for (const itemA of itemSetA) {
-//         for (const itemB of itemSetB) {
-//             if (!itemsAreEqual(itemA, itemB)) {
-//                 differenceSet.addItem(itemA);
-//             }
-//         }
-//     }
-//     return differenceSet;
-// }
-
-class Floor {
-    getItems() {}
-    addItem() {}
-    deleteItem() {}
-}
-class Elevator {
-    getItems() {}
-    addItem() {}
-    deleteItem() {}
+class FloorMap {
+    private floors: Map<number, ItemSet>;
+    constructor() {
+        this.floors = new Map();
+    }
+    set(floorNumber: number, floor: ItemSet) {
+        this.floors.set(floorNumber, floor);
+    }
+    get(floorNumber: number): ItemSet | undefined {
+        return this.floors.get(floorNumber);
+    }
+    entries() {
+        return this.floors.entries();
+    }
+    equals(floorMap: FloorMap): boolean {
+        for (const [k, v] of this.entries()) {
+            const otherFloor = floorMap.get(k);
+            if (undefined === otherFloor || !otherFloor.equals(v)) {
+                return false;
+            }
+        }
+        for (const [k, v] of floorMap.entries()) {
+            const thisFloor = this.get(k);
+            if (undefined === thisFloor || !thisFloor.equals(v)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 class Building {
-    getFloors() {}
-    addFloor() {}
-    deleteFloor() {}
-    getElevator() {}
-    addElevator() {}
-    deleteElevator() {}
-    getElevatorFloor() {}
-    setElevatorFloor() {}
-}
-function getItemsDifference(itemsA: Item[], itemsB: Item[]) {
-    const difference: Item[] = [];
-    for (const combinedItem of [...itemsA, ...itemsB]) {
-        if (
-            -1 ===
-            itemsA.findIndex(
-                (setItem) =>
-                    setItem.getElement() === combinedItem.getElement() &&
-                    setItem.getType() === combinedItem.getType()
-            )
-        ) {
-            return false;
-        }
-        if (
-            -1 ===
-            itemsB.findIndex(
-                (setItem) =>
-                    setItem.getElement() === combinedItem.getElement() &&
-                    setItem.getType() === combinedItem.getType()
-            )
-        ) {
-            return false;
-        }
+    private floors: FloorMap;
+    private elevatorFloorNumber: number;
+    constructor(
+        floors: FloorMap = new FloorMap(),
+        elevatorFloorNumber: number = 1
+    ) {
+        this.floors = floors;
+        this.elevatorFloorNumber = elevatorFloorNumber;
     }
-    return true;
-}
-function buildingsAreSame(buildingA: Building, buildingB: Building) {
-    if (!(buildingA.getElevatorFloor() === buildingB.getElevatorFloor())) {
-        return false;
+    getFloors() {
+        return this.floors;
     }
-    return true;
+    getFloor(floorNumber: number) {}
+    // addFloor() {}
+    // deleteFloor() {}
+    // getElevator() {
+    //     return this.elevator;
+    // }
+    // addElevator() {}
+    // deleteElevator() {}
+    getElevatorFloorNumber() {
+        return this.elevatorFloorNumber;
+    }
+    setElevatorFloorNumber(floorNumber: number) {
+        this.elevatorFloorNumber = floorNumber;
+    }
+    copy() {
+        return new Building(this.floors, this.elevatorFloorNumber);
+    }
+    equals(building: Building) {
+        // return this.getElevatorFloorNumber() === building.getElevatorFloorNumber() && this.getFloors()
+    }
 }
-function buildingsAreSameMulti(...buildings: Building[]): boolean {
-    return buildings.every((value, index, array) => {});
-}
+// function buildingsAreSame(buildingA: Building, buildingB: Building) {
+//     if (!(buildingA.getElevatorFloor() === buildingB.getElevatorFloor())) {
+//         return false;
+//     }
+//     return true;
+// }
+// function buildingsAreSameMulti(...buildings: Building[]): boolean {
+//     return buildings.every((value, index, array) => {});
+// }
