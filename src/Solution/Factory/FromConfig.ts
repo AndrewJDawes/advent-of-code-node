@@ -18,6 +18,8 @@ import Solution20165a from '../Strategy/2016/5/a.js';
 import Solution20165b from '../Strategy/2016/5/b.js';
 import Solution20166a from '../Strategy/2016/6/a.js';
 import Solution20166b from '../Strategy/2016/6/b.js';
+import Solution20157a from '../Strategy/2015/7/a.js';
+
 import Solution20167a from '../Strategy/2016/7/a.js';
 import Solution20167b from '../Strategy/2016/7/b.js';
 import Solution20168a from '../Strategy/2016/8/a.js';
@@ -47,6 +49,8 @@ class FromConfig implements InterfaceSolutionFactory {
                 return new Solution20156a(service);
             case '20156b':
                 return new Solution20156b(service);
+            case '20157a':
+                return new Solution20157a(service);
             case '20161a':
                 return new Solution20161a(service);
             case '20161b':
