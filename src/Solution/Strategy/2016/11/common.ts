@@ -108,7 +108,14 @@ class ItemSetConcrete implements ItemSet {
     }
 }
 
-class FloorMap {
+interface FloorMap {
+    set(floorNumber: number, floor: ItemSet): void;
+    get(floorNumber: number): ItemSet | undefined;
+    entries(): MapIterator<[number, ItemSet]>;
+    equals(floorMap: FloorMap): boolean;
+}
+
+class FloorMapConcrete implements FloorMap {
     private floors: Map<number, ItemSet>;
     constructor() {
         this.floors = new Map();
@@ -118,6 +125,14 @@ class FloorMap {
     }
     get(floorNumber: number): ItemSet | undefined {
         return this.floors.get(floorNumber);
+    }
+    delete(floorNumber: number) {
+        if (undefined === this.get(floorNumber)) {
+            throw new Error(
+                `Floor with floorNumber ${floorNumber} does not exist and therefore cannot be deleted`
+            );
+        }
+        this.floors.delete(floorNumber);
     }
     entries() {
         return this.floors.entries();
@@ -138,11 +153,20 @@ class FloorMap {
         return true;
     }
 }
-class Building {
+
+interface Building {
+    getFloors(): FloorMap;
+    setFloors(floors: FloorMap): void;
+    getElevatorFloorNumber(): number;
+    setElevatorFloorNumber(floorNumber: number): void;
+    copy(): Building;
+    equals(building: Building): boolean;
+}
+class BuildingConcrete implements Building {
     private floors: FloorMap;
     private elevatorFloorNumber: number;
     constructor(
-        floors: FloorMap = new FloorMap(),
+        floors: FloorMap = new FloorMapConcrete(),
         elevatorFloorNumber: number = 1
     ) {
         this.floors = floors;
@@ -151,14 +175,9 @@ class Building {
     getFloors() {
         return this.floors;
     }
-    getFloor(floorNumber: number) {}
-    // addFloor() {}
-    // deleteFloor() {}
-    // getElevator() {
-    //     return this.elevator;
-    // }
-    // addElevator() {}
-    // deleteElevator() {}
+    setFloors(floors: FloorMap) {
+        this.floors = floors;
+    }
     getElevatorFloorNumber() {
         return this.elevatorFloorNumber;
     }
@@ -166,18 +185,13 @@ class Building {
         this.elevatorFloorNumber = floorNumber;
     }
     copy() {
-        return new Building(this.floors, this.elevatorFloorNumber);
+        return new BuildingConcrete(this.floors, this.elevatorFloorNumber);
     }
     equals(building: Building) {
-        // return this.getElevatorFloorNumber() === building.getElevatorFloorNumber() && this.getFloors()
+        return (
+            this.getElevatorFloorNumber() ===
+                building.getElevatorFloorNumber() &&
+            this.getFloors().equals(building.getFloors())
+        );
     }
 }
-// function buildingsAreSame(buildingA: Building, buildingB: Building) {
-//     if (!(buildingA.getElevatorFloor() === buildingB.getElevatorFloor())) {
-//         return false;
-//     }
-//     return true;
-// }
-// function buildingsAreSameMulti(...buildings: Building[]): boolean {
-//     return buildings.every((value, index, array) => {});
-// }
