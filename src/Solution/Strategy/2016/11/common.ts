@@ -313,7 +313,7 @@ class SolutionPath {
         this.permutatedSolutionPaths = permutatedBuildings.map((building) =>
             this.getSolutionPathByBuilding(building)
         );
-        // solve any previously unsolved
+        // attempt to solve any previously unsolved
         this.permutatedSolutionPaths
             .filter(
                 (permutatedSolutionPath) => !permutatedSolutionPath.isExplored()
