@@ -236,7 +236,7 @@ class BuildingConcrete implements Building {
 type SolutionState = 'success' | 'failure' | 'enroute';
 class SolutionPath {
     private building: Building;
-    private explored: Boolean;
+    private explored: boolean;
     private state: SolutionState | null;
     private permutatedSolutionPaths: SolutionPath[] | null;
     private getPermutatedBuildings: (building: Building) => Building[];
@@ -260,7 +260,15 @@ class SolutionPath {
     getBuilding() {
         return this.building;
     }
-    isExplored() {
+    isExplored(): boolean {
+        if (this.explored !== true) {
+            // recheck
+            this.explored =
+                this.permutatedSolutionPaths !== null &&
+                this.permutatedSolutionPaths.every((permutatedSolutionPath) =>
+                    permutatedSolutionPath.isExplored()
+                );
+        }
         return this.explored;
     }
     getState() {
@@ -312,13 +320,6 @@ class SolutionPath {
             .forEach((permutatedSolutionPath) =>
                 permutatedSolutionPath.solve([...fromPath, this], solution)
             );
-        if (
-            this.permutatedSolutionPaths.every((permutatedSolutionPath) =>
-                permutatedSolutionPath.isExplored()
-            )
-        ) {
-            this.explored = true;
-        }
     }
 }
 
