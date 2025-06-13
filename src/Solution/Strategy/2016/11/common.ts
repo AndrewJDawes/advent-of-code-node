@@ -296,9 +296,10 @@ class SolutionPath {
         const permutatedSolutionPaths = permutatedBuildings.map((building) =>
             this.getSolutionPathByBuilding(building)
         );
+        // solve any previously unsolved
         permutatedSolutionPaths
-            .filter((permutatedSolutionPath) =>
-                permutatedSolutionPath.isExplored()
+            .filter(
+                (permutatedSolutionPath) => !permutatedSolutionPath.isExplored()
             )
             .forEach((permutatedSolutionPath) =>
                 permutatedSolutionPath.solve([...fromPath, this], solution)
@@ -307,8 +308,9 @@ class SolutionPath {
             permutatedSolutionPaths.every((permutatedSolutionPath) =>
                 permutatedSolutionPath.isExplored()
             )
-        )
+        ) {
             this.explored = true;
+        }
     }
 }
 
