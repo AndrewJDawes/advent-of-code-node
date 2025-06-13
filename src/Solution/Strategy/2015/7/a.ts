@@ -45,10 +45,24 @@ interface Edge {
     to: Vertex;
 }
 
-export class Vertex {
-    private name: string;
-    private value: number | null = null;
-    private callbacks: ((vertex: Vertex) => void)[];
+interface Vertex {
+    onSetValue(callback: (vertex: Vertex) => void): void;
+    getName(): string;
+    getValue(): number | null;
+    setName(name: string): void;
+    setValue(value: number | null): void;
+}
+
+interface VertexOptions {
+    name: string;
+    operand: number;
+    value?: number | null;
+}
+
+export class VertexWire implements Vertex {
+    protected name: string;
+    protected value: number | null = null;
+    protected callbacks: ((vertex: Vertex) => void)[];
 
     constructor(name: string, value: number | null = null) {
         this.name = name;
@@ -77,6 +91,104 @@ export class Vertex {
         this.callbacks.forEach((c) => {
             c(this);
         });
+    }
+}
+
+export class VertexRshift extends VertexWire implements Vertex {
+    private operand: number;
+
+    constructor({ name, operand, value = null }: VertexOptions) {
+        super(name, value);
+        this.operand = operand;
+    }
+
+    setValue(value: number | null) {
+        super.setValue(value === null ? null : value >> this.operand);
+    }
+}
+
+export class VertexLshift extends VertexWire implements Vertex {
+    private operand: number;
+
+    constructor({ name, operand, value = null }: VertexOptions) {
+        super(name, value);
+        this.operand = operand;
+    }
+
+    setValue(value: number | null) {
+        super.setValue(value === null ? null : value << this.operand);
+    }
+}
+
+export class VertexAnd extends VertexWire implements Vertex {
+    private otherA: Vertex;
+    private otherB: Vertex;
+
+    constructor({
+        name,
+        value = null,
+        otherA,
+        otherB,
+    }: {
+        name: string;
+        value: number | null;
+        otherA: Vertex;
+        otherB: Vertex;
+    }) {
+        super(name, value);
+        this.otherA = otherA;
+        this.otherB = otherB;
+    }
+
+    setValue() {
+        const otherAValue = this.otherA.getValue();
+        const otherBValue = this.otherB.getValue();
+        super.setValue(
+            otherAValue === null || otherBValue === null
+                ? null
+                : otherAValue & otherBValue
+        );
+    }
+}
+
+export class VertexOr extends VertexWire implements Vertex {
+    private otherA: Vertex;
+    private otherB: Vertex;
+
+    constructor({
+        name,
+        value = null,
+        otherA,
+        otherB,
+    }: {
+        name: string;
+        value: number | null;
+        otherA: Vertex;
+        otherB: Vertex;
+    }) {
+        super(name, value);
+        this.otherA = otherA;
+        this.otherB = otherB;
+    }
+
+    setValue() {
+        const otherAValue = this.otherA.getValue();
+        const otherBValue = this.otherB.getValue();
+        super.setValue(
+            otherAValue === null || otherBValue === null
+                ? null
+                : otherAValue | otherBValue
+        );
+    }
+}
+
+export class VertexNot extends VertexWire implements Vertex {
+    constructor({ name, value = null }: VertexOptions) {
+        super(name, value);
+    }
+
+    setValue(value: number | null) {
+        super.setValue(value === null ? null : ~value);
     }
 }
 
@@ -144,7 +256,7 @@ export class SimpleGraph {
                 v === vertex;
             })
         ) {
-            throw new Error(`Vertex not found: ${name}`);
+            throw new Error(`Vertex not found: ${vertex.getName()}`);
         }
         this.vertices = this.vertices.filter(
             (v) => v.getName() !== vertex.getName()
