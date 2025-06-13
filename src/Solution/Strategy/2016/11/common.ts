@@ -238,6 +238,7 @@ class SolutionPath {
     private building: Building;
     private explored: Boolean;
     private state: SolutionState | null;
+    private permutatedSolutionPaths: SolutionPath[] | null;
     private getPermutatedBuildings: (building: Building) => Building[];
     private getSolutionPathByBuilding: (building: Building) => SolutionPath;
     constructor({
@@ -254,12 +255,19 @@ class SolutionPath {
         this.state = null;
         this.getPermutatedBuildings = getPermutatedBuildings;
         this.getSolutionPathByBuilding = getSolutionPathByBuilding;
+        this.permutatedSolutionPaths = null;
     }
     getBuilding() {
         return this.building;
     }
     isExplored() {
         return this.explored;
+    }
+    getState() {
+        return this.state;
+    }
+    getPermutatedSolutionPaths() {
+        return this.permutatedSolutionPaths;
     }
     solve(
         fromPath: SolutionPath[],
@@ -293,11 +301,11 @@ class SolutionPath {
         }
         this.state = 'enroute';
         const permutatedBuildings = this.getPermutatedBuildings(this.building);
-        const permutatedSolutionPaths = permutatedBuildings.map((building) =>
+        this.permutatedSolutionPaths = permutatedBuildings.map((building) =>
             this.getSolutionPathByBuilding(building)
         );
         // solve any previously unsolved
-        permutatedSolutionPaths
+        this.permutatedSolutionPaths
             .filter(
                 (permutatedSolutionPath) => !permutatedSolutionPath.isExplored()
             )
@@ -305,7 +313,7 @@ class SolutionPath {
                 permutatedSolutionPath.solve([...fromPath, this], solution)
             );
         if (
-            permutatedSolutionPaths.every((permutatedSolutionPath) =>
+            this.permutatedSolutionPaths.every((permutatedSolutionPath) =>
                 permutatedSolutionPath.isExplored()
             )
         ) {
