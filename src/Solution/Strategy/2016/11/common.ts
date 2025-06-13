@@ -260,6 +260,7 @@ class SolutionPath {
     getBuilding() {
         return this.building;
     }
+    // TODO: Perhaps bubble up to parents using Observer pattern instead?
     isExplored(): boolean {
         if (this.explored !== true) {
             // recheck
