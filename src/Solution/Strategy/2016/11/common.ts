@@ -112,13 +112,16 @@ interface FloorMap {
     set(floorNumber: number, floor: ItemSet): void;
     get(floorNumber: number): ItemSet | undefined;
     entries(): MapIterator<[number, ItemSet]>;
+    keys(): MapIterator<number>;
+    values(): MapIterator<ItemSet>;
     equals(floorMap: FloorMap): boolean;
+    copy(): FloorMap;
 }
 
 class FloorMapConcrete implements FloorMap {
     private floors: Map<number, ItemSet>;
-    constructor() {
-        this.floors = new Map();
+    constructor(floors: Map<number, ItemSet> = new Map()) {
+        this.floors = floors;
     }
     set(floorNumber: number, floor: ItemSet) {
         this.floors.set(floorNumber, floor);
@@ -137,6 +140,12 @@ class FloorMapConcrete implements FloorMap {
     entries() {
         return this.floors.entries();
     }
+    keys() {
+        return this.floors.keys();
+    }
+    values() {
+        return this.floors.values();
+    }
     equals(floorMap: FloorMap): boolean {
         for (const [k, v] of this.entries()) {
             const otherFloor = floorMap.get(k);
@@ -152,6 +161,9 @@ class FloorMapConcrete implements FloorMap {
         }
         return true;
     }
+    copy() {
+        return new FloorMapConcrete(this.floors);
+    }
 }
 
 interface Building {
@@ -159,6 +171,11 @@ interface Building {
     setFloors(floors: FloorMap): void;
     getElevatorFloorNumber(): number;
     setElevatorFloorNumber(floorNumber: number): void;
+    moveItemsFromFloorNumberToFloorNumber(
+        fromFloorNumber: number,
+        toFloorNumber: number,
+        items: ItemSet
+    ): void;
     copy(): Building;
     equals(building: Building): boolean;
 }
@@ -194,4 +211,146 @@ class BuildingConcrete implements Building {
             this.getFloors().equals(building.getFloors())
         );
     }
+    moveItemsFromFloorNumberToFloorNumber(
+        fromFloorNumber: number,
+        toFloorNumber: number,
+        items: ItemSet
+    ) {
+        const fromFloor = this.getFloors().get(fromFloorNumber);
+        if (undefined === fromFloor) {
+            throw Error(
+                `Unable to get fromFloor with fromFloorNumber ${fromFloorNumber}`
+            );
+        }
+        const toFloor = this.getFloors().get(toFloorNumber);
+        if (undefined === toFloor) {
+            throw Error(`Unable to get to with toFloorNumber ${toFloorNumber}`);
+        }
+        for (const item of items) {
+            fromFloor.deleteItem(item);
+            toFloor.addItem(item);
+        }
+    }
+}
+
+type SolutionState = 'success' | 'failure' | 'enroute';
+class SolutionPath {
+    private building: Building;
+    private explored: Boolean;
+    private state: SolutionState | null;
+    private buildingPermutations: Building[] | null;
+    constructor(building: Building) {
+        this.building = building;
+        this.explored = false;
+        this.state = null;
+        this.buildingPermutations = null;
+    }
+    getBuilding() {
+        return this.building;
+    }
+    solve() {}
+}
+
+function getMemoizedSolutionPathByBuildingFactory() {
+    const memoizedSolutionPaths: SolutionPath[] = [];
+    return (building: Building) => {
+        const memoizedSolutionPath = memoizedSolutionPaths.find(
+            (existingMemoizedSolutionPath) => {
+                return existingMemoizedSolutionPath
+                    .getBuilding()
+                    .equals(building);
+            }
+        );
+        if (undefined !== memoizedSolutionPath) {
+            return memoizedSolutionPath;
+        }
+        const newMemoizedSolutionPath = new SolutionPath(building);
+        memoizedSolutionPaths.push(newMemoizedSolutionPath);
+        return newMemoizedSolutionPath;
+    };
+}
+
+// TODO: Memoize
+function getMemoizedPermutatedBuildings(building: Building) {
+    const buildingPermutations: Building[] = [];
+    const floors = building.getFloors();
+    const floorNumbers = [...floors.keys()].sort();
+    const elevatorFloorNumber = building.getElevatorFloorNumber();
+    const elevatorFloorNumberIndex = floorNumbers.findIndex(
+        (floorNumber) => elevatorFloorNumber === floorNumber
+    );
+    if (undefined === elevatorFloorNumberIndex) {
+        throw Error(`Unable to find elevatorFloorNumber in floorNumbers!`);
+    }
+    const elevatorFloor = floors.get(elevatorFloorNumber);
+    if (undefined === elevatorFloor) {
+        throw new Error(`elevatorFloor is undefined!`);
+    }
+    const targetFloorIndexA = elevatorFloorNumberIndex - 1;
+    const targetFloorIndexB = elevatorFloorNumberIndex + 1;
+    const targetFloorNumberA = floorNumbers[targetFloorIndexA];
+    const targetFloorNumberB = floorNumbers[targetFloorIndexB];
+    if (targetFloorIndexA > 0) {
+        buildingPermutations.push(
+            ...getMemoizedPermutatedBuildingsFromFloorToFloor(
+                building,
+                elevatorFloorNumber,
+                targetFloorNumberA
+            )
+        );
+    }
+    if (targetFloorIndexB < floorNumbers.length) {
+        buildingPermutations.push(
+            ...getMemoizedPermutatedBuildingsFromFloorToFloor(
+                building,
+                elevatorFloorNumber,
+                targetFloorNumberB
+            )
+        );
+    }
+    return buildingPermutations;
+}
+
+// TODO: Memoize
+function getMemoizedPermutatedBuildingsFromFloorToFloor(
+    building: Building,
+    fromFloorNumber: number,
+    toFloorNumber: number
+) {
+    const buildingPermutations: Building[] = [];
+    const fromFloor = building.getFloors().get(fromFloorNumber);
+    if (undefined === fromFloor) {
+        throw new Error(
+            `Unable to get fromFloor with fromFloorNumber ${fromFloorNumber}`
+        );
+    }
+    const fromFloorItems = [...fromFloor];
+    const toFloor = building.getFloors().get(toFloorNumber);
+    if (undefined === toFloor) {
+        throw new Error(
+            `Unable to get toFloor with toFloorNumber ${toFloorNumber}`
+        );
+    }
+    for (let i = 0; i < fromFloorItems.length; i++) {
+        const newBuildingI = building.copy();
+        newBuildingI.moveItemsFromFloorNumberToFloorNumber(
+            fromFloorNumber,
+            toFloorNumber,
+            new ItemSetConcrete([fromFloorItems[i]])
+        );
+        buildingPermutations.push(newBuildingI);
+        for (let j = 0; j < fromFloorItems.length; j++) {
+            if (i === j) {
+                continue;
+            }
+            const newBuildingIJ = building.copy();
+            newBuildingIJ.moveItemsFromFloorNumberToFloorNumber(
+                fromFloorNumber,
+                toFloorNumber,
+                new ItemSetConcrete([fromFloorItems[i], fromFloorItems[j]])
+            );
+            buildingPermutations.push(newBuildingIJ);
+        }
+    }
+    return buildingPermutations;
 }
