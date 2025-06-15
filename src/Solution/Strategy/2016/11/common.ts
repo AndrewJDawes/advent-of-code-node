@@ -241,6 +241,10 @@ class SolutionPath {
     private permutatedSolutionPaths: SolutionPath[] | null;
     private getPermutatedBuildings: (building: Building) => Building[];
     private getSolutionPathByBuilding: (building: Building) => SolutionPath;
+    private onExploredChangeCallbacks: Map<
+        SolutionPath,
+        (solutionPath: SolutionPath) => void
+    >;
     constructor({
         building,
         getPermutatedBuildings,
@@ -255,22 +259,45 @@ class SolutionPath {
         this.state = null;
         this.getPermutatedBuildings = getPermutatedBuildings;
         this.getSolutionPathByBuilding = getSolutionPathByBuilding;
+        this.onExploredChangeCallbacks = new Map();
         this.permutatedSolutionPaths = null;
     }
     getBuilding() {
         return this.building;
     }
-    // TODO: Perhaps bubble up to parents using Observer pattern instead?
-    isExplored(): boolean {
-        if (this.explored !== true) {
-            // recheck
-            this.explored =
-                this.permutatedSolutionPaths !== null &&
-                this.permutatedSolutionPaths.every((permutatedSolutionPath) =>
-                    permutatedSolutionPath.isExplored()
-                );
+    setExplored(explored: boolean) {
+        if (explored !== this.explored) {
+            this.explored = explored;
+            this.onExploredChangeCallbacks.forEach((callback) => {
+                callback(this);
+            });
         }
+    }
+    registerExploredChangeObserver(
+        solutionPath: SolutionPath,
+        onExploredChangeCallback: (solutionPath: SolutionPath) => void
+    ) {
+        if (undefined === this.onExploredChangeCallbacks.get(solutionPath)) {
+            this.onExploredChangeCallbacks.set(
+                solutionPath,
+                onExploredChangeCallback
+            );
+        }
+    }
+    isExplored(): boolean {
         return this.explored;
+    }
+    recheckExplored() {
+        this.setExplored(
+            this.state === 'success' ||
+                this.state === 'failure' ||
+                (this.state === 'enroute' &&
+                    this.permutatedSolutionPaths !== null &&
+                    this.permutatedSolutionPaths.every(
+                        (permutatedSolutionPath) =>
+                            permutatedSolutionPath.isExplored()
+                    ))
+        );
     }
     getState() {
         return this.state;
@@ -298,21 +325,26 @@ class SolutionPath {
             return;
         }
         if (success(this.building)) {
-            this.explored = true;
+            this.setExplored(true);
             this.state = 'success';
             solution.minKnownSolutionPath = [...fromPath, this];
             return;
         }
         if (failure(this.building)) {
-            this.explored = true;
+            this.setExplored(true);
             this.state = 'failure';
             return;
         }
         this.state = 'enroute';
         const permutatedBuildings = this.getPermutatedBuildings(this.building);
-        this.permutatedSolutionPaths = permutatedBuildings.map((building) =>
-            this.getSolutionPathByBuilding(building)
-        );
+        this.permutatedSolutionPaths = permutatedBuildings.map((building) => {
+            const solutionPath = this.getSolutionPathByBuilding(building);
+            solutionPath.registerExploredChangeObserver(
+                this,
+                (changedSolutionPath) => this.recheckExplored()
+            );
+            return solutionPath;
+        });
         // attempt to solve any previously unsolved
         this.permutatedSolutionPaths
             .filter(
