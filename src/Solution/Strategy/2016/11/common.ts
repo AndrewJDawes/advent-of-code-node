@@ -324,15 +324,15 @@ class SolutionPath {
         if (solution.minKnownSolutionPath.length <= fromPath.length + 1) {
             return;
         }
+        if (failure(this.building)) {
+            this.setExplored(true);
+            this.state = 'failure';
+            return;
+        }
         if (success(this.building)) {
             this.setExplored(true);
             this.state = 'success';
             solution.minKnownSolutionPath = [...fromPath, this];
-            return;
-        }
-        if (failure(this.building)) {
-            this.setExplored(true);
-            this.state = 'failure';
             return;
         }
         this.state = 'enroute';
@@ -358,12 +358,48 @@ class SolutionPath {
 
 // TODO: Define success
 function success(building: Building) {
+    // all items and elevator on 4th floor
+    if (building.getElevatorFloorNumber() !== 4) {
+        return false;
+    }
+    const floors = building.getFloors();
+    for (const [floorNumber, items] of floors.entries()) {
+        if (floorNumber !== 4 && items.length() > 0) {
+            return false;
+        }
+    }
     return true;
 }
 
 // TODO: Define failure
 function failure(building: Building) {
-    return true;
+    // if a chip
+    // is ever left in the same area as another RTG
+    // and it's not connected to its own RTG
+    // the chip will be fried
+    const floors = building.getFloors();
+    for (const items of floors.values()) {
+        const generators = [...items].filter(
+            (item) => item.getType() === 'generator'
+        );
+        const microchips = [...items].filter(
+            (item) => item.getType() === 'microchip'
+        );
+        if (generators.length > 0) {
+            for (const microchip of microchips) {
+                if (
+                    undefined ===
+                    items.getItem(
+                        new ItemConcrete(microchip.getElement(), 'generator')
+                    )
+                ) {
+                    // fried
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 function getMemoizedSolutionPathByBuilding({
