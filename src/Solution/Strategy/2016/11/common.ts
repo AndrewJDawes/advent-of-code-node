@@ -1,11 +1,11 @@
-type ItemType = 'generator' | 'microchip';
-interface Item {
+export type ItemType = 'generator' | 'microchip';
+export interface Item {
     getElement(): string;
     getType(): ItemType;
     copy(): Item;
     equals(item: Item): boolean;
 }
-class ItemConcrete implements Item {
+export class ItemConcrete implements Item {
     private element: string;
     private type: ItemType;
     constructor(element: string, type: ItemType) {
@@ -28,7 +28,7 @@ class ItemConcrete implements Item {
         );
     }
 }
-interface ItemSet extends Iterable<Item> {
+export interface ItemSet extends Iterable<Item> {
     addItem(item: Item): void;
     getItem(item: Item): Item | undefined;
     deleteItem(item: Item): void;
@@ -38,7 +38,7 @@ interface ItemSet extends Iterable<Item> {
     length(): number;
 }
 
-class ItemSetConcrete implements ItemSet {
+export class ItemSetConcrete implements ItemSet {
     private items: Item[];
     constructor(items: Item[] = []) {
         this.items = items;
@@ -62,7 +62,7 @@ class ItemSetConcrete implements ItemSet {
         );
         if (-1 === existingItemIndex) {
             throw new Error(
-                `Uanble to find existing item! element: ${item.getElement()}, type: ${item.getType()}`
+                `Unable to find existing item! element: ${item.getElement()}, type: ${item.getType()}`
             );
         }
         this.items.splice(existingItemIndex, 1);
@@ -108,7 +108,7 @@ class ItemSetConcrete implements ItemSet {
     }
 }
 
-interface FloorMap {
+export interface FloorMap {
     set(floorNumber: number, floor: ItemSet): void;
     get(floorNumber: number): ItemSet | undefined;
     entries(): MapIterator<[number, ItemSet]>;
@@ -118,7 +118,7 @@ interface FloorMap {
     copy(): FloorMap;
 }
 
-class FloorMapConcrete implements FloorMap {
+export class FloorMapConcrete implements FloorMap {
     private floors: Map<number, ItemSet>;
     constructor(floors: Map<number, ItemSet> = new Map()) {
         this.floors = floors;
@@ -166,7 +166,7 @@ class FloorMapConcrete implements FloorMap {
     }
 }
 
-interface Building {
+export interface Building {
     getFloors(): FloorMap;
     setFloors(floors: FloorMap): void;
     getElevatorFloorNumber(): number;
@@ -179,7 +179,7 @@ interface Building {
     copy(): Building;
     equals(building: Building): boolean;
 }
-class BuildingConcrete implements Building {
+export class BuildingConcrete implements Building {
     private floors: FloorMap;
     private elevatorFloorNumber: number;
     constructor(
@@ -233,8 +233,8 @@ class BuildingConcrete implements Building {
     }
 }
 
-type SolutionState = 'success' | 'failure' | 'enroute';
-class SolutionPath {
+export type SolutionState = 'success' | 'failure' | 'enroute';
+export class SolutionPath {
     private building: Building;
     private explored: boolean;
     private state: SolutionState | null;
@@ -305,10 +305,7 @@ class SolutionPath {
     getPermutatedSolutionPaths() {
         return this.permutatedSolutionPaths;
     }
-    solve(
-        fromPath: SolutionPath[],
-        solution: { minKnownSolutionPath: SolutionPath[] }
-    ) {
+    solve(fromPath: SolutionPath[], solutionData: SolutionData) {
         // loopback
         if (
             undefined !==
@@ -321,7 +318,10 @@ class SolutionPath {
             return;
         }
         // better known solution
-        if (solution.minKnownSolutionPath.length <= fromPath.length + 1) {
+        if (
+            null !== solutionData.minKnownSolutionPath &&
+            solutionData.minKnownSolutionPath.length <= fromPath.length + 1
+        ) {
             return;
         }
         if (failure(this.building)) {
@@ -332,7 +332,7 @@ class SolutionPath {
         if (success(this.building)) {
             this.setExplored(true);
             this.state = 'success';
-            solution.minKnownSolutionPath = [...fromPath, this];
+            solutionData.minKnownSolutionPath = [...fromPath, this];
             return;
         }
         this.state = 'enroute';
@@ -351,12 +351,34 @@ class SolutionPath {
                 (permutatedSolutionPath) => !permutatedSolutionPath.isExplored()
             )
             .forEach((permutatedSolutionPath) =>
-                permutatedSolutionPath.solve([...fromPath, this], solution)
+                permutatedSolutionPath.solve([...fromPath, this], solutionData)
             );
     }
 }
 
-function success(building: Building) {
+export class SolutionPathConcreteFactoryConcrete {
+    private getPermutatedBuildings: (building: Building) => Building[];
+    private getSolutionPathByBuilding: (building: Building) => SolutionPath;
+    constructor() {
+        this.getPermutatedBuildings = getMemoizedPermutatedBuildings({
+            getPermutatedBuildingsFromFloorToFloor:
+                getMemoizedPermutatedBuildingsFromFloorToFloor(),
+        });
+        this.getSolutionPathByBuilding = getMemoizedSolutionPathByBuilding({
+            getPermutatedBuildings: this.getPermutatedBuildings,
+        });
+    }
+
+    getInstance(building: Building) {
+        return new SolutionPath({
+            building,
+            getPermutatedBuildings: this.getPermutatedBuildings,
+            getSolutionPathByBuilding: this.getSolutionPathByBuilding,
+        });
+    }
+}
+
+export function success(building: Building) {
     // all items and elevator on 4th floor
     if (building.getElevatorFloorNumber() !== 4) {
         return false;
@@ -370,7 +392,7 @@ function success(building: Building) {
     return true;
 }
 
-function failure(building: Building) {
+export function failure(building: Building) {
     // if a chip
     // is ever left in the same area as another RTG
     // and it's not connected to its own RTG
@@ -400,7 +422,7 @@ function failure(building: Building) {
     return false;
 }
 
-function getMemoizedSolutionPathByBuilding({
+export function getMemoizedSolutionPathByBuilding({
     getPermutatedBuildings,
 }: {
     getPermutatedBuildings: (building: Building) => Building[];
@@ -428,7 +450,7 @@ function getMemoizedSolutionPathByBuilding({
 }
 
 // TODO: Memoize
-function getMemoizedPermutatedBuildings({
+export function getMemoizedPermutatedBuildings({
     getPermutatedBuildingsFromFloorToFloor,
 }: {
     getPermutatedBuildingsFromFloorToFloor: (
@@ -479,7 +501,7 @@ function getMemoizedPermutatedBuildings({
 }
 
 // TODO: Memoize
-function getMemoizedPermutatedBuildingsFromFloorToFloor() {
+export function getMemoizedPermutatedBuildingsFromFloorToFloor() {
     return (
         building: Building,
         fromFloorNumber: number,
@@ -522,4 +544,11 @@ function getMemoizedPermutatedBuildingsFromFloorToFloor() {
         }
         return buildingPermutations;
     };
+}
+
+export interface SolutionData {
+    minKnownSolutionPath: SolutionPath[] | null;
+}
+export function getStarterSolutionData(): SolutionData {
+    return { minKnownSolutionPath: null };
 }
