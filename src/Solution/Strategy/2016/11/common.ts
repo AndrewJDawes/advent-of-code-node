@@ -356,7 +356,6 @@ class SolutionPath {
     }
 }
 
-// TODO: Define success
 function success(building: Building) {
     // all items and elevator on 4th floor
     if (building.getElevatorFloorNumber() !== 4) {
@@ -371,7 +370,6 @@ function success(building: Building) {
     return true;
 }
 
-// TODO: Define failure
 function failure(building: Building) {
     // if a chip
     // is ever left in the same area as another RTG
