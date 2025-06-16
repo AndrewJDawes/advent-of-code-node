@@ -1,5 +1,7 @@
+/*
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
+*/
 /*
 --- Day 7: Some Assembly Required ---
 This year, Santa brought little Bobby Tables a set of wires and bitwise logic gates! Unfortunately, little Bobby is a little under the recommended age range, and he needs help assembling the circuit.
@@ -39,7 +41,7 @@ y: 456
 
 In little Bobby's kit's instructions booklet (provided as your puzzle input), what signal is ultimately provided to wire a?
 */
-
+/*
 interface Edge {
     from: Vertex;
     to: Vertex;
@@ -300,3 +302,4 @@ class Solution20157a implements InterfaceSolutionStrategy {
 }
 
 export default Solution20157a;
+*/
