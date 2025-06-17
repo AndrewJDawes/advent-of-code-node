@@ -162,7 +162,13 @@ export class FloorMapConcrete implements FloorMap {
         return true;
     }
     copy() {
-        return new FloorMapConcrete(this.floors);
+        return new FloorMapConcrete(
+            new Map(
+                [...this.floors.entries()].map(([number, itemSet]) => {
+                    return [number, itemSet.copy()];
+                })
+            )
+        );
     }
 }
 
@@ -202,7 +208,10 @@ export class BuildingConcrete implements Building {
         this.elevatorFloorNumber = floorNumber;
     }
     copy() {
-        return new BuildingConcrete(this.floors, this.elevatorFloorNumber);
+        return new BuildingConcrete(
+            this.floors.copy(),
+            this.elevatorFloorNumber
+        );
     }
     equals(building: Building) {
         return (
@@ -224,11 +233,15 @@ export class BuildingConcrete implements Building {
         }
         const toFloor = this.getFloors().get(toFloorNumber);
         if (undefined === toFloor) {
-            throw Error(`Unable to get to with toFloorNumber ${toFloorNumber}`);
+            throw Error(
+                `Unable to get toFloor with toFloorNumber ${toFloorNumber}`
+            );
         }
+        let counter = 0;
         for (const item of items) {
             fromFloor.deleteItem(item);
             toFloor.addItem(item);
+            counter++;
         }
     }
 }
