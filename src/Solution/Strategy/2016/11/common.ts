@@ -87,12 +87,16 @@ export class ItemSetConcrete implements ItemSet {
         const differenceSet = new ItemSetConcrete();
         const itemSetBCopy = itemSet.copy();
         for (const itemA of this) {
+            let itemAFoundInB = false;
             for (const itemB of itemSetBCopy) {
                 if (itemA.equals(itemB)) {
+                    itemAFoundInB = true;
                     itemSetBCopy.deleteItem(itemB);
-                } else {
-                    differenceSet.addItem(itemA);
+                    break;
                 }
+            }
+            if (!itemAFoundInB) {
+                differenceSet.addItem(itemA);
             }
         }
         for (const itemB of itemSetBCopy) {
