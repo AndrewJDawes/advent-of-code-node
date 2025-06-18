@@ -247,6 +247,7 @@ export class BuildingConcrete implements Building {
             toFloor.addItem(item);
             counter++;
         }
+        this.setElevatorFloorNumber(toFloorNumber);
     }
 }
 
