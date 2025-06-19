@@ -299,11 +299,15 @@ export class SolutionPath {
         this.state = 'success';
         this.knownSolutionPath = knownSolutionPath;
     }
-    advance(step: number) {
-        if (step <= this.step) {
-            return;
+    advance(step: number | null = null) {
+        if (step === null) {
+            this.step++;
+        } else {
+            if (step <= this.step) {
+                return;
+            }
+            this.step = step;
         }
-        this.step = step;
         if (null !== this.openEndedPaths) {
             this.openEndedPaths.forEach((openEndedPath) =>
                 openEndedPath.advance(this.step)
@@ -330,7 +334,6 @@ export class SolutionPath {
             this.state = 'failure';
             return;
         }
-        // this.state = 'enroute';
         this.openEndedPaths = this.getPermutatedBuildings(this.building).map(
             (building) => this.getSolutionPathByBuilding(building)
         );

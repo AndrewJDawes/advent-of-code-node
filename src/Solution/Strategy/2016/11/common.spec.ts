@@ -5,7 +5,6 @@ import {
     FloorMapConcrete,
     getMemoizedPermutatedBuildings,
     getMemoizedPermutatedBuildingsFromFloorToFloor,
-    getStarterSolutionData,
     ItemConcrete,
     ItemSetConcrete,
     SolutionPath,
@@ -1707,12 +1706,10 @@ describe('201611a', () => {
             const solution =
                 newSolutionPathFactoryConcrete.getInstance(building);
             while (solution.getState() === null) {
-                console.log(`Advancing`);
-                solution.advance(solution.getStep() + 1);
+                solution.advance();
             }
-            console.log(JSON.stringify(solution));
-            console.log(solution.getState());
-            console.log(solution.getStep());
+            expect(solution.getState()).to.eql('success')
+            expect(solution.getStep()).to.eql(12)
         });
     });
 });
