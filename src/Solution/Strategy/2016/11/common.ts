@@ -254,6 +254,106 @@ export class BuildingConcrete implements Building {
     }
 }
 
+export class NewSolutionPath {
+    private step: number;
+    private state: SolutionState | null;
+    private building: Building;
+    private openEndedPaths: NewSolutionPath[] | null;
+    private getPermutatedBuildings: (building: Building) => Building[];
+    private getNewSolutionPathByBuilding: (
+        building: Building
+    ) => NewSolutionPath;
+    private knownSolutionPath: NewSolutionPath | null;
+    constructor({
+        building,
+        step = 0,
+        getPermutatedBuildings,
+        getNewSolutionPathByBuilding,
+    }: {
+        building: Building;
+        step?: number;
+        getPermutatedBuildings: (building: Building) => Building[];
+        getNewSolutionPathByBuilding: (building: Building) => NewSolutionPath;
+    }) {
+        this.building = building;
+        this.step = step;
+        this.state = null;
+        this.knownSolutionPath = null;
+        this.openEndedPaths = null;
+        this.getPermutatedBuildings = getPermutatedBuildings;
+        this.getNewSolutionPathByBuilding = getNewSolutionPathByBuilding;
+    }
+    getStep() {
+        return this.step;
+    }
+    getBuilding() {
+        return this.building;
+    }
+    getState() {
+        return this.state;
+    }
+    getKnownSolutionPath() {
+        return this.knownSolutionPath;
+    }
+    setSuccess(knownSolutionPath: NewSolutionPath) {
+        this.state = 'success';
+        this.knownSolutionPath = knownSolutionPath;
+    }
+    advance(step: number) {
+        if (step <= this.step) {
+            return;
+        }
+        this.step = step;
+        if (null !== this.openEndedPaths) {
+            this.openEndedPaths.forEach((openEndedPath) =>
+                openEndedPath.advance(this.step)
+            );
+            this.openEndedPaths = this.openEndedPaths.filter(
+                (openEndedPath) => openEndedPath.getState() !== 'failure'
+            );
+            if (this.openEndedPaths.length === 0) {
+                this.state = 'failure';
+            }
+            const successPath = this.openEndedPaths.find(
+                (openEndedPath) => openEndedPath.getState() === 'success'
+            );
+            if (successPath) {
+                this.setSuccess(successPath);
+            }
+            return;
+        }
+        if (success(this.building)) {
+            this.setSuccess(this);
+            return;
+        }
+        if (failure(this.building)) {
+            this.state = 'failure';
+            return;
+        }
+        // this.state = 'enroute';
+        this.openEndedPaths = this.getPermutatedBuildings(this.building).map(
+            (building) => this.getNewSolutionPathByBuilding(building)
+            // (building) =>
+            //     new NewSolutionPath({
+            //         building,
+            //         getPermutatedBuildings: this.getPermutatedBuildings,
+            //         getNewSolutionPathByBuilding:
+            //             this.getNewSolutionPathByBuilding,
+            //     })
+        );
+        // Are any of children are success, return known
+    }
+    toJSON() {
+        return {
+            ...Object.entries(this)
+                .filter(([key, value]) => !['openEndedPaths'].includes(key))
+                .reduce((prev, curr) => {
+                    return { ...prev, [curr[0]]: curr[1] };
+                }, {}),
+        };
+    }
+}
+
 export type SolutionState = 'success' | 'failure' | 'enroute';
 export class SolutionPath {
     private building: Building;
@@ -327,22 +427,33 @@ export class SolutionPath {
         return this.permutatedSolutionPaths;
     }
     solve(fromPath: SolutionPath[], solutionData: SolutionData) {
+        if (this.isExplored()) {
+            return;
+        }
         if (success(this.building)) {
+            console.log(
+                JSON.stringify({ success: [...fromPath, this] }, null, 2)
+            );
             if (
-                undefined === solutionData.minKnownSolutionPath?.length ||
-                solutionData.minKnownSolutionPath.length > [...fromPath].length
+                null === solutionData.minKnownSolutionPath ||
+                solutionData.minKnownSolutionPath.length >
+                    [...fromPath, this].length
             ) {
-                solutionData.minKnownSolutionPath = [...fromPath];
+                solutionData.minKnownSolutionPath = [...fromPath, this];
             }
             this.setExplored(true);
             this.state = 'success';
             return;
         }
         if (failure(this.building)) {
+            console.log(
+                JSON.stringify({ failure: [...fromPath, this] }, null, 2)
+            );
             this.setExplored(true);
             this.state = 'failure';
             return;
         }
+
         this.state = 'enroute';
         const permutatedBuildings = this.getPermutatedBuildings(this.building);
         this.permutatedSolutionPaths = permutatedBuildings.map((building) => {
@@ -353,29 +464,36 @@ export class SolutionPath {
             );
             return solutionPath;
         });
+
         // too long
         if (
-            null === solutionData.minKnownSolutionPath ||
+            solutionData.minKnownSolutionPath !== null &&
             solutionData.minKnownSolutionPath.length <= fromPath.length
         ) {
+            console.log(
+                JSON.stringify({ lengthExceeded: [...fromPath, this] }, null, 2)
+            );
             return;
         }
-        // loopback
-        if (
-            -1 ===
-            fromPath.findIndex((priorSolutionPath) => {
-                return priorSolutionPath
-                    .getBuilding()
-                    .equals(this.getBuilding());
-            })
-        ) {
-            return;
-        }
+        // // loopback
+        // if (
+        //     -1 !==
+        //     fromPath.findIndex((priorSolutionPath) => {
+        //         return priorSolutionPath
+        //             .getBuilding()
+        //             .equals(this.getBuilding());
+        //     })
+        // ) {
+        //     console.log(
+        //         JSON.stringify({ loopback: [...fromPath, this] }, null, 2)
+        //     );
+        //     return;
+        // }
         // attempt to solve any previously unsolved
         this.permutatedSolutionPaths
-            .filter((permutatedSolutionPath) => {
-                return !permutatedSolutionPath.isExplored();
-            })
+            // .filter((permutatedSolutionPath) => {
+            //     return !permutatedSolutionPath.isExplored();
+            // })
             // .filter((permutatedSolutionPath) => {
             //     return (
             //         null === solutionData.minKnownSolutionPath ||
@@ -383,18 +501,19 @@ export class SolutionPath {
             //             fromPath.length + 1
             //     );
             // })
-            // .filter((permutatedSolutionPath) => {
-            //     return (
-            //         -1 ===
-            //         [...fromPath, this].findIndex(
-            //             (existingMemoizedSolutionPath) => {
-            //                 return existingMemoizedSolutionPath
-            //                     .getBuilding()
-            //                     .equals(permutatedSolutionPath.getBuilding());
-            //             }
-            //         )
-            //     );
-            // })
+            // loopback
+            .filter((permutatedSolutionPath) => {
+                return (
+                    -1 ===
+                    [...fromPath, this, permutatedSolutionPath].findIndex(
+                        (existingMemoizedSolutionPath) => {
+                            return existingMemoizedSolutionPath
+                                .getBuilding()
+                                .equals(permutatedSolutionPath.getBuilding());
+                        }
+                    )
+                );
+            })
             .forEach((permutatedSolutionPath) => {
                 permutatedSolutionPath.solve([...fromPath, this], solutionData);
             });
@@ -430,6 +549,31 @@ export class SolutionPathConcreteFactoryConcrete {
             building,
             getPermutatedBuildings: this.getPermutatedBuildings,
             getSolutionPathByBuilding: this.getSolutionPathByBuilding,
+        });
+    }
+}
+
+export class NewSolutionPathConcreteFactoryConcrete {
+    private getPermutatedBuildings: (building: Building) => Building[];
+    private getNewSolutionPathByBuilding: (
+        building: Building
+    ) => NewSolutionPath;
+    constructor() {
+        this.getPermutatedBuildings = getMemoizedPermutatedBuildings({
+            getPermutatedBuildingsFromFloorToFloor:
+                getMemoizedPermutatedBuildingsFromFloorToFloor(),
+        });
+        this.getNewSolutionPathByBuilding =
+            getMemoizedNewSolutionPathByBuilding({
+                getPermutatedBuildings: this.getPermutatedBuildings,
+            });
+    }
+
+    getInstance(building: Building) {
+        return new NewSolutionPath({
+            building,
+            getPermutatedBuildings: this.getPermutatedBuildings,
+            getNewSolutionPathByBuilding: this.getNewSolutionPathByBuilding,
         });
     }
 }
@@ -502,6 +646,33 @@ export function getMemoizedSolutionPathByBuilding({
         });
         memoizedSolutionPaths.push(newMemoizedSolutionPath);
         return newMemoizedSolutionPath;
+    };
+}
+
+export function getMemoizedNewSolutionPathByBuilding({
+    getPermutatedBuildings,
+}: {
+    getPermutatedBuildings: (building: Building) => Building[];
+}) {
+    const memoizedNewSolutionPaths: NewSolutionPath[] = [];
+    return function getNewSolutionPathByBuilding(building: Building) {
+        const memoizedNewSolutionPath = memoizedNewSolutionPaths.find(
+            (existingMemoizedNewSolutionPath) => {
+                return existingMemoizedNewSolutionPath
+                    .getBuilding()
+                    .equals(building);
+            }
+        );
+        if (undefined !== memoizedNewSolutionPath) {
+            return memoizedNewSolutionPath;
+        }
+        const newMemoizedNewSolutionPath = new NewSolutionPath({
+            building,
+            getPermutatedBuildings,
+            getNewSolutionPathByBuilding,
+        });
+        memoizedNewSolutionPaths.push(newMemoizedNewSolutionPath);
+        return newMemoizedNewSolutionPath;
     };
 }
 

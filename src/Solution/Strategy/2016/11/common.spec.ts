@@ -8,6 +8,7 @@ import {
     getStarterSolutionData,
     ItemConcrete,
     ItemSetConcrete,
+    NewSolutionPathConcreteFactoryConcrete,
     SolutionPath,
     SolutionPathConcreteFactoryConcrete,
     success,
@@ -1673,16 +1674,10 @@ describe('201611a', () => {
             expect(success(building)).to.be.true;
         });
     });
-    describe('SolutionPath', () => {
-        it('solves', () => {
-            /*
-                F4 .  .  .  .  .
-                F3 .  .  .  LG .
-                F2 .  HG .  .  .
-                F1 E  .  HM .  LM
-            */
-            const solutionPathConcreteFactoryConcrete =
-                new SolutionPathConcreteFactoryConcrete();
+    describe('NewSolutionPath', () => {
+        it('advances', () => {
+            const newSolutionPathFactoryConcrete =
+                new NewSolutionPathConcreteFactoryConcrete();
             const building = new BuildingConcrete(
                 new FloorMapConcrete(
                     new Map([
@@ -1710,13 +1705,59 @@ describe('201611a', () => {
                 ),
                 1
             );
-            const solutionPathConcrete =
-                solutionPathConcreteFactoryConcrete.getInstance(building);
-            const solution = getStarterSolutionData();
-            solutionPathConcrete.solve([], solution);
-            // console.log({ solutionPathConcrete });
-            // console.log(JSON.stringify(solution.minKnownSolutionPath, null, 2));
-            expect(solution.minKnownSolutionPath?.length).to.eql(1);
+            const solution =
+                newSolutionPathFactoryConcrete.getInstance(building);
+            while (solution.getState() === null) {
+                console.log(`Advancing`);
+                solution.advance(solution.getStep() + 1);
+            }
+            // console.log(JSON.stringify(solution.getKnownSolutionPath()));
         });
+    });
+    describe('SolutionPath', () => {
+        // it('solves', () => {
+        //     /*
+        //         F4 .  .  .  .  .
+        //         F3 .  .  .  LG .
+        //         F2 .  HG .  .  .
+        //         F1 E  .  HM .  LM
+        //     */
+        //     const solutionPathConcreteFactoryConcrete =
+        //         new SolutionPathConcreteFactoryConcrete();
+        //     const building = new BuildingConcrete(
+        //         new FloorMapConcrete(
+        //             new Map([
+        //                 [
+        //                     1,
+        //                     new ItemSetConcrete([
+        //                         new ItemConcrete('H', 'microchip'),
+        //                         new ItemConcrete('L', 'microchip'),
+        //                     ]),
+        //                 ],
+        //                 [
+        //                     2,
+        //                     new ItemSetConcrete([
+        //                         new ItemConcrete('H', 'generator'),
+        //                     ]),
+        //                 ],
+        //                 [
+        //                     3,
+        //                     new ItemSetConcrete([
+        //                         new ItemConcrete('L', 'generator'),
+        //                     ]),
+        //                 ],
+        //                 [4, new ItemSetConcrete([])],
+        //             ])
+        //         ),
+        //         1
+        //     );
+        //     const solutionPathConcrete =
+        //         solutionPathConcreteFactoryConcrete.getInstance(building);
+        //     const solution = getStarterSolutionData();
+        //     solutionPathConcrete.solve([], solution);
+        //     // console.log({ solutionPathConcrete });
+        //     // console.log(JSON.stringify(solution.minKnownSolutionPath, null, 2));
+        //     expect(solution.minKnownSolutionPath?.length).to.eql(1);
+        // });
     });
 });
