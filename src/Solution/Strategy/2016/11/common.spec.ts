@@ -282,14 +282,10 @@ describe('201611a', () => {
                             1,
                             new ItemSetConcrete([
                                 new ItemConcrete('L', 'microchip'),
-                            ]),
-                        ],
-                        [
-                            2,
-                            new ItemSetConcrete([
                                 new ItemConcrete('H', 'microchip'),
                             ]),
                         ],
+                        [2, new ItemSetConcrete([])],
                         [
                             3,
                             new ItemSetConcrete([
@@ -300,7 +296,7 @@ describe('201611a', () => {
                         [4, new ItemSetConcrete([])],
                     ])
                 ),
-                2
+                1
             );
             const getPermutatedBuildingsFromFloorToFloor =
                 getMemoizedPermutatedBuildingsFromFloorToFloor();
@@ -948,14 +944,10 @@ describe('201611a', () => {
                             1,
                             new ItemSetConcrete([
                                 new ItemConcrete('L', 'microchip'),
-                            ]),
-                        ],
-                        [
-                            2,
-                            new ItemSetConcrete([
                                 new ItemConcrete('H', 'microchip'),
                             ]),
                         ],
+                        [2, new ItemSetConcrete([])],
                         [
                             3,
                             new ItemSetConcrete([
@@ -966,7 +958,7 @@ describe('201611a', () => {
                         [4, new ItemSetConcrete([])],
                     ])
                 ),
-                2
+                1
             );
             const getPermutatedBuildings = getMemoizedPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
@@ -1464,14 +1456,10 @@ describe('201611a', () => {
                             1,
                             new ItemSetConcrete([
                                 new ItemConcrete('L', 'microchip'),
-                            ]),
-                        ],
-                        [
-                            2,
-                            new ItemSetConcrete([
                                 new ItemConcrete('H', 'microchip'),
                             ]),
                         ],
+                        [2, new ItemSetConcrete([])],
                         [
                             3,
                             new ItemSetConcrete([
@@ -1482,7 +1470,7 @@ describe('201611a', () => {
                         [4, new ItemSetConcrete([])],
                     ])
                 ),
-                2
+                1
             );
             expect(failure(building)).to.be.false;
         });
