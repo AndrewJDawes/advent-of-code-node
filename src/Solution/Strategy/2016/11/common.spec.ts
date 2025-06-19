@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import {
     BuildingConcrete,
+    failure,
     FloorMapConcrete,
     getMemoizedPermutatedBuildings,
     getMemoizedPermutatedBuildingsFromFloorToFloor,
@@ -9,6 +10,7 @@ import {
     ItemSetConcrete,
     SolutionPath,
     SolutionPathConcreteFactoryConcrete,
+    success,
 } from './common.js';
 describe('201611a', () => {
     describe('getMemoizedPermutatedBuildingsFromFloorToFloor', () => {
@@ -683,6 +685,352 @@ describe('201611a', () => {
                     permutation.equals(expectedPermutation)
                 )
             ).to.not.equal(-1);
+        });
+    });
+    describe('failure', () => {
+        it('treats building as non-failure A', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                1
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure B', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure C', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                3
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure D', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure E', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure F', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure G', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                3
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure H', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure I', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                    ])
+                ),
+                3
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure J', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure K', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                3
+            );
+            expect(failure(building)).to.be.false;
+        });
+        it('treats building as non-failure L', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [3, new ItemSetConcrete([])],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            expect(failure(building)).to.be.false;
+        });
+    });
+    describe('success', () => {
+        it('treats building as success A', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [3, new ItemSetConcrete([])],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            expect(success(building)).to.be.true;
         });
     });
     describe('SolutionPath', () => {
