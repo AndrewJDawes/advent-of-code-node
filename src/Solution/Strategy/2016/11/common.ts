@@ -174,6 +174,9 @@ export class FloorMapConcrete implements FloorMap {
             )
         );
     }
+    toJSON() {
+        return [...this.floors.entries()];
+    }
 }
 
 export interface Building {
@@ -249,6 +252,12 @@ export class BuildingConcrete implements Building {
         }
         this.setElevatorFloorNumber(toFloorNumber);
     }
+    // toJSON() {
+    //     return {
+    //         ...this,
+    //         hi: 'hi',
+    //     };
+    // }
 }
 
 export type SolutionState = 'success' | 'failure' | 'enroute';
