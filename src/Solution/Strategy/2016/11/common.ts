@@ -505,7 +505,15 @@ export function getMemoizedPermutatedBuildings({
         const targetFloorIndexB = elevatorFloorNumberIndex + 1;
         const targetFloorNumberA = floorNumbers[targetFloorIndexA];
         const targetFloorNumberB = floorNumbers[targetFloorIndexB];
-        if (targetFloorIndexA > 0) {
+        // console.log({
+        //     floorNumbers,
+        //     elevatorFloorNumber,
+        //     targetFloorIndexA,
+        //     targetFloorNumberA,
+        //     targetFloorIndexB,
+        //     targetFloorNumberB,
+        // });
+        if (targetFloorIndexA >= 0) {
             buildingPermutations.push(
                 ...getPermutatedBuildingsFromFloorToFloor(
                     building,
