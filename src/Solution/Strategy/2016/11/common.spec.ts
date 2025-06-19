@@ -687,6 +687,658 @@ describe('201611a', () => {
             ).to.not.equal(-1);
         });
     });
+    describe('getMemoizedPermutatedBuildings', () => {
+        it('generates expected permutations A', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                1
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations B', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                3
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations C', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                3
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations D', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                1
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations E', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations F', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                3
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations G', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                3
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations H', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                    ])
+                ),
+                3
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations I', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                    ])
+                ),
+                3
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations J', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                3
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+        it('generates expected permutations K', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                3
+            );
+            const getPermutatedBuildings = getMemoizedPermutatedBuildings({
+                getPermutatedBuildingsFromFloorToFloor:
+                    getMemoizedPermutatedBuildingsFromFloorToFloor(),
+            });
+            const permutations = getPermutatedBuildings(building);
+            const expectedPermutation = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [3, new ItemSetConcrete([])],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4
+            );
+            expect(
+                permutations.findIndex((permutation) =>
+                    permutation.equals(expectedPermutation)
+                )
+            ).to.not.equal(-1);
+        });
+    });
     describe('failure', () => {
         it('treats building as non-failure A', () => {
             const building = new BuildingConcrete(
