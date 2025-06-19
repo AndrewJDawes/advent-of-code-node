@@ -1683,31 +1683,40 @@ describe('201611a', () => {
             */
             const solutionPathConcreteFactoryConcrete =
                 new SolutionPathConcreteFactoryConcrete();
-            const floors = new FloorMapConcrete();
-            const building = new BuildingConcrete(floors, 1);
-            floors.set(
-                1,
-                new ItemSetConcrete([
-                    new ItemConcrete('H', 'microchip'),
-                    new ItemConcrete('L', 'microchip'),
-                ])
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                1
             );
-            floors.set(
-                2,
-                new ItemSetConcrete([new ItemConcrete('H', 'generator')])
-            );
-            floors.set(
-                3,
-                new ItemSetConcrete([new ItemConcrete('L', 'generator')])
-            );
-            floors.set(4, new ItemSetConcrete([]));
             const solutionPathConcrete =
                 solutionPathConcreteFactoryConcrete.getInstance(building);
             const solution = getStarterSolutionData();
             solutionPathConcrete.solve([], solution);
             // console.log({ solutionPathConcrete });
-            // console.log(JSON.stringify({ solutionPathConcrete }, null, 2));
-            expect(solution.minKnownSolutionPath).to.eql(1);
+            console.log(JSON.stringify(solution.minKnownSolutionPath, null, 2));
+            expect(solution.minKnownSolutionPath?.length).to.eql(1);
         });
     });
 });

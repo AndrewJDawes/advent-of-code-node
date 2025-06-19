@@ -333,10 +333,10 @@ export class SolutionPath {
         return this.permutatedSolutionPaths;
     }
     solve(fromPath: SolutionPath[], solutionData: SolutionData) {
-        // loopback
+        // // loopback
         if (
-            undefined !==
-            fromPath.find((existingMemoizedSolutionPath) => {
+            -1 !==
+            fromPath.findIndex((existingMemoizedSolutionPath) => {
                 return existingMemoizedSolutionPath
                     .getBuilding()
                     .equals(this.building);
@@ -386,17 +386,30 @@ export class SolutionPath {
             })
             .filter((permutatedSolutionPath) => {
                 return (
-                    undefined ===
-                    [...fromPath, this].find((existingMemoizedSolutionPath) => {
-                        return existingMemoizedSolutionPath
-                            .getBuilding()
-                            .equals(permutatedSolutionPath.getBuilding());
-                    })
+                    -1 ===
+                    [...fromPath, this].findIndex(
+                        (existingMemoizedSolutionPath) => {
+                            return existingMemoizedSolutionPath
+                                .getBuilding()
+                                .equals(permutatedSolutionPath.getBuilding());
+                        }
+                    )
                 );
             })
             .forEach((permutatedSolutionPath) => {
                 permutatedSolutionPath.solve([...fromPath, this], solutionData);
             });
+    }
+    toJSON() {
+        return {
+            ...Object.entries(this)
+                .filter(
+                    ([key, value]) => !['permutatedSolutionPaths'].includes(key)
+                )
+                .reduce((prev, curr) => {
+                    return { ...prev, [curr[0]]: curr[1] };
+                }, {}),
+        };
     }
 }
 
