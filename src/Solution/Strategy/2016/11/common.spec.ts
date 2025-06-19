@@ -1715,7 +1715,7 @@ describe('201611a', () => {
             const solution = getStarterSolutionData();
             solutionPathConcrete.solve([], solution);
             // console.log({ solutionPathConcrete });
-            console.log(JSON.stringify(solution.minKnownSolutionPath, null, 2));
+            // console.log(JSON.stringify(solution.minKnownSolutionPath, null, 2));
             expect(solution.minKnownSolutionPath?.length).to.eql(1);
         });
     });

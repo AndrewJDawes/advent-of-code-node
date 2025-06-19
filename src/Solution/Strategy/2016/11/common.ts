@@ -252,12 +252,6 @@ export class BuildingConcrete implements Building {
         }
         this.setElevatorFloorNumber(toFloorNumber);
     }
-    // toJSON() {
-    //     return {
-    //         ...this,
-    //         hi: 'hi',
-    //     };
-    // }
 }
 
 export type SolutionState = 'success' | 'failure' | 'enroute';
@@ -333,33 +327,20 @@ export class SolutionPath {
         return this.permutatedSolutionPaths;
     }
     solve(fromPath: SolutionPath[], solutionData: SolutionData) {
-        // // loopback
-        if (
-            -1 !==
-            fromPath.findIndex((existingMemoizedSolutionPath) => {
-                return existingMemoizedSolutionPath
-                    .getBuilding()
-                    .equals(this.building);
-            })
-        ) {
-            return;
-        }
-        // better known solution
-        if (
-            null !== solutionData.minKnownSolutionPath &&
-            solutionData.minKnownSolutionPath.length <= fromPath.length + 1
-        ) {
+        if (success(this.building)) {
+            if (
+                undefined === solutionData.minKnownSolutionPath?.length ||
+                solutionData.minKnownSolutionPath.length > [...fromPath].length
+            ) {
+                solutionData.minKnownSolutionPath = [...fromPath];
+            }
+            this.setExplored(true);
+            this.state = 'success';
             return;
         }
         if (failure(this.building)) {
             this.setExplored(true);
             this.state = 'failure';
-            return;
-        }
-        if (success(this.building)) {
-            this.setExplored(true);
-            this.state = 'success';
-            solutionData.minKnownSolutionPath = [...fromPath, this];
             return;
         }
         this.state = 'enroute';
@@ -372,30 +353,48 @@ export class SolutionPath {
             );
             return solutionPath;
         });
+        // too long
+        if (
+            null === solutionData.minKnownSolutionPath ||
+            solutionData.minKnownSolutionPath.length <= fromPath.length
+        ) {
+            return;
+        }
+        // loopback
+        if (
+            -1 ===
+            fromPath.findIndex((priorSolutionPath) => {
+                return priorSolutionPath
+                    .getBuilding()
+                    .equals(this.getBuilding());
+            })
+        ) {
+            return;
+        }
         // attempt to solve any previously unsolved
         this.permutatedSolutionPaths
             .filter((permutatedSolutionPath) => {
                 return !permutatedSolutionPath.isExplored();
             })
-            .filter((permutatedSolutionPath) => {
-                return (
-                    null === solutionData.minKnownSolutionPath ||
-                    solutionData.minKnownSolutionPath.length <=
-                        fromPath.length + 1
-                );
-            })
-            .filter((permutatedSolutionPath) => {
-                return (
-                    -1 ===
-                    [...fromPath, this].findIndex(
-                        (existingMemoizedSolutionPath) => {
-                            return existingMemoizedSolutionPath
-                                .getBuilding()
-                                .equals(permutatedSolutionPath.getBuilding());
-                        }
-                    )
-                );
-            })
+            // .filter((permutatedSolutionPath) => {
+            //     return (
+            //         null === solutionData.minKnownSolutionPath ||
+            //         solutionData.minKnownSolutionPath.length <=
+            //             fromPath.length + 1
+            //     );
+            // })
+            // .filter((permutatedSolutionPath) => {
+            //     return (
+            //         -1 ===
+            //         [...fromPath, this].findIndex(
+            //             (existingMemoizedSolutionPath) => {
+            //                 return existingMemoizedSolutionPath
+            //                     .getBuilding()
+            //                     .equals(permutatedSolutionPath.getBuilding());
+            //             }
+            //         )
+            //     );
+            // })
             .forEach((permutatedSolutionPath) => {
                 permutatedSolutionPath.solve([...fromPath, this], solutionData);
             });
