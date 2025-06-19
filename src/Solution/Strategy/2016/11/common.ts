@@ -374,12 +374,29 @@ export class SolutionPath {
         });
         // attempt to solve any previously unsolved
         this.permutatedSolutionPaths
-            .filter(
-                (permutatedSolutionPath) => !permutatedSolutionPath.isExplored()
-            )
-            .forEach((permutatedSolutionPath) =>
-                permutatedSolutionPath.solve([...fromPath, this], solutionData)
-            );
+            .filter((permutatedSolutionPath) => {
+                return !permutatedSolutionPath.isExplored();
+            })
+            .filter((permutatedSolutionPath) => {
+                return (
+                    null === solutionData.minKnownSolutionPath ||
+                    solutionData.minKnownSolutionPath.length <=
+                        fromPath.length + 1
+                );
+            })
+            .filter((permutatedSolutionPath) => {
+                return (
+                    undefined ===
+                    [...fromPath, this].find((existingMemoizedSolutionPath) => {
+                        return existingMemoizedSolutionPath
+                            .getBuilding()
+                            .equals(permutatedSolutionPath.getBuilding());
+                    })
+                );
+            })
+            .forEach((permutatedSolutionPath) => {
+                permutatedSolutionPath.solve([...fromPath, this], solutionData);
+            });
     }
 }
 
@@ -505,14 +522,7 @@ export function getMemoizedPermutatedBuildings({
         const targetFloorIndexB = elevatorFloorNumberIndex + 1;
         const targetFloorNumberA = floorNumbers[targetFloorIndexA];
         const targetFloorNumberB = floorNumbers[targetFloorIndexB];
-        // console.log({
-        //     floorNumbers,
-        //     elevatorFloorNumber,
-        //     targetFloorIndexA,
-        //     targetFloorNumberA,
-        //     targetFloorIndexB,
-        //     targetFloorNumberB,
-        // });
+
         if (targetFloorIndexA >= 0) {
             buildingPermutations.push(
                 ...getPermutatedBuildingsFromFloorToFloor(
