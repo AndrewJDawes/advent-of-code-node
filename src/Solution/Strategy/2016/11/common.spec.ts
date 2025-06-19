@@ -1711,7 +1711,9 @@ describe('201611a', () => {
                 console.log(`Advancing`);
                 solution.advance(solution.getStep() + 1);
             }
-            // console.log(JSON.stringify(solution.getKnownSolutionPath()));
+            console.log(JSON.stringify(solution));
+            console.log(solution.getState());
+            console.log(solution.getStep());
         });
     });
     describe('SolutionPath', () => {

@@ -333,20 +333,15 @@ export class NewSolutionPath {
         // this.state = 'enroute';
         this.openEndedPaths = this.getPermutatedBuildings(this.building).map(
             (building) => this.getNewSolutionPathByBuilding(building)
-            // (building) =>
-            //     new NewSolutionPath({
-            //         building,
-            //         getPermutatedBuildings: this.getPermutatedBuildings,
-            //         getNewSolutionPathByBuilding:
-            //             this.getNewSolutionPathByBuilding,
-            //     })
         );
-        // Are any of children are success, return known
     }
     toJSON() {
         return {
             ...Object.entries(this)
-                .filter(([key, value]) => !['openEndedPaths'].includes(key))
+                .filter(
+                    ([key, value]) =>
+                        !['openEndedPaths', 'knownSolutionPath'].includes(key)
+                )
                 .reduce((prev, curr) => {
                     return { ...prev, [curr[0]]: curr[1] };
                 }, {}),
