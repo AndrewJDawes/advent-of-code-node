@@ -260,9 +260,7 @@ export class SolutionPath {
     private building: Building;
     private openEndedPaths: SolutionPath[] | null;
     private getPermutatedBuildings: (building: Building) => Building[];
-    private getSolutionPathByBuilding: (
-        building: Building
-    ) => SolutionPath;
+    private getSolutionPathByBuilding: (building: Building) => SolutionPath;
     private knownSolutionPath: SolutionPath | null;
     constructor({
         building,
@@ -355,18 +353,15 @@ export class SolutionPath {
 export type SolutionState = 'success' | 'failure';
 export class SolutionPathConcreteFactoryConcrete {
     private getPermutatedBuildings: (building: Building) => Building[];
-    private getSolutionPathByBuilding: (
-        building: Building
-    ) => SolutionPath;
+    private getSolutionPathByBuilding: (building: Building) => SolutionPath;
     constructor() {
-        this.getPermutatedBuildings = getMemoizedPermutatedBuildings({
+        this.getPermutatedBuildings = getFunctionGetPermutatedBuildings({
             getPermutatedBuildingsFromFloorToFloor:
-                getMemoizedPermutatedBuildingsFromFloorToFloor(),
+                getFunctionGetPermutatedBuildingsFromFloorToFloor(),
         });
-        this.getSolutionPathByBuilding =
-            getMemoizedSolutionPathByBuilding({
-                getPermutatedBuildings: this.getPermutatedBuildings,
-            });
+        this.getSolutionPathByBuilding = getFunctionGetSolutionPathByBuilding({
+            getPermutatedBuildings: this.getPermutatedBuildings,
+        });
     }
 
     getInstance(building: Building) {
@@ -422,7 +417,7 @@ export function failure(building: Building) {
     return false;
 }
 
-export function getMemoizedSolutionPathByBuilding({
+export function getFunctionGetSolutionPathByBuilding({
     getPermutatedBuildings,
 }: {
     getPermutatedBuildings: (building: Building) => Building[];
@@ -450,7 +445,7 @@ export function getMemoizedSolutionPathByBuilding({
 }
 
 // TODO: Memoize
-export function getMemoizedPermutatedBuildings({
+export function getFunctionGetPermutatedBuildings({
     getPermutatedBuildingsFromFloorToFloor,
 }: {
     getPermutatedBuildingsFromFloorToFloor: (
@@ -502,7 +497,7 @@ export function getMemoizedPermutatedBuildings({
 }
 
 // TODO: Memoize
-export function getMemoizedPermutatedBuildingsFromFloorToFloor() {
+export function getFunctionGetPermutatedBuildingsFromFloorToFloor() {
     return (
         building: Building,
         fromFloorNumber: number,
@@ -545,4 +540,36 @@ export function getMemoizedPermutatedBuildingsFromFloorToFloor() {
         }
         return buildingPermutations;
     };
+}
+
+// BFS - Breadth First Search
+export function findShortestPathToSuccess(building: Building) {
+    const queue: [Building, Building[]][] = [[building, [building]]];
+    const visited: Building[] = [];
+    const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
+        getPermutatedBuildingsFromFloorToFloor:
+            getFunctionGetPermutatedBuildingsFromFloorToFloor(),
+    });
+    while (queue.length > 0) {
+        const queueItem = queue.shift();
+        if (queueItem === undefined) {
+            throw new Error(`queueItem is undefined`);
+        }
+        const [node, path] = queueItem;
+        if (success(node)) {
+            return path;
+        }
+        if (failure(node)) {
+            continue;
+        }
+        if (visited.find((visitedNode) => visitedNode.equals(node))) {
+            continue;
+        }
+        visited.push(node);
+        const permutations = getPermutatedBuildings(node);
+        permutations.forEach((permutation) => {
+            queue.push([permutation, [...path, permutation]]);
+        });
+    }
+    return null;
 }
