@@ -573,3 +573,22 @@ export function findShortestPathToSuccess(building: Building) {
     }
     return null;
 }
+
+export class CommandParser {
+    private building: Building;
+    private floorNumber: number;
+    constructor(building: Building) {
+        this.building = building;
+        this.floorNumber = 1;
+    }
+    public execute(commandString: string) {
+        const command = commandString.trim();
+        let itemRegex =
+            /a (?<element>[a-zA-Z]+)(?:-compatible)? (?<type>generator|microchip+)/g;
+        let item: undefined | null | RegExpExecArray = undefined;
+        while ((item = itemRegex.exec(command)) !== null) {
+            console.log({ floorNumber: this.floorNumber, item });
+        }
+        this.floorNumber++;
+    }
+}

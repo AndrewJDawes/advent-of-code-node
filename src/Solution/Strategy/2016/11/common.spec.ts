@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {
     Building,
     BuildingConcrete,
+    CommandParser,
     failure,
     findShortestPathToSuccess,
     FloorMapConcrete,
@@ -1746,6 +1747,90 @@ describe('201611a', () => {
             );
             const results = findShortestPathToSuccess(building);
             expect(results?.length).to.equal(12);
+        });
+    });
+    describe('CommandParser', () => {
+        describe('execute', () => {
+            it('parses commands', () => {
+                const building = new BuildingConcrete();
+                const commandParser = new CommandParser(building);
+                const commandArray = [
+                    'The first floor contains a thulium generator, a thulium-compatible microchip, a plutonium generator, and a strontium generator.',
+                    'The second floor contains a plutonium-compatible microchip and a strontium-compatible microchip.',
+                    'The third floor contains a promethium generator, a promethium-compatible microchip, a ruthenium generator, and a ruthenium-compatible microchip.',
+                    'The fourth floor contains nothing relevant.',
+                ];
+                for (const command of commandArray) {
+                    commandParser.execute(command);
+                }
+                expect(
+                    building.equals(
+                        new BuildingConcrete(
+                            new FloorMapConcrete(
+                                new Map([
+                                    [
+                                        1,
+                                        new ItemSetConcrete([
+                                            new ItemConcrete(
+                                                'thulium',
+                                                'generator'
+                                            ),
+                                            new ItemConcrete(
+                                                'thulium',
+                                                'microchip'
+                                            ),
+                                            new ItemConcrete(
+                                                'plutonium',
+                                                'generator'
+                                            ),
+                                            new ItemConcrete(
+                                                'strontium',
+                                                'generator'
+                                            ),
+                                        ]),
+                                    ],
+                                    [
+                                        2,
+                                        new ItemSetConcrete([
+                                            new ItemConcrete(
+                                                'plutonium',
+                                                'microchip'
+                                            ),
+                                            new ItemConcrete(
+                                                'strontium',
+                                                'microchip'
+                                            ),
+                                        ]),
+                                    ],
+                                    [
+                                        3,
+                                        new ItemSetConcrete([
+                                            new ItemConcrete(
+                                                'promethium',
+                                                'generator'
+                                            ),
+                                            new ItemConcrete(
+                                                'promethium',
+                                                'microchip'
+                                            ),
+                                            new ItemConcrete(
+                                                'ruthenium',
+                                                'generator'
+                                            ),
+                                            new ItemConcrete(
+                                                'ruthenium',
+                                                'microchip'
+                                            ),
+                                        ]),
+                                    ],
+                                    [4, new ItemSetConcrete([])],
+                                ])
+                            ),
+                            1
+                        )
+                    )
+                ).to.be.true;
+            });
         });
     });
 });
