@@ -556,6 +556,7 @@ export function findShortestPathToSuccess(building: Building) {
             throw new Error(`queueItem is undefined`);
         }
         const [node, path] = queueItem;
+        console.log(visited.length);
         if (success(node)) {
             return path;
         }

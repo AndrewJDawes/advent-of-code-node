@@ -1,5 +1,10 @@
 import InterfaceSolutionStrategy from '../../../Interface/Strategy.js';
 import InterfaceInputFetcher from '../../../../InputFetcher/Interface/Service.js';
+import {
+    BuildingConcrete,
+    CommandParser,
+    findShortestPathToSuccess,
+} from './common.js';
 
 /*
 --- Day 11: Radioisotope Thermoelectric Generators ---
@@ -111,8 +116,16 @@ class Solution implements InterfaceSolutionStrategy {
     }
     async solve() {
         const iterator = await this.inputFetcher.getAsyncIterator();
-
-        return ''.toString();
+        const building = new BuildingConcrete();
+        const commandParser = new CommandParser(building);
+        for await (let line of iterator) {
+            commandParser.execute(line);
+        }
+        const path = findShortestPathToSuccess(building);
+        if (path === null) {
+            throw new Error(`Unable to find a path`);
+        }
+        return path.length.toString();
     }
 }
 export default Solution;
