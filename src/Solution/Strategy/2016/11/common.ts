@@ -581,14 +581,28 @@ export class CommandParser {
         this.building = building;
         this.floorNumber = 1;
     }
+    public isValidItemType(type: any): type is ItemType {
+        return type === 'generator' || type === 'microchip';
+    }
     public execute(commandString: string) {
         const command = commandString.trim();
+        const floor = new ItemSetConcrete();
         let itemRegex =
             /a (?<element>[a-zA-Z]+)(?:-compatible)? (?<type>generator|microchip+)/g;
         let item: undefined | null | RegExpExecArray = undefined;
         while ((item = itemRegex.exec(command)) !== null) {
-            console.log({ floorNumber: this.floorNumber, item });
+            if (item.groups?.element === undefined) {
+                throw new Error(`Unable to parse element from command`);
+            }
+            if (!this.isValidItemType(item.groups?.type)) {
+                throw new Error(`Unable to parse type from command`);
+            }
+
+            floor.addItem(
+                new ItemConcrete(item.groups?.element, item.groups?.type)
+            );
         }
+        this.building.getFloors().set(this.floorNumber, floor);
         this.floorNumber++;
     }
 }
