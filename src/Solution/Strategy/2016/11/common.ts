@@ -357,7 +357,7 @@ export class SolutionPathConcreteFactoryConcrete {
     constructor() {
         this.getPermutatedBuildings = getFunctionGetPermutatedBuildings({
             getPermutatedBuildingsFromFloorToFloor:
-                getFunctionGetPermutatedBuildingsFromFloorToFloor(),
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
         });
         this.getSolutionPathByBuilding = getFunctionGetSolutionPathByBuilding({
             getPermutatedBuildings: this.getPermutatedBuildings,
@@ -502,8 +502,12 @@ export function getFunctionGetPermutatedBuildings({
     };
 }
 
-export function getFunctionGetPermutatedBuildingsFromFloorToFloor() {
-    const memoizedPermutatedBuildings: Building[] = [];
+export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
+    permutatedBuildings = [],
+}: {
+    permutatedBuildings?: Building[];
+}) {
+    const memoizedPermutatedBuildings = permutatedBuildings;
     return (
         building: Building,
         fromFloorNumber: number,
@@ -531,8 +535,8 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor() {
                 new ItemSetConcrete([fromFloorItems[i]])
             );
             const memoizedPermutatedBuildingI =
-                memoizedPermutatedBuildings.find((PermutatedBuilding) =>
-                    PermutatedBuilding.equals(newBuildingI)
+                memoizedPermutatedBuildings.find((memoizedPermutatedBuilding) =>
+                    memoizedPermutatedBuilding.equals(newBuildingI)
                 );
             if (undefined !== memoizedPermutatedBuildingI) {
                 buildingPermutations.push(memoizedPermutatedBuildingI);
@@ -551,8 +555,9 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor() {
                     new ItemSetConcrete([fromFloorItems[i], fromFloorItems[j]])
                 );
                 const memoizedPermutatedBuildingIJ =
-                    memoizedPermutatedBuildings.find((PermutatedBuilding) =>
-                        PermutatedBuilding.equals(newBuildingIJ)
+                    memoizedPermutatedBuildings.find(
+                        (memoizedPermutatedBuilding) =>
+                            memoizedPermutatedBuilding.equals(newBuildingIJ)
                     );
                 if (undefined !== memoizedPermutatedBuildingIJ) {
                     buildingPermutations.push(memoizedPermutatedBuildingIJ);
@@ -572,7 +577,9 @@ export function findShortestPathToSuccess(building: Building) {
     const visited: Set<Building> = new Set();
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
-            getFunctionGetPermutatedBuildingsFromFloorToFloor(),
+            getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                permutatedBuildings: [building],
+            }),
     });
     while (queue.length > 0) {
         const queueItem = queue.shift();
