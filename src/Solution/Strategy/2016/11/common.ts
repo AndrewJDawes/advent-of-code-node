@@ -444,7 +444,6 @@ export function getFunctionGetSolutionPathByBuilding({
     };
 }
 
-// TODO: Memoize
 export function getFunctionGetPermutatedBuildings({
     getPermutatedBuildingsFromFloorToFloor,
 }: {
@@ -454,7 +453,13 @@ export function getFunctionGetPermutatedBuildings({
         toFloorNumber: number
     ) => Building[];
 }) {
+    const memoizedPermutatedBuildingMap: Map<Building, Building[]> = new Map();
     return (building: Building) => {
+        const existingMemoizedPermutatedBuildingMap =
+            memoizedPermutatedBuildingMap.get(building);
+        if (undefined !== existingMemoizedPermutatedBuildingMap) {
+            return existingMemoizedPermutatedBuildingMap;
+        }
         const buildingPermutations: Building[] = [];
         const floors = building.getFloors();
         const floorNumbers = [...floors.keys()].sort();
@@ -492,12 +497,13 @@ export function getFunctionGetPermutatedBuildings({
                 )
             );
         }
+        memoizedPermutatedBuildingMap.set(building, buildingPermutations);
         return buildingPermutations;
     };
 }
 
-// TODO: Memoize
 export function getFunctionGetPermutatedBuildingsFromFloorToFloor() {
+    const memoizedPermutatedBuildings: Building[] = [];
     return (
         building: Building,
         fromFloorNumber: number,
@@ -524,7 +530,16 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor() {
                 toFloorNumber,
                 new ItemSetConcrete([fromFloorItems[i]])
             );
-            buildingPermutations.push(newBuildingI);
+            const memoizedPermutatedBuildingI =
+                memoizedPermutatedBuildings.find((PermutatedBuilding) =>
+                    PermutatedBuilding.equals(newBuildingI)
+                );
+            if (undefined !== memoizedPermutatedBuildingI) {
+                buildingPermutations.push(memoizedPermutatedBuildingI);
+            } else {
+                memoizedPermutatedBuildings.push(newBuildingI);
+                buildingPermutations.push(newBuildingI);
+            }
             for (let j = 0; j < fromFloorItems.length; j++) {
                 if (i === j) {
                     continue;
@@ -535,7 +550,16 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor() {
                     toFloorNumber,
                     new ItemSetConcrete([fromFloorItems[i], fromFloorItems[j]])
                 );
-                buildingPermutations.push(newBuildingIJ);
+                const memoizedPermutatedBuildingIJ =
+                    memoizedPermutatedBuildings.find((PermutatedBuilding) =>
+                        PermutatedBuilding.equals(newBuildingIJ)
+                    );
+                if (undefined !== memoizedPermutatedBuildingIJ) {
+                    buildingPermutations.push(memoizedPermutatedBuildingIJ);
+                } else {
+                    memoizedPermutatedBuildings.push(newBuildingIJ);
+                    buildingPermutations.push(newBuildingIJ);
+                }
             }
         }
         return buildingPermutations;
@@ -545,7 +569,7 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor() {
 // BFS - Breadth First Search
 export function findShortestPathToSuccess(building: Building) {
     const queue: [Building, Building[]][] = [[building, [building]]];
-    const visited: Building[] = [];
+    const visited: Set<Building> = new Set();
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
             getFunctionGetPermutatedBuildingsFromFloorToFloor(),
@@ -556,18 +580,33 @@ export function findShortestPathToSuccess(building: Building) {
             throw new Error(`queueItem is undefined`);
         }
         const [node, path] = queueItem;
-        console.log(visited.length);
+        // console.log(path.length);
+        // console.time('visited');
+        // todo: Turn this into a hashmap or btree lookup for optimization
+        if (visited.has(node)) {
+            // console.timeEnd('visited');
+            continue;
+        }
+        // console.timeEnd('visited');
+        visited.add(node);
+
+        // console.time('success');
         if (success(node)) {
+            // console.timeEnd('success');
             return path;
         }
+        // console.timeEnd('success');
+
+        // console.time('failure');
         if (failure(node)) {
+            // console.timeEnd('failure');
             continue;
         }
-        if (visited.find((visitedNode) => visitedNode.equals(node))) {
-            continue;
-        }
-        visited.push(node);
+        // console.timeEnd('failure');
+
+        // console.time('getPermutatedBuildings');
         const permutations = getPermutatedBuildings(node);
+        // console.timeEnd('getPermutatedBuildings');
         permutations.forEach((permutation) => {
             queue.push([permutation, [...path, permutation]]);
         });
