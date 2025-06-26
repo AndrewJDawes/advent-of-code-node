@@ -1675,6 +1675,34 @@ describe('201611a', () => {
             );
             expect(success(building)).to.be.true;
         });
+        it('treats building as success B', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [3, new ItemSetConcrete([])],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('thulium', 'generator'),
+                                new ItemConcrete('thulium', 'microchip'),
+                                new ItemConcrete('plutonium', 'generator'),
+                                new ItemConcrete('plutonium', 'microchip'),
+                                new ItemConcrete('strontium', 'generator'),
+                                new ItemConcrete('strontium', 'microchip'),
+                                new ItemConcrete('ruthenium', 'generator'),
+                                new ItemConcrete('ruthenium', 'microchip'),
+                                new ItemConcrete('promethium', 'generator'),
+                                new ItemConcrete('promethium', 'microchip'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4 // Elevator on the fourth floor
+            );
+            expect(success(building)).to.be.true;
+        });
     });
     describe('SolutionPath', () => {
         it('advances', () => {
