@@ -375,9 +375,9 @@ export class SolutionPathConcreteFactoryConcrete {
 
 export function success(building: Building) {
     // all items and elevator on 4th floor
-    if (building.getElevatorFloorNumber() !== 4) {
-        return false;
-    }
+    // if (building.getElevatorFloorNumber() !== 4) {
+    //     return false;
+    // }
     const floors = building.getFloors();
     for (const [floorNumber, items] of floors.entries()) {
         if (floorNumber !== 4 && items.length() > 0) {
@@ -589,6 +589,7 @@ export function findShortestPathToSuccess(building: Building) {
             throw new Error(`queueItem is undefined`);
         }
         const [node, path] = queueItem;
+        console.log(JSON.stringify(node, null, 2));
         // console.time('getPermutatedBuildings');
         const permutations = getPermutatedBuildings(node);
         // console.timeEnd('getPermutatedBuildings');
