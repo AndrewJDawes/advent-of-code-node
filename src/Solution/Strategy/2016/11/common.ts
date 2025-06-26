@@ -591,7 +591,10 @@ export function findShortestPathToSuccess(building: Building) {
         const [node, path] = queueItem;
         console.log(JSON.stringify(node, null, 2));
         // console.time('getPermutatedBuildings');
-        const permutations = getPermutatedBuildings(node);
+        const permutations = sortBuildingsByUpperFloorConcentration(
+            getPermutatedBuildings(node)
+        );
+
         // console.timeEnd('getPermutatedBuildings');
         for (const permutation of permutations) {
             if (visited.has(permutation)) {
@@ -608,6 +611,37 @@ export function findShortestPathToSuccess(building: Building) {
         }
     }
     return null;
+}
+
+// Helper: get a score for a building based on item concentration in upper floors
+function getUpperFloorConcentrationScore(building: Building): number {
+    const floors = building.getFloors();
+    // Assume floor numbers are 1 (bottom) to N (top)
+    const floorNumbers = Array.from(floors.keys()).sort((a, b) => a - b);
+    let score = 0;
+    for (const floorNumber of floorNumbers) {
+        const items = floors.get(floorNumber);
+        if (!items) continue;
+        // Weight: higher floors get higher weight
+        const weight = floorNumber;
+        score += items.length() * weight;
+    }
+    return score;
+}
+/**
+ * Sorts an array of buildings by the highest concentration of items in upper floors (descending).
+ * Buildings with more items on higher floors come first.
+ */
+export function sortBuildingsByUpperFloorConcentration(
+    buildings: Building[]
+): Building[] {
+    return buildings
+        .slice()
+        .sort(
+            (a, b) =>
+                getUpperFloorConcentrationScore(b) -
+                getUpperFloorConcentrationScore(a)
+        );
 }
 
 export function troubleshootBuildingSet(
