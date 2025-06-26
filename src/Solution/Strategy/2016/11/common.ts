@@ -1,3 +1,5 @@
+import { BTree, BTreeInterface, BTreeKeyInterface } from './btree.js';
+
 export type ItemType = 'generator' | 'microchip';
 export interface Item {
     getElement(): string;
@@ -358,7 +360,7 @@ export class SolutionPathConcreteFactoryConcrete {
         this.getPermutatedBuildings = getFunctionGetPermutatedBuildings({
             getPermutatedBuildingsFromFloorToFloor:
                 getFunctionGetPermutatedBuildingsFromFloorToFloor({
-                    getMemoizedBuilding: getFunctionGetMemoizedBuilding([]),
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
                 }),
         });
         this.getSolutionPathByBuilding = getFunctionGetSolutionPathByBuilding({
@@ -505,16 +507,20 @@ export function getFunctionGetPermutatedBuildings({
 }
 
 export function getFunctionGetMemoizedBuilding(
-    memoizedBuildings: Building[] = []
+    memoizedBuildingsArray: Building[] = []
 ) {
+    const memoizedBuildings: BTreeInterface<string, Building> = new BTree();
+    for (const building of memoizedBuildingsArray) {
+        memoizedBuildings.insert(new BTreeKeyBuilding(building));
+    }
     return function getMemoizedBuilding(building: Building) {
-        const memoizedBuilding = memoizedBuildings.find((memoizedBuilding) =>
-            memoizedBuilding.equals(building)
-        );
+        const buildingBTreeKey = new BTreeKeyBuilding(building);
+        const memoizedBuilding = memoizedBuildings.fetch(buildingBTreeKey);
         if (undefined !== memoizedBuilding) {
-            return memoizedBuilding;
+            // console.log('Found getMemoizedBuilding');
+            return memoizedBuilding.getValue();
         } else {
-            memoizedBuildings.push(building);
+            memoizedBuildings.insert(buildingBTreeKey);
             return building;
         }
     };
@@ -590,11 +596,27 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
     };
 }
 
+export class BTreeKeyBuilding implements BTreeKeyInterface<string, Building> {
+    private building: Building;
+    private key: string;
+    constructor(building: Building) {
+        this.building = building;
+        this.key = JSON.stringify(this.building);
+    }
+    getKey() {
+        return this.key;
+    }
+    getValue() {
+        return this.building;
+    }
+}
+
 // BFS - Breadth First Search
 export function findShortestPathToSuccess(building: Building) {
     let queue: [Building, Building[]][] = [[building, [building]]];
-    const visited: Set<Building> = new Set();
-    visited.add(building);
+    const visited: BTreeInterface<string, Building> = new BTree();
+    let visitedSize = 0;
+    visited.insert(new BTreeKeyBuilding(building));
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
             getFunctionGetPermutatedBuildingsFromFloorToFloor({
@@ -609,9 +631,9 @@ export function findShortestPathToSuccess(building: Building) {
             throw new Error(`queueItem is undefined`);
         }
         const [node, path] = queueItem;
-        console.log(
-            `visited: ${visited.size}. queue: ${queue.length}. path: ${path.length}`
-        );
+        // console.log(
+        //     `visited: ${visitedSize}. queue: ${queue.length}. path: ${path.length}`
+        // );
         // console.log(JSON.stringify(node, null, 2));
         // console.time('getPermutatedBuildings');
         // const permutations = sortBuildingsByUpperFloorConcentration(
@@ -622,11 +644,15 @@ export function findShortestPathToSuccess(building: Building) {
 
         // console.timeEnd('getPermutatedBuildings');
         for (const permutation of permutations) {
-            if (visited.has(permutation)) {
+            const permutationBTreeKey = new BTreeKeyBuilding(permutation);
+            if (visited.contains(permutationBTreeKey)) {
                 continue;
             }
-            visited.add(permutation);
+            visited.insert(permutationBTreeKey);
+            visitedSize++;
+            console.log(JSON.stringify(visited, null, 2));
             if (success(permutation)) {
+                console.log('Found findShortestPathToSuccess');
                 return [...path, permutation];
             }
             if (failure(permutation)) {
