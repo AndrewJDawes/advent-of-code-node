@@ -573,7 +573,7 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
 
 // BFS - Breadth First Search
 export function findShortestPathToSuccess(building: Building) {
-    const queue: [Building, Building[]][] = [[building, [building]]];
+    let queue: [Building, Building[]][] = [[building, [building]]];
     const visited: Set<Building> = new Set();
     visited.add(building);
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
@@ -583,17 +583,23 @@ export function findShortestPathToSuccess(building: Building) {
             }),
     });
     while (queue.length > 0) {
+        // queue = sortQueueByPathLengthAndUpperFloorConcentrationScore(queue);
         // console.log(`visited: ${visited.size}. queue: ${queue.length}`);
         const queueItem = queue.shift();
         if (queueItem === undefined) {
             throw new Error(`queueItem is undefined`);
         }
         const [node, path] = queueItem;
-        console.log(JSON.stringify(node, null, 2));
-        // console.time('getPermutatedBuildings');
-        const permutations = sortBuildingsByUpperFloorConcentration(
-            getPermutatedBuildings(node)
+        console.log(
+            `visited: ${visited.size}. queue: ${queue.length}. path: ${path.length}`
         );
+        // console.log(JSON.stringify(node, null, 2));
+        // console.time('getPermutatedBuildings');
+        // const permutations = sortBuildingsByUpperFloorConcentration(
+        //     getPermutatedBuildings(node)
+        // );
+
+        const permutations = getPermutatedBuildings(node);
 
         // console.timeEnd('getPermutatedBuildings');
         for (const permutation of permutations) {
@@ -626,6 +632,7 @@ function getUpperFloorConcentrationScore(building: Building): number {
         const weight = floorNumber;
         score += items.length() * weight;
     }
+    score += building.getElevatorFloorNumber();
     return score;
 }
 /**
@@ -642,6 +649,27 @@ export function sortBuildingsByUpperFloorConcentration(
                 getUpperFloorConcentrationScore(b) -
                 getUpperFloorConcentrationScore(a)
         );
+}
+
+/**
+ * Sorts queue items by path length (ascending), then by upper floor concentration score (descending).
+ * @param queue Array of [Building, Building[]] tuples
+ */
+function sortQueueByPathLengthAndUpperFloorConcentrationScore(
+    queue: [Building, Building[]][]
+): [Building, Building[]][] {
+    return queue.slice().sort((a, b) => {
+        const pathLenA = a[1].length;
+        const pathLenB = b[1].length;
+        if (pathLenA !== pathLenB) {
+            return pathLenA - pathLenB;
+        }
+        // If path lengths are equal, sort by upper floor concentration score
+        return (
+            getUpperFloorConcentrationScore(b[0]) -
+            getUpperFloorConcentrationScore(a[0])
+        );
+    });
 }
 
 export function troubleshootBuildingSet(
