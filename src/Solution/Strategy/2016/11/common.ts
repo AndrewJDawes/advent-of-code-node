@@ -357,7 +357,9 @@ export class SolutionPathConcreteFactoryConcrete {
     constructor() {
         this.getPermutatedBuildings = getFunctionGetPermutatedBuildings({
             getPermutatedBuildingsFromFloorToFloor:
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding([]),
+                }),
         });
         this.getSolutionPathByBuilding = getFunctionGetSolutionPathByBuilding({
             getPermutatedBuildings: this.getPermutatedBuildings,
@@ -502,17 +504,49 @@ export function getFunctionGetPermutatedBuildings({
     };
 }
 
+export function getFunctionGetMemoizedBuilding(
+    memoizedBuildings: Building[] = []
+) {
+    return function getMemoizedBuilding(building: Building) {
+        const memoizedBuilding = memoizedBuildings.find((memoizedBuilding) =>
+            memoizedBuilding.equals(building)
+        );
+        if (undefined !== memoizedBuilding) {
+            return memoizedBuilding;
+        } else {
+            memoizedBuildings.push(building);
+            return building;
+        }
+    };
+}
+
 export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
-    permutatedBuildings = [],
+    getMemoizedBuilding,
 }: {
-    permutatedBuildings?: Building[];
+    getMemoizedBuilding: (building: Building) => Building;
 }) {
-    const memoizedPermutatedBuildings = permutatedBuildings;
+    const memoizedPermutatedBuildingSets: [
+        [Building, number | undefined, number | undefined],
+        Building[]
+    ][] = [];
     return (
         building: Building,
         fromFloorNumber: number,
         toFloorNumber: number
     ) => {
+        const memoizedPermutatedBuildingSet =
+            memoizedPermutatedBuildingSets.find(
+                (memoizedPermutatedBuilding) => {
+                    return (
+                        memoizedPermutatedBuilding[0][0] === building &&
+                        memoizedPermutatedBuilding[0][1] === fromFloorNumber &&
+                        memoizedPermutatedBuilding[0][2] === toFloorNumber
+                    );
+                }
+            );
+        if (undefined !== memoizedPermutatedBuildingSet) {
+            return memoizedPermutatedBuildingSet[1];
+        }
         const buildingPermutations: Building[] = [];
         const fromFloor = building.getFloors().get(fromFloorNumber);
         if (undefined === fromFloor) {
@@ -534,16 +568,7 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
                 toFloorNumber,
                 new ItemSetConcrete([fromFloorItems[i]])
             );
-            const memoizedPermutatedBuildingI =
-                memoizedPermutatedBuildings.find((memoizedPermutatedBuilding) =>
-                    memoizedPermutatedBuilding.equals(newBuildingI)
-                );
-            if (undefined !== memoizedPermutatedBuildingI) {
-                buildingPermutations.push(memoizedPermutatedBuildingI);
-            } else {
-                memoizedPermutatedBuildings.push(newBuildingI);
-                buildingPermutations.push(newBuildingI);
-            }
+            buildingPermutations.push(getMemoizedBuilding(newBuildingI));
             for (let j = 0; j < fromFloorItems.length; j++) {
                 if (i === j) {
                     continue;
@@ -554,19 +579,13 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
                     toFloorNumber,
                     new ItemSetConcrete([fromFloorItems[i], fromFloorItems[j]])
                 );
-                const memoizedPermutatedBuildingIJ =
-                    memoizedPermutatedBuildings.find(
-                        (memoizedPermutatedBuilding) =>
-                            memoizedPermutatedBuilding.equals(newBuildingIJ)
-                    );
-                if (undefined !== memoizedPermutatedBuildingIJ) {
-                    buildingPermutations.push(memoizedPermutatedBuildingIJ);
-                } else {
-                    memoizedPermutatedBuildings.push(newBuildingIJ);
-                    buildingPermutations.push(newBuildingIJ);
-                }
+                buildingPermutations.push(getMemoizedBuilding(newBuildingIJ));
             }
         }
+        memoizedPermutatedBuildingSets.push([
+            [building, fromFloorNumber, toFloorNumber],
+            buildingPermutations,
+        ]);
         return buildingPermutations;
     };
 }
@@ -579,7 +598,7 @@ export function findShortestPathToSuccess(building: Building) {
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
             getFunctionGetPermutatedBuildingsFromFloorToFloor({
-                permutatedBuildings: [building],
+                getMemoizedBuilding: getFunctionGetMemoizedBuilding([building]),
             }),
     });
     while (queue.length > 0) {

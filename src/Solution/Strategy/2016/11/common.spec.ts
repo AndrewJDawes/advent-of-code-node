@@ -6,6 +6,7 @@ import {
     failure,
     findShortestPathToSuccess,
     FloorMapConcrete,
+    getFunctionGetMemoizedBuilding,
     getFunctionGetPermutatedBuildings,
     getFunctionGetPermutatedBuildingsFromFloorToFloor,
     getFunctionGetSolutionPathByBuilding,
@@ -46,7 +47,9 @@ describe('201611a', () => {
                 1
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 1,
@@ -114,7 +117,9 @@ describe('201611a', () => {
                 2
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 2,
@@ -174,7 +179,9 @@ describe('201611a', () => {
                 3
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 3,
@@ -242,7 +249,9 @@ describe('201611a', () => {
                 2
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 2,
@@ -302,7 +311,9 @@ describe('201611a', () => {
                 1
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 1,
@@ -362,7 +373,9 @@ describe('201611a', () => {
                 2
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 2,
@@ -414,7 +427,9 @@ describe('201611a', () => {
                 3
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 3,
@@ -474,7 +489,9 @@ describe('201611a', () => {
                 4
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 4,
@@ -534,7 +551,9 @@ describe('201611a', () => {
                 3
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 3,
@@ -594,7 +613,9 @@ describe('201611a', () => {
                 4
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 4,
@@ -654,7 +675,9 @@ describe('201611a', () => {
                 3
             );
             const getPermutatedBuildingsFromFloorToFloor =
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({});
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                });
             const permutations = getPermutatedBuildingsFromFloorToFloor(
                 building,
                 3,
@@ -717,7 +740,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -783,7 +808,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -841,7 +868,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -907,7 +936,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -965,7 +996,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -1023,7 +1056,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -1073,7 +1108,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -1131,7 +1168,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -1189,7 +1228,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -1247,7 +1288,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
@@ -1305,7 +1348,9 @@ describe('201611a', () => {
             );
             const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
                 getPermutatedBuildingsFromFloorToFloor:
-                    getFunctionGetPermutatedBuildingsFromFloorToFloor({}),
+                    getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                        getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                    }),
             });
             const permutations = getPermutatedBuildings(building);
             const expectedPermutation = new BuildingConcrete(
