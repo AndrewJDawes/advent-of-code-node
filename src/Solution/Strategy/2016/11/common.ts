@@ -575,6 +575,7 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
 export function findShortestPathToSuccess(building: Building) {
     const queue: [Building, Building[]][] = [[building, [building]]];
     const visited: Set<Building> = new Set();
+    visited.add(building);
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
             getFunctionGetPermutatedBuildingsFromFloorToFloor({
@@ -582,41 +583,28 @@ export function findShortestPathToSuccess(building: Building) {
             }),
     });
     while (queue.length > 0) {
-        console.log(queue.length);
+        // console.log(`visited: ${visited.size}. queue: ${queue.length}`);
         const queueItem = queue.shift();
         if (queueItem === undefined) {
             throw new Error(`queueItem is undefined`);
         }
         const [node, path] = queueItem;
-        // console.time('visited');
-        // todo: Turn this into a hashmap or btree lookup for optimization
-        if (visited.has(node)) {
-            // console.timeEnd('visited');
-            continue;
-        }
-        // console.timeEnd('visited');
-        visited.add(node);
-
-        // console.time('success');
-        if (success(node)) {
-            // console.timeEnd('success');
-            return path;
-        }
-        // console.timeEnd('success');
-
-        // console.time('failure');
-        if (failure(node)) {
-            // console.timeEnd('failure');
-            continue;
-        }
-        // console.timeEnd('failure');
-
         // console.time('getPermutatedBuildings');
         const permutations = getPermutatedBuildings(node);
         // console.timeEnd('getPermutatedBuildings');
-        permutations.forEach((permutation) => {
+        for (const permutation of permutations) {
+            if (visited.has(permutation)) {
+                continue;
+            }
+            visited.add(permutation);
+            if (success(permutation)) {
+                return [...path, permutation];
+            }
+            if (failure(permutation)) {
+                continue;
+            }
             queue.push([permutation, [...path, permutation]]);
-        });
+        }
     }
     return null;
 }
