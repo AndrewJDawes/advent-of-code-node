@@ -582,12 +582,12 @@ export function findShortestPathToSuccess(building: Building) {
             }),
     });
     while (queue.length > 0) {
+        console.log(queue.length);
         const queueItem = queue.shift();
         if (queueItem === undefined) {
             throw new Error(`queueItem is undefined`);
         }
         const [node, path] = queueItem;
-        // console.log(path.length);
         // console.time('visited');
         // todo: Turn this into a hashmap or btree lookup for optimization
         if (visited.has(node)) {
@@ -619,6 +619,25 @@ export function findShortestPathToSuccess(building: Building) {
         });
     }
     return null;
+}
+
+export function troubleshootBuildingSet(
+    items: Set<Building>,
+    b: Building
+): void {
+    const arr = Array.isArray(items) ? items : Array.from(items);
+    for (let i = 0; i < arr.length; i++) {
+        const a = arr[i];
+        const isSameRef = a === b;
+        const isLogicalEqual = a.equals(b);
+        if (isSameRef !== isLogicalEqual) {
+            throw new Error(
+                `isSameRef !== isLogicalEqual. isSameRef: ${isSameRef}. isLogicalEqual: ${isLogicalEqual}. ${JSON.stringify(
+                    { a, b }
+                )}`
+            );
+        }
+    }
 }
 
 export class CommandParser {
