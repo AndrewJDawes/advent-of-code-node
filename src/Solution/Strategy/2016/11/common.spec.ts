@@ -22,62 +22,67 @@ describe('201611a', () => {
     describe('BTreeKeyBuilding', () => {
         it('matches unrelated objects by key', () => {
             const btree: BTree<string, Building> = new BTree();
-            const buildingA = new BuildingConcrete(
-                new FloorMapConcrete(
-                    new Map([
-                        [
-                            1,
-                            new ItemSetConcrete([
-                                new ItemConcrete('H', 'microchip'),
-                                new ItemConcrete('L', 'microchip'),
-                            ]),
-                        ],
-                        [
-                            2,
-                            new ItemSetConcrete([
-                                new ItemConcrete('H', 'generator'),
-                            ]),
-                        ],
-                        [
-                            3,
-                            new ItemSetConcrete([
-                                new ItemConcrete('L', 'generator'),
-                            ]),
-                        ],
-                        [4, new ItemSetConcrete([])],
-                    ])
-                ),
-                1
+            const buildingA = new BTreeKeyBuilding(
+                new BuildingConcrete(
+                    new FloorMapConcrete(
+                        new Map([
+                            [
+                                1,
+                                new ItemSetConcrete([
+                                    new ItemConcrete('H', 'microchip'),
+                                    new ItemConcrete('L', 'microchip'),
+                                ]),
+                            ],
+                            [
+                                2,
+                                new ItemSetConcrete([
+                                    new ItemConcrete('H', 'generator'),
+                                ]),
+                            ],
+                            [
+                                3,
+                                new ItemSetConcrete([
+                                    new ItemConcrete('L', 'generator'),
+                                ]),
+                            ],
+                            [4, new ItemSetConcrete([])],
+                        ])
+                    ),
+                    1
+                )
             );
-            const buildingB = new BuildingConcrete(
-                new FloorMapConcrete(
-                    new Map([
-                        [
-                            1,
-                            new ItemSetConcrete([
-                                new ItemConcrete('L', 'microchip'),
-                                new ItemConcrete('H', 'microchip'),
-                            ]),
-                        ],
-                        [
-                            2,
-                            new ItemSetConcrete([
-                                new ItemConcrete('H', 'generator'),
-                            ]),
-                        ],
-                        [
-                            3,
-                            new ItemSetConcrete([
-                                new ItemConcrete('L', 'generator'),
-                            ]),
-                        ],
-                        [4, new ItemSetConcrete([])],
-                    ])
-                ),
-                1
+            const buildingB = new BTreeKeyBuilding(
+                new BuildingConcrete(
+                    new FloorMapConcrete(
+                        new Map([
+                            [
+                                1,
+                                new ItemSetConcrete([
+                                    new ItemConcrete('L', 'microchip'),
+                                    new ItemConcrete('H', 'microchip'),
+                                ]),
+                            ],
+                            [
+                                2,
+                                new ItemSetConcrete([
+                                    new ItemConcrete('H', 'generator'),
+                                ]),
+                            ],
+                            [
+                                3,
+                                new ItemSetConcrete([
+                                    new ItemConcrete('L', 'generator'),
+                                ]),
+                            ],
+                            [4, new ItemSetConcrete([])],
+                        ])
+                    ),
+                    1
+                )
             );
-            btree.insert(new BTreeKeyBuilding(buildingA));
-            expect(btree.contains(new BTreeKeyBuilding(buildingB))).to.be.true;
+            expect(buildingA.getKey()).to.equal(buildingB.getKey());
+            btree.insert(buildingA);
+            expect(btree.contains(buildingB)).to.be.true;
         });
     });
     describe('getFunctionGetPermutatedBuildingsFromFloorToFloor', () => {
@@ -1802,6 +1807,34 @@ describe('201611a', () => {
                                 new ItemConcrete('ruthenium', 'generator'),
                                 new ItemConcrete('ruthenium', 'microchip'),
                                 new ItemConcrete('promethium', 'generator'),
+                                new ItemConcrete('promethium', 'microchip'),
+                            ]),
+                        ],
+                    ])
+                ),
+                4 // Elevator on the fourth floor
+            );
+            expect(success(building)).to.be.true;
+        });
+        it('treats building as success C', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [2, new ItemSetConcrete([])],
+                        [3, new ItemSetConcrete([])],
+                        [
+                            4,
+                            new ItemSetConcrete([
+                                new ItemConcrete('thulium', 'generator'),
+                                new ItemConcrete('plutonium', 'generator'),
+                                new ItemConcrete('strontium', 'generator'),
+                                new ItemConcrete('plutonium', 'microchip'),
+                                new ItemConcrete('strontium', 'microchip'),
+                                new ItemConcrete('ruthenium', 'microchip'),
+                                new ItemConcrete('promethium', 'generator'),
+                                new ItemConcrete('thulium', 'microchip'),
+                                new ItemConcrete('ruthenium', 'generator'),
                                 new ItemConcrete('promethium', 'microchip'),
                             ]),
                         ],

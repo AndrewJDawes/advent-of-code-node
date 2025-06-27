@@ -184,7 +184,9 @@ export class FloorMapConcrete implements FloorMap {
         );
     }
     toJSON() {
-        return [...this.floors.entries()];
+        return [...this.floors.entries()].map(([key, value]) => {
+            return [key, [...value]];
+        });
     }
 }
 
