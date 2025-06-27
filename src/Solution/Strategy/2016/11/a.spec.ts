@@ -10,7 +10,7 @@ describe('Solution201611a', () => {
             'The fourth floor contains nothing relevant.',
         ]);
         const solution = await new Solution201611a(input).solve();
-        expect(solution).to.equal('12');
+        expect(solution).to.equal('11');
     });
     it('solves official example', async () => {
         const input = new StringArray([
@@ -20,6 +20,6 @@ describe('Solution201611a', () => {
             'The fourth floor contains nothing relevant.',
         ]);
         const solution = await new Solution201611a(input).solve();
-        expect(solution).to.equal('32');
+        expect(solution).to.equal('31');
     });
 });

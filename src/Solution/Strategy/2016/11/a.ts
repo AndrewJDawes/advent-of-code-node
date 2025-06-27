@@ -125,7 +125,7 @@ class Solution implements InterfaceSolutionStrategy {
         if (path === null) {
             throw new Error(`Unable to find a path`);
         }
-        return path.length.toString();
+        return (path.length - 1).toString();
     }
 }
 export default Solution;
