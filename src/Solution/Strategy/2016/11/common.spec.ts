@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import {
+    BTreeKeyBuilding,
     Building,
     BuildingConcrete,
     CommandParser,
@@ -16,7 +17,69 @@ import {
     SolutionPathConcreteFactoryConcrete,
     success,
 } from './common.js';
+import { BTree } from './btree.js';
 describe('201611a', () => {
+    describe('BTreeKeyBuilding', () => {
+        it('matches unrelated objects by key', () => {
+            const btree: BTree<string, Building> = new BTree();
+            const buildingA = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                1
+            );
+            const buildingB = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                1
+            );
+            btree.insert(new BTreeKeyBuilding(buildingA));
+            expect(btree.contains(new BTreeKeyBuilding(buildingB))).to.be.true;
+        });
+    });
     describe('getFunctionGetPermutatedBuildingsFromFloorToFloor', () => {
         it('generates expected permutations A', () => {
             const building = new BuildingConcrete(
