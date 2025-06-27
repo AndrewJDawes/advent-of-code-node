@@ -71,7 +71,14 @@ export class ItemSetConcrete implements ItemSet {
     }
     [Symbol.iterator]() {
         let index = 0;
-        const arr = [...this.items];
+        const arr = [...this.items].sort((a, b) => {
+            const aString = `${a.getElement()}${a.getType()}`;
+            const bString = `${b.getElement()}${b.getType()}`;
+            if (aString === bString) {
+                return 0;
+            }
+            return aString < bString ? -1 : 1;
+        });
         return {
             next(): IteratorResult<Item> {
                 if (index < arr.length) {
@@ -517,7 +524,6 @@ export function getFunctionGetMemoizedBuilding(
         const buildingBTreeKey = new BTreeKeyBuilding(building);
         const memoizedBuilding = memoizedBuildings.fetch(buildingBTreeKey);
         if (undefined !== memoizedBuilding) {
-            // console.log('Found getMemoizedBuilding');
             return memoizedBuilding.getValue();
         } else {
             memoizedBuildings.insert(buildingBTreeKey);
@@ -631,9 +637,9 @@ export function findShortestPathToSuccess(building: Building) {
             throw new Error(`queueItem is undefined`);
         }
         const [node, path] = queueItem;
-        // console.log(
-        //     `visited: ${visitedSize}. queue: ${queue.length}. path: ${path.length}`
-        // );
+        console.log(
+            `visited: ${visitedSize}. queue: ${queue.length}. path: ${path.length}`
+        );
         // console.log(JSON.stringify(node, null, 2));
         // console.time('getPermutatedBuildings');
         // const permutations = sortBuildingsByUpperFloorConcentration(
@@ -646,13 +652,13 @@ export function findShortestPathToSuccess(building: Building) {
         for (const permutation of permutations) {
             const permutationBTreeKey = new BTreeKeyBuilding(permutation);
             if (visited.contains(permutationBTreeKey)) {
+                // console.log(`Found visited`);
                 continue;
             }
             visited.insert(permutationBTreeKey);
             visitedSize++;
-            console.log(JSON.stringify(visited, null, 2));
+            // console.log(JSON.stringify(visited, null, 2));
             if (success(permutation)) {
-                console.log('Found findShortestPathToSuccess');
                 return [...path, permutation];
             }
             if (failure(permutation)) {
