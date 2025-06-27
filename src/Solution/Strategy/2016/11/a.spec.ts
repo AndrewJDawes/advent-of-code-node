@@ -2,16 +2,16 @@ import { expect } from 'chai';
 import StringArray from '../../../../InputFetcher/Service/StringArray.js';
 import Solution201611a from './a.js';
 describe('Solution201611a', () => {
-    // it('solves unofficial example', async () => {
-    //     const input = new StringArray([
-    //         'The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.',
-    //         'The second floor contains a hydrogen generator.',
-    //         'The third floor contains a lithium generator.',
-    //         'The fourth floor contains nothing relevant.',
-    //     ]);
-    //     const solution = await new Solution201611a(input).solve();
-    //     expect(solution).to.equal('12');
-    // });
+    it('solves unofficial example', async () => {
+        const input = new StringArray([
+            'The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.',
+            'The second floor contains a hydrogen generator.',
+            'The third floor contains a lithium generator.',
+            'The fourth floor contains nothing relevant.',
+        ]);
+        const solution = await new Solution201611a(input).solve();
+        expect(solution).to.equal('12');
+    });
     it('solves official example', async () => {
         const input = new StringArray([
             'The first floor contains a thulium generator, a thulium-compatible microchip, a plutonium generator, and a strontium generator.',
@@ -20,6 +20,6 @@ describe('Solution201611a', () => {
             'The fourth floor contains nothing relevant.',
         ]);
         const solution = await new Solution201611a(input).solve();
-        expect(solution).to.equal('12');
+        expect(solution).to.equal('32');
     });
 });
