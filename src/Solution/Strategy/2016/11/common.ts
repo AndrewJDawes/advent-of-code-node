@@ -265,127 +265,6 @@ export class BuildingConcrete implements Building {
     }
 }
 
-export class SolutionPath {
-    private step: number;
-    private state: SolutionState | null;
-    private building: Building;
-    private openEndedPaths: SolutionPath[] | null;
-    private getPermutatedBuildings: (building: Building) => Building[];
-    private getSolutionPathByBuilding: (building: Building) => SolutionPath;
-    private knownSolutionPath: SolutionPath | null;
-    constructor({
-        building,
-        step = 0,
-        getPermutatedBuildings,
-        getSolutionPathByBuilding,
-    }: {
-        building: Building;
-        step?: number;
-        getPermutatedBuildings: (building: Building) => Building[];
-        getSolutionPathByBuilding: (building: Building) => SolutionPath;
-    }) {
-        this.building = building;
-        this.step = step;
-        this.state = null;
-        this.knownSolutionPath = null;
-        this.openEndedPaths = null;
-        this.getPermutatedBuildings = getPermutatedBuildings;
-        this.getSolutionPathByBuilding = getSolutionPathByBuilding;
-    }
-    getStep() {
-        return this.step;
-    }
-    getBuilding() {
-        return this.building;
-    }
-    getState() {
-        return this.state;
-    }
-    getKnownSolutionPath() {
-        return this.knownSolutionPath;
-    }
-    setSuccess(knownSolutionPath: SolutionPath) {
-        this.state = 'success';
-        this.knownSolutionPath = knownSolutionPath;
-    }
-    advance(step: number | null = null) {
-        if (step === null) {
-            this.step++;
-        } else {
-            if (step <= this.step) {
-                return;
-            }
-            this.step = step;
-        }
-        if (null !== this.openEndedPaths) {
-            this.openEndedPaths.forEach((openEndedPath) =>
-                openEndedPath.advance(this.step)
-            );
-            this.openEndedPaths = this.openEndedPaths.filter(
-                (openEndedPath) => openEndedPath.getState() !== 'failure'
-            );
-            if (this.openEndedPaths.length === 0) {
-                this.state = 'failure';
-            }
-            const successPath = this.openEndedPaths.find(
-                (openEndedPath) => openEndedPath.getState() === 'success'
-            );
-            if (successPath) {
-                this.setSuccess(successPath);
-            }
-            return;
-        }
-        if (success(this.building)) {
-            this.setSuccess(this);
-            return;
-        }
-        if (failure(this.building)) {
-            this.state = 'failure';
-            return;
-        }
-        this.openEndedPaths = this.getPermutatedBuildings(this.building).map(
-            (building) => this.getSolutionPathByBuilding(building)
-        );
-    }
-    toJSON() {
-        return {
-            ...Object.entries(this)
-                .filter(
-                    ([key, value]) =>
-                        !['openEndedPaths', 'knownSolutionPath'].includes(key)
-                )
-                .reduce((prev, curr) => {
-                    return { ...prev, [curr[0]]: curr[1] };
-                }, {}),
-        };
-    }
-}
-
-export type SolutionState = 'success' | 'failure';
-export class SolutionPathConcreteFactoryConcrete {
-    private getPermutatedBuildings: (building: Building) => Building[];
-    private getSolutionPathByBuilding: (building: Building) => SolutionPath;
-    constructor() {
-        this.getPermutatedBuildings = getFunctionGetPermutatedBuildings({
-            getPermutatedBuildingsFromFloorToFloor:
-                getFunctionGetPermutatedBuildingsFromFloorToFloor({
-                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
-                }),
-        });
-        this.getSolutionPathByBuilding = getFunctionGetSolutionPathByBuilding({
-            getPermutatedBuildings: this.getPermutatedBuildings,
-        });
-    }
-
-    getInstance(building: Building) {
-        return new SolutionPath({
-            building,
-            getPermutatedBuildings: this.getPermutatedBuildings,
-            getSolutionPathByBuilding: this.getSolutionPathByBuilding,
-        });
-    }
-}
-
 export function success(building: Building) {
     // all items and elevator on 4th floor
     // if (building.getElevatorFloorNumber() !== 4) {
@@ -428,33 +307,6 @@ export function failure(building: Building) {
         }
     }
     return false;
-}
-
-export function getFunctionGetSolutionPathByBuilding({
-    getPermutatedBuildings,
-}: {
-    getPermutatedBuildings: (building: Building) => Building[];
-}) {
-    const memoizedSolutionPaths: SolutionPath[] = [];
-    return function getSolutionPathByBuilding(building: Building) {
-        const memoizedSolutionPath = memoizedSolutionPaths.find(
-            (existingMemoizedSolutionPath) => {
-                return existingMemoizedSolutionPath
-                    .getBuilding()
-                    .equals(building);
-            }
-        );
-        if (undefined !== memoizedSolutionPath) {
-            return memoizedSolutionPath;
-        }
-        const newMemoizedSolutionPath = new SolutionPath({
-            building,
-            getPermutatedBuildings,
-            getSolutionPathByBuilding,
-        });
-        memoizedSolutionPaths.push(newMemoizedSolutionPath);
-        return newMemoizedSolutionPath;
-    };
 }
 
 export function getFunctionGetPermutatedBuildings({
@@ -632,8 +484,6 @@ export function findShortestPathToSuccess(building: Building) {
             }),
     });
     while (queue.length > 0) {
-        // queue = sortQueueByPathLengthAndUpperFloorConcentrationScore(queue);
-        // console.log(`visited: ${visited.size}. queue: ${queue.length}`);
         const queueItem = queue.shift();
         if (queueItem === undefined) {
             throw new Error(`queueItem is undefined`);
@@ -642,24 +492,16 @@ export function findShortestPathToSuccess(building: Building) {
         console.log(
             `visited: ${visitedSize}. queue: ${queue.length}. path: ${path.length}`
         );
-        // console.log(JSON.stringify(node, null, 2));
-        // console.time('getPermutatedBuildings');
-        // const permutations = sortBuildingsByUpperFloorConcentration(
-        //     getPermutatedBuildings(node)
-        // );
 
         const permutations = getPermutatedBuildings(node);
 
-        // console.timeEnd('getPermutatedBuildings');
         for (const permutation of permutations) {
             const permutationBTreeKey = new BTreeKeyBuilding(permutation);
             if (visited.contains(permutationBTreeKey)) {
-                // console.log(`Found visited`);
                 continue;
             }
             visited.insert(permutationBTreeKey);
             visitedSize++;
-            // console.log(JSON.stringify(visited, null, 2));
             if (success(permutation)) {
                 return [...path, permutation];
             }

@@ -10,11 +10,8 @@ import {
     getFunctionGetMemoizedBuilding,
     getFunctionGetPermutatedBuildings,
     getFunctionGetPermutatedBuildingsFromFloorToFloor,
-    getFunctionGetSolutionPathByBuilding,
     ItemConcrete,
     ItemSetConcrete,
-    SolutionPath,
-    SolutionPathConcreteFactoryConcrete,
     success,
 } from './common.js';
 import { BTree } from './btree.js';
@@ -1843,46 +1840,6 @@ describe('201611a', () => {
                 4 // Elevator on the fourth floor
             );
             expect(success(building)).to.be.true;
-        });
-    });
-    describe('SolutionPath', () => {
-        it('advances', () => {
-            const newSolutionPathFactoryConcrete =
-                new SolutionPathConcreteFactoryConcrete();
-            const building = new BuildingConcrete(
-                new FloorMapConcrete(
-                    new Map([
-                        [
-                            1,
-                            new ItemSetConcrete([
-                                new ItemConcrete('H', 'microchip'),
-                                new ItemConcrete('L', 'microchip'),
-                            ]),
-                        ],
-                        [
-                            2,
-                            new ItemSetConcrete([
-                                new ItemConcrete('H', 'generator'),
-                            ]),
-                        ],
-                        [
-                            3,
-                            new ItemSetConcrete([
-                                new ItemConcrete('L', 'generator'),
-                            ]),
-                        ],
-                        [4, new ItemSetConcrete([])],
-                    ])
-                ),
-                1
-            );
-            const solution =
-                newSolutionPathFactoryConcrete.getInstance(building);
-            while (solution.getState() === null) {
-                solution.advance();
-            }
-            expect(solution.getState()).to.eql('success');
-            expect(solution.getStep()).to.eql(12);
         });
     });
     describe('findShortestPathToSuccess', () => {
