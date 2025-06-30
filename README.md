@@ -1,5 +1,9 @@
 # advent-of-code-node
 
+## Todo
+
+Remove log files from history.
+
 ## How to use
 
 -   `npm run dev` to watch and rebuild
