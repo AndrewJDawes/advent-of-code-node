@@ -3,6 +3,7 @@ import {
     BTreeKeyBuilding,
     Building,
     BuildingConcrete,
+    canonicalizeBuilding,
     CommandParser,
     failure,
     findShortestPathToSuccess,
@@ -16,6 +17,68 @@ import {
 } from './common.js';
 import { BTree } from './btree.js';
 describe('201611a', () => {
+    describe('canonicalizeBuilding', () => {
+        it('serializes building A', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [
+                            1,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'microchip'),
+                                new ItemConcrete('L', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                1
+            );
+            expect(canonicalizeBuilding(building)).to.equal(
+                '[1]1:H-microchip,L-microchip|2:H-generator|3:L-generator|4:'
+            );
+        });
+        it('serializes building B', () => {
+            const building = new BuildingConcrete(
+                new FloorMapConcrete(
+                    new Map([
+                        [1, new ItemSetConcrete([])],
+                        [
+                            2,
+                            new ItemSetConcrete([
+                                new ItemConcrete('L', 'microchip'),
+                                new ItemConcrete('H', 'microchip'),
+                            ]),
+                        ],
+                        [
+                            3,
+                            new ItemSetConcrete([
+                                new ItemConcrete('H', 'generator'),
+                                new ItemConcrete('L', 'generator'),
+                            ]),
+                        ],
+                        [4, new ItemSetConcrete([])],
+                    ])
+                ),
+                2
+            );
+            expect(canonicalizeBuilding(building)).to.equal(
+                '[2]1:|2:H-microchip,L-microchip|3:H-generator,L-generator|4:'
+            );
+        });
+    });
     describe('BTreeKeyBuilding', () => {
         it('matches unrelated objects by key', () => {
             const btree: BTree<string, Building> = new BTree();

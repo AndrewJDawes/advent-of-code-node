@@ -71,14 +71,7 @@ export class ItemSetConcrete implements ItemSet {
     }
     [Symbol.iterator]() {
         let index = 0;
-        const arr = [...this.items].sort((a, b) => {
-            const aString = `${a.getElement()}${a.getType()}`;
-            const bString = `${b.getElement()}${b.getType()}`;
-            if (aString === bString) {
-                return 0;
-            }
-            return aString < bString ? -1 : 1;
-        });
+        const arr = [...this.items].sort(sortItems);
         return {
             next(): IteratorResult<Item> {
                 if (index < arr.length) {
@@ -121,6 +114,14 @@ export class ItemSetConcrete implements ItemSet {
     }
 }
 
+export function sortItems(a: Item, b: Item) {
+    const aString = `${a.getElement()}${a.getType()}`;
+    const bString = `${b.getElement()}${b.getType()}`;
+    if (aString === bString) {
+        return 0;
+    }
+    return aString < bString ? -1 : 1;
+}
 export interface FloorMap {
     set(floorNumber: number, floor: ItemSet): void;
     get(floorNumber: number): ItemSet | undefined;
@@ -470,6 +471,22 @@ export class BTreeKeyBuilding implements BTreeKeyInterface<string, Building> {
         return this.building;
     }
 }
+
+export function canonicalizeBuilding(building: Building) {
+    const floors = building.getFloors();
+    return `[${building.getElevatorFloorNumber()}]${[...floors.entries()]
+        .map(([number, itemSet]) => {
+            return `${number}:${[...itemSet]
+                .sort(sortItems)
+                .map((item) => {
+                    return `${item.getElement()}-${item.getType()}`;
+                })
+                .join(',')}`;
+        })
+        .join('|')}`;
+}
+
+// function hydrate(canonicalized: string) {}
 
 // BFS - Breadth First Search
 export function findShortestPathToSuccess(building: Building) {
