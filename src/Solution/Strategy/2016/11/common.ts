@@ -487,52 +487,135 @@ export function canonicalizeBuilding(building: Building) {
         .join('|')}`;
 }
 
-class BuildingCompact implements Building {
-    private elevatorFloorNumber: number;
-    private canonicalElements: Set<string>;
-    private state: number[];
-    private totalFloors: number;
-    constructor(
-        elevatorFloorNumber: number = 1,
-        totalFloors: number = 4,
-        canonicalElements: Set<string> = new Set()
-    ) {
-        this.elevatorFloorNumber = elevatorFloorNumber;
-        this.canonicalElements = canonicalElements;
-        this.state = [];
-        this.totalFloors = totalFloors;
+// [1]1:H-microchip,L-microchip|2:H-generator|3:L-generator|4:
+export function decanonicalizeBuilding(commandString: string) {
+    const building = new BuildingConcrete();
+    const command = commandString.trim();
+    // First, extract the elevator and remaining contents
+    let elevatorRegex = /^\[(?<elevatorNumber>[\d]+)\](?<remainder>.*)$/;
+    const elevatorResults = elevatorRegex.exec(command);
+    if (null === elevatorResults || undefined === elevatorResults.groups) {
+        throw new Error(
+            `Unable to parse elevatorResults from ${commandString}`
+        );
     }
-    getFloors(): FloorMap {
-        let counter = 1;
-        const floors = new Map<number, ItemSet>();
-        for (let i = 1; i <= this.totalFloors; i++) {
-            floors.set(i, new ItemSetConcrete());
+    if (null === elevatorResults.groups?.elevatorNumber) {
+        throw new Error(`Unable to parse elevatorNumber from ${commandString}`);
+    }
+    if (!Number.isInteger(parseInt(elevatorResults.groups.elevatorNumber))) {
+        throw new Error(
+            `elevatorNumber must be integer: ${elevatorResults.groups.elevatorNumber}`
+        );
+    }
+    const elevatorNumber = parseInt(elevatorResults.groups.elevatorNumber);
+    building.setElevatorFloorNumber(elevatorNumber);
+    // Then, extract the remainder and the floors
+    if (null === elevatorResults.groups?.remainder) {
+        throw new Error(`Unable to parse remainder from ${commandString}`);
+    }
+    const elevatorRemainder = elevatorResults.groups.remainder;
+    const floorRegex = /^(?<floorNumber>[\d]+):(?<remainder>[.]*)/g;
+    const floorsSplit = elevatorRemainder.split('|');
+    for (const floorSplit of floorsSplit) {
+        const floor = new ItemSetConcrete();
+        const floorResults = floorRegex.exec(floorSplit);
+        if (null === floorResults || undefined === floorResults.groups) {
+            throw new Error(`Unable to parse floorResults from ${floorSplit}`);
         }
-        for (const element of this.canonicalElements) {
-            const mappings: [ItemType, number][] = [
-                ['microchip', 2 * counter],
-                ['generator', 2 * counter + 1],
-            ];
-            for (const [type, index] of mappings) {
-                const floorNumber = this.state[index] ?? undefined;
-                if (floorNumber === undefined) {
-                    throw new Error(
-                        `Unable to find floorNumber for ${element} ${type}`
-                    );
-                }
-                const floor = floors.get(floorNumber);
-                if (undefined === floor) {
-                    throw new Error(
-                        `Unable to find floor for ${element} ${type}`
-                    );
-                }
-                floor.addItem(new ItemConcrete(element, type));
+        if (null === floorResults.groups?.floorNumber) {
+            throw new Error(
+                `Unable to parse floorNumber from ${commandString}`
+            );
+        }
+        if (!Number.isInteger(parseInt(floorResults.groups.floorNumber))) {
+            throw new Error(
+                `floorNumber must be integer: ${floorResults.groups.floorNumber}`
+            );
+        }
+        const floorNumber = parseInt(floorResults.groups.floorNumber);
+        if (null === floorResults.groups?.remainder) {
+            throw new Error(`Unable to parse remainder from ${commandString}`);
+        }
+        const floorResultsRemainder = floorResults.groups.remainder;
+        // [1]1:H-microchip,L-microchip|2:H-generator|3:L-generator|4:
+        let itemRegex = /(?<element>[a-zA-Z]+)-(?<type>generator|microchip)/g;
+        let item: undefined | null | RegExpExecArray = undefined;
+        while ((item = itemRegex.exec(floorResultsRemainder)) !== null) {
+            if (item.groups?.element === undefined) {
+                throw new Error(
+                    `Unable to parse element from floorResultsRemainder: ${floorResultsRemainder}`
+                );
             }
-            counter++;
+            if (!isValidItemType(item.groups?.type)) {
+                throw new Error(
+                    `Unable to parse type from floorResultsRemainder: ${floorResultsRemainder}`
+                );
+            }
+            floor.addItem(
+                new ItemConcrete(item.groups?.element, item.groups?.type)
+            );
         }
-        return new FloorMapConcrete(floors);
+        building.getFloors().set(floorNumber, floor);
     }
+    return building;
 }
+
+// class BuildingCompact implements Building {
+//     private elevatorFloorNumber: number;
+//     private canonicalElements: Set<string>;
+//     private state: number[];
+//     private totalFloors: number;
+//     constructor(
+//         elevatorFloorNumber: number = 1,
+//         totalFloors: number = 4,
+//         canonicalElements: Set<string> = new Set()
+//     ) {
+//         this.elevatorFloorNumber = elevatorFloorNumber;
+//         this.canonicalElements = canonicalElements;
+//         this.state = [];
+//         this.totalFloors = totalFloors;
+//     }
+//     getFloors(): FloorMap {
+//         let counter = 1;
+//         const floors = new Map<number, ItemSet>();
+//         for (let i = 1; i <= this.totalFloors; i++) {
+//             floors.set(i, new ItemSetConcrete());
+//         }
+//         for (const element of this.canonicalElements) {
+//             const mappings: [ItemType, number][] = [
+//                 ['microchip', 2 * counter],
+//                 ['generator', 2 * counter + 1],
+//             ];
+//             for (const [type, index] of mappings) {
+//                 const floorNumber = this.state[index] ?? undefined;
+//                 if (floorNumber === undefined) {
+//                     throw new Error(
+//                         `Unable to find floorNumber for ${element} ${type}`
+//                     );
+//                 }
+//                 const floor = floors.get(floorNumber);
+//                 if (undefined === floor) {
+//                     throw new Error(
+//                         `Unable to find floor for ${element} ${type}`
+//                     );
+//                 }
+//                 floor.addItem(new ItemConcrete(element, type));
+//             }
+//             counter++;
+//         }
+//         return new FloorMapConcrete(floors);
+//     }
+//     getFloors(): FloorMap;
+//     getElevatorFloorNumber(): number;
+//     setElevatorFloorNumber(floorNumber: number): void;
+//     moveItemsFromFloorNumberToFloorNumber(
+//         fromFloorNumber: number,
+//         toFloorNumber: number,
+//         items: ItemSet
+//     ): void;
+//     copy(): Building;
+//     equals(building: Building): boolean;
+// }
 
 // function hydrate(canonicalized: string) {}
 
@@ -579,15 +662,16 @@ export function findShortestPathToSuccess(building: Building) {
     return null;
 }
 
+export function isValidItemType(type: any): type is ItemType {
+    return type === 'generator' || type === 'microchip';
+}
+
 export class CommandParser {
     private building: Building;
     private floorNumber: number;
     constructor(building: Building) {
         this.building = building;
         this.floorNumber = 1;
-    }
-    public isValidItemType(type: any): type is ItemType {
-        return type === 'generator' || type === 'microchip';
     }
     public execute(commandString: string) {
         const command = commandString.trim();
@@ -599,7 +683,7 @@ export class CommandParser {
             if (item.groups?.element === undefined) {
                 throw new Error(`Unable to parse element from command`);
             }
-            if (!this.isValidItemType(item.groups?.type)) {
+            if (!isValidItemType(item.groups?.type)) {
                 throw new Error(`Unable to parse type from command`);
             }
 
