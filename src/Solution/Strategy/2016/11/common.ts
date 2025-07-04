@@ -1,4 +1,11 @@
-import { BTree, BTreeInterface, BTreeKeyInterface } from './btree.js';
+// import { BTree, BTreeInterface, BTreeKeyInterface } from './btree.js';
+
+import { BTree } from '@umerx/btreejs';
+import {
+    BTreeInterface,
+    BTree as BTreeComplex,
+    BTreeKeyInterface,
+} from './btree.js';
 
 export type ItemType = 'generator' | 'microchip';
 export interface Item {
@@ -372,7 +379,8 @@ export function getFunctionGetPermutatedBuildings({
 export function getFunctionGetMemoizedBuilding(
     memoizedBuildingsArray: Building[] = []
 ) {
-    const memoizedBuildings: BTreeInterface<string, Building> = new BTree();
+    const memoizedBuildings: BTreeInterface<string, Building> =
+        new BTreeComplex();
     for (const building of memoizedBuildingsArray) {
         memoizedBuildings.insert(new BTreeKeyBuilding(building));
     }
@@ -621,10 +629,13 @@ export function decanonicalizeBuilding(commandString: string) {
 
 // BFS - Breadth First Search
 export function findShortestPathToSuccess(building: Building) {
-    let queue: [Building, Building[]][] = [[building, [building]]];
-    const visited: BTreeInterface<string, Building> = new BTree();
+    const buildingCanonicalized = canonicalizeBuilding(building);
+    let queue: [string, string[]][] = [
+        [buildingCanonicalized, [buildingCanonicalized]],
+    ];
+    const visited = new BTree<string>();
     let visitedSize = 0;
-    visited.insert(new BTreeKeyBuilding(building));
+    visited.insert(buildingCanonicalized);
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
             getFunctionGetPermutatedBuildingsFromFloorToFloor({
@@ -636,15 +647,17 @@ export function findShortestPathToSuccess(building: Building) {
         if (queueItem === undefined) {
             throw new Error(`queueItem is undefined`);
         }
-        const [node, path] = queueItem;
+        const [nodeCanonicalized, path] = queueItem;
         console.log(
             `visited: ${visitedSize}. queue: ${queue.length}. path: ${path.length}`
         );
 
-        const permutations = getPermutatedBuildings(node);
+        const permutations = getPermutatedBuildings(
+            decanonicalizeBuilding(nodeCanonicalized)
+        );
 
         for (const permutation of permutations) {
-            const permutationBTreeKey = new BTreeKeyBuilding(permutation);
+            const permutationBTreeKey = canonicalizeBuilding(permutation);
             if (visited.contains(permutationBTreeKey)) {
                 continue;
             }
@@ -656,7 +669,7 @@ export function findShortestPathToSuccess(building: Building) {
             if (failure(permutation)) {
                 continue;
             }
-            queue.push([permutation, [...path, permutation]]);
+            queue.push([permutationBTreeKey, [...path, permutationBTreeKey]]);
         }
     }
     return null;
