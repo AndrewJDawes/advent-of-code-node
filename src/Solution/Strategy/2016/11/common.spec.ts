@@ -5,6 +5,7 @@ import {
     BuildingConcrete,
     canonicalizeBuilding,
     CommandParser,
+    decanonicalizeBuilding,
     failure,
     findShortestPathToSuccess,
     FloorMapConcrete,
@@ -77,6 +78,98 @@ describe('201611a', () => {
             expect(canonicalizeBuilding(building)).to.equal(
                 '[2]1:|2:H-microchip,L-microchip|3:H-generator,L-generator|4:'
             );
+        });
+    });
+    describe('decanonicalizeBuilding', () => {
+        it('deserializes buildingString A', () => {
+            const buildingString =
+                '[2]1:|2:H-microchip,L-microchip|3:H-generator,L-generator|4:';
+            expect(
+                decanonicalizeBuilding(
+                    '[2]1:|2:H-microchip,L-microchip|3:H-generator,L-generator|4:'
+                ).equals(
+                    new BuildingConcrete(
+                        new FloorMapConcrete(
+                            new Map([
+                                [1, new ItemSetConcrete([])],
+                                [
+                                    2,
+                                    new ItemSetConcrete([
+                                        new ItemConcrete('L', 'microchip'),
+                                        new ItemConcrete('H', 'microchip'),
+                                    ]),
+                                ],
+                                [
+                                    3,
+                                    new ItemSetConcrete([
+                                        new ItemConcrete('H', 'generator'),
+                                        new ItemConcrete('L', 'generator'),
+                                    ]),
+                                ],
+                                [4, new ItemSetConcrete([])],
+                            ])
+                        ),
+                        2
+                    )
+                )
+            ).to.be.true;
+            expect(
+                decanonicalizeBuilding(
+                    '[2]1:|2:H-microchip,L-microchip|3:H-generator,L-generator|4:'
+                ).equals(
+                    new BuildingConcrete(
+                        new FloorMapConcrete(
+                            new Map([
+                                [1, new ItemSetConcrete([])],
+                                [
+                                    2,
+                                    new ItemSetConcrete([
+                                        new ItemConcrete('L', 'microchip'),
+                                        new ItemConcrete('H', 'microchip'),
+                                    ]),
+                                ],
+                                [
+                                    3,
+                                    new ItemSetConcrete([
+                                        new ItemConcrete('L', 'generator'),
+                                        new ItemConcrete('H', 'generator'),
+                                    ]),
+                                ],
+                                [4, new ItemSetConcrete([])],
+                            ])
+                        ),
+                        2
+                    )
+                )
+            ).to.be.true;
+            expect(
+                decanonicalizeBuilding(
+                    '[2]1:|2:H-microchip,L-microchip|3:H-generator,L-generator|4:'
+                ).equals(
+                    new BuildingConcrete(
+                        new FloorMapConcrete(
+                            new Map([
+                                [1, new ItemSetConcrete([])],
+                                [
+                                    2,
+                                    new ItemSetConcrete([
+                                        new ItemConcrete('L', 'microchip'),
+                                    ]),
+                                ],
+                                [
+                                    3,
+                                    new ItemSetConcrete([
+                                        new ItemConcrete('L', 'generator'),
+                                        new ItemConcrete('H', 'generator'),
+                                    ]),
+                                ],
+                                [4, new ItemSetConcrete([])],
+                            ])
+                        ),
+                        2
+                    )
+                )
+            ).to.be.false;
         });
     });
     describe('BTreeKeyBuilding', () => {

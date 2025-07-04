@@ -514,10 +514,10 @@ export function decanonicalizeBuilding(commandString: string) {
         throw new Error(`Unable to parse remainder from ${commandString}`);
     }
     const elevatorRemainder = elevatorResults.groups.remainder;
-    const floorRegex = /^(?<floorNumber>[\d]+):(?<remainder>[.]*)/g;
     const floorsSplit = elevatorRemainder.split('|');
     for (const floorSplit of floorsSplit) {
         const floor = new ItemSetConcrete();
+        const floorRegex = /^(?<floorNumber>[\d]+):(?<remainder>.*)$/g;
         const floorResults = floorRegex.exec(floorSplit);
         if (null === floorResults || undefined === floorResults.groups) {
             throw new Error(`Unable to parse floorResults from ${floorSplit}`);
