@@ -371,7 +371,7 @@ export function getFunctionGetPermutatedBuildings({
                 )
             );
         }
-        memoizedPermutatedBuildingMap.set(building, buildingPermutations);
+        // memoizedPermutatedBuildingMap.set(building, buildingPermutations);
         return buildingPermutations;
     };
 }
@@ -379,20 +379,8 @@ export function getFunctionGetPermutatedBuildings({
 export function getFunctionGetMemoizedBuilding(
     memoizedBuildingsArray: Building[] = []
 ) {
-    const memoizedBuildings: BTreeInterface<string, Building> =
-        new BTreeComplex();
-    for (const building of memoizedBuildingsArray) {
-        memoizedBuildings.insert(new BTreeKeyBuilding(building));
-    }
     return function getMemoizedBuilding(building: Building) {
-        const buildingBTreeKey = new BTreeKeyBuilding(building);
-        const memoizedBuilding = memoizedBuildings.fetch(buildingBTreeKey);
-        if (undefined !== memoizedBuilding) {
-            return memoizedBuilding.getValue();
-        } else {
-            memoizedBuildings.insert(buildingBTreeKey);
-            return building;
-        }
+        return building;
     };
 }
 
@@ -458,10 +446,10 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
                 buildingPermutations.push(getMemoizedBuilding(newBuildingIJ));
             }
         }
-        memoizedPermutatedBuildingSets.push([
-            [building, fromFloorNumber, toFloorNumber],
-            buildingPermutations,
-        ]);
+        // memoizedPermutatedBuildingSets.push([
+        //     [building, fromFloorNumber, toFloorNumber],
+        //     buildingPermutations,
+        // ]);
         return buildingPermutations;
     };
 }
