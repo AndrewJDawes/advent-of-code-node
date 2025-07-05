@@ -328,13 +328,7 @@ export function getFunctionGetPermutatedBuildings({
         toFloorNumber: number
     ) => Building[];
 }) {
-    const memoizedPermutatedBuildingMap: Map<Building, Building[]> = new Map();
     return (building: Building) => {
-        const existingMemoizedPermutatedBuildingMap =
-            memoizedPermutatedBuildingMap.get(building);
-        if (undefined !== existingMemoizedPermutatedBuildingMap) {
-            return existingMemoizedPermutatedBuildingMap;
-        }
         const buildingPermutations: Building[] = [];
         const floors = building.getFloors();
         const floorNumbers = [...floors.keys()].sort();
@@ -372,14 +366,11 @@ export function getFunctionGetPermutatedBuildings({
                 )
             );
         }
-        // memoizedPermutatedBuildingMap.set(building, buildingPermutations);
         return buildingPermutations;
     };
 }
 
-export function getFunctionGetMemoizedBuilding(
-    memoizedBuildingsArray: Building[] = []
-) {
+export function getFunctionGetMemoizedBuilding() {
     return function getMemoizedBuilding(building: Building) {
         return building;
     };
@@ -390,28 +381,11 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
 }: {
     getMemoizedBuilding: (building: Building) => Building;
 }) {
-    const memoizedPermutatedBuildingSets: [
-        [Building, number | undefined, number | undefined],
-        Building[]
-    ][] = [];
     return (
         building: Building,
         fromFloorNumber: number,
         toFloorNumber: number
     ) => {
-        const memoizedPermutatedBuildingSet =
-            memoizedPermutatedBuildingSets.find(
-                (memoizedPermutatedBuilding) => {
-                    return (
-                        memoizedPermutatedBuilding[0][0] === building &&
-                        memoizedPermutatedBuilding[0][1] === fromFloorNumber &&
-                        memoizedPermutatedBuilding[0][2] === toFloorNumber
-                    );
-                }
-            );
-        if (undefined !== memoizedPermutatedBuildingSet) {
-            return memoizedPermutatedBuildingSet[1];
-        }
         const buildingPermutations: Building[] = [];
         const fromFloor = building.getFloors().get(fromFloorNumber);
         if (undefined === fromFloor) {
@@ -447,10 +421,6 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
                 buildingPermutations.push(getMemoizedBuilding(newBuildingIJ));
             }
         }
-        // memoizedPermutatedBuildingSets.push([
-        //     [building, fromFloorNumber, toFloorNumber],
-        //     buildingPermutations,
-        // ]);
         return buildingPermutations;
     };
 }
@@ -591,7 +561,7 @@ export function findShortestPathToSuccess(building: Building) {
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
             getFunctionGetPermutatedBuildingsFromFloorToFloor({
-                getMemoizedBuilding: getFunctionGetMemoizedBuilding([building]),
+                getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
             }),
     });
     while (queue.length > 0) {
