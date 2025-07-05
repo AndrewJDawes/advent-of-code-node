@@ -6,6 +6,7 @@ import {
     BTree as BTreeComplex,
     BTreeKeyInterface,
 } from './btree.js';
+import { CONNREFUSED } from 'dns';
 
 export type ItemType = 'generator' | 'microchip';
 export interface Item {
@@ -469,9 +470,30 @@ export class BTreeKeyBuilding implements BTreeKeyInterface<string, Building> {
     }
 }
 
+function getFunctionInternCanonicalizedBuilding(
+    map: Map<string, string> = new Map()
+) {
+    return function internCanonicalizedBuilding(buildingString: string) {
+        if (!map.has(buildingString)) {
+            map.set(buildingString, buildingString);
+        }
+        const result = map.get(buildingString);
+        if (result === undefined) {
+            throw new Error(
+                `Unable to find buildingString after setting in map`
+            );
+        }
+        return result;
+    };
+}
+
+const internCanonicalizedBuilding = getFunctionInternCanonicalizedBuilding();
+
 export function canonicalizeBuilding(building: Building) {
     const floors = building.getFloors();
-    return `[${building.getElevatorFloorNumber()}]${[...floors.entries()]
+    const canonicalizedBuilding = `[${building.getElevatorFloorNumber()}]${[
+        ...floors.entries(),
+    ]
         .map(([number, itemSet]) => {
             return `${number}:${[...itemSet]
                 .sort(sortItems)
@@ -481,6 +503,7 @@ export function canonicalizeBuilding(building: Building) {
                 .join(',')}`;
         })
         .join('|')}`;
+    return internCanonicalizedBuilding(canonicalizedBuilding);
 }
 
 // [1]1:H-microchip,L-microchip|2:H-generator|3:L-generator|4:
@@ -555,65 +578,6 @@ export function decanonicalizeBuilding(commandString: string) {
     }
     return building;
 }
-
-// class BuildingCompact implements Building {
-//     private elevatorFloorNumber: number;
-//     private canonicalElements: Set<string>;
-//     private state: number[];
-//     private totalFloors: number;
-//     constructor(
-//         elevatorFloorNumber: number = 1,
-//         totalFloors: number = 4,
-//         canonicalElements: Set<string> = new Set()
-//     ) {
-//         this.elevatorFloorNumber = elevatorFloorNumber;
-//         this.canonicalElements = canonicalElements;
-//         this.state = [];
-//         this.totalFloors = totalFloors;
-//     }
-//     getFloors(): FloorMap {
-//         let counter = 1;
-//         const floors = new Map<number, ItemSet>();
-//         for (let i = 1; i <= this.totalFloors; i++) {
-//             floors.set(i, new ItemSetConcrete());
-//         }
-//         for (const element of this.canonicalElements) {
-//             const mappings: [ItemType, number][] = [
-//                 ['microchip', 2 * counter],
-//                 ['generator', 2 * counter + 1],
-//             ];
-//             for (const [type, index] of mappings) {
-//                 const floorNumber = this.state[index] ?? undefined;
-//                 if (floorNumber === undefined) {
-//                     throw new Error(
-//                         `Unable to find floorNumber for ${element} ${type}`
-//                     );
-//                 }
-//                 const floor = floors.get(floorNumber);
-//                 if (undefined === floor) {
-//                     throw new Error(
-//                         `Unable to find floor for ${element} ${type}`
-//                     );
-//                 }
-//                 floor.addItem(new ItemConcrete(element, type));
-//             }
-//             counter++;
-//         }
-//         return new FloorMapConcrete(floors);
-//     }
-//     getFloors(): FloorMap;
-//     getElevatorFloorNumber(): number;
-//     setElevatorFloorNumber(floorNumber: number): void;
-//     moveItemsFromFloorNumberToFloorNumber(
-//         fromFloorNumber: number,
-//         toFloorNumber: number,
-//         items: ItemSet
-//     ): void;
-//     copy(): Building;
-//     equals(building: Building): boolean;
-// }
-
-// function hydrate(canonicalized: string) {}
 
 // BFS - Breadth First Search
 export function findShortestPathToSuccess(building: Building) {
