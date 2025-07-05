@@ -36,7 +36,7 @@
         "typescript": "^5.8.3"
     },
     "dependencies": {
-        "@umerx/btreejs": "^2.0.0",
+        "@umerx/btreejs": "^2.2.0",
         "chai": "^5.2.0",
         "md5": "^2.3.0"
     }
