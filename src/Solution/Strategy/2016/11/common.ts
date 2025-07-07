@@ -420,10 +420,17 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
 }
 
 function getFunctionInternCanonicalizedBuilding(
-    canonicalizedBuildings: Set<string> = new Set<string>()
+    canonicalizedBuildings: Map<string, string> = new Map<string, string>()
 ) {
     return function internCanonicalizedBuilding(buildingString: string) {
-        return buildingString;
+        if (!canonicalizedBuildings.has(buildingString)) {
+            canonicalizedBuildings.set(buildingString, buildingString);
+        }
+        const result = canonicalizedBuildings.get(buildingString);
+        if (undefined === result) {
+            throw new Error(`undefined result`)
+        }
+        return result;
     };
 }
 
