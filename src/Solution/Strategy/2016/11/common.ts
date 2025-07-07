@@ -1,12 +1,6 @@
 // import { BTree, BTreeInterface, BTreeKeyInterface } from './btree.js';
 
 import { BTree } from '@umerx/btreejs';
-import {
-    BTreeInterface,
-    BTree as BTreeComplex,
-    BTreeKeyInterface,
-} from './btree.js';
-import { CONNREFUSED } from 'dns';
 
 export type ItemType = 'generator' | 'microchip';
 export interface Item {
@@ -425,29 +419,14 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
     };
 }
 
-export class BTreeKeyBuilding implements BTreeKeyInterface<string, Building> {
-    private building: Building;
-    private key: string;
-    constructor(building: Building) {
-        this.building = building;
-        this.key = canonicalizeBuilding(this.building);
-    }
-    getKey() {
-        return this.key;
-    }
-    getValue() {
-        return this.building;
-    }
-}
-
 function getFunctionInternCanonicalizedBuilding(
-    map: Map<string, string> = new Map()
+    map: BTree<string> = new BTree<string>()
 ) {
     return function internCanonicalizedBuilding(buildingString: string) {
-        if (!map.has(buildingString)) {
-            map.set(buildingString, buildingString);
+        if (!map.contains(buildingString)) {
+            map.insert(buildingString);
         }
-        const result = map.get(buildingString);
+        const result = map.fetch(buildingString);
         if (result === undefined) {
             throw new Error(
                 `Unable to find buildingString after setting in map`
