@@ -420,19 +420,10 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
 }
 
 function getFunctionInternCanonicalizedBuilding(
-    map: BTree<string> = new BTree<string>()
+    canonicalizedBuildings: Set<string> = new Set<string>()
 ) {
     return function internCanonicalizedBuilding(buildingString: string) {
-        if (!map.contains(buildingString)) {
-            map.insert(buildingString);
-        }
-        const result = map.fetch(buildingString);
-        if (result === undefined) {
-            throw new Error(
-                `Unable to find buildingString after setting in map`
-            );
-        }
-        return result;
+        return buildingString;
     };
 }
 
@@ -534,9 +525,9 @@ export function findShortestPathToSuccess(building: Building) {
     let queue: [string, string[]][] = [
         [buildingCanonicalized, [buildingCanonicalized]],
     ];
-    const visited = new BTree<string>();
+    const visited = new Set<string>();
     let visitedSize = 0;
-    visited.insert(buildingCanonicalized);
+    visited.add(buildingCanonicalized);
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
             getFunctionGetPermutatedBuildingsFromFloorToFloor({
@@ -559,10 +550,10 @@ export function findShortestPathToSuccess(building: Building) {
 
         for (const permutation of permutations) {
             const permutationBTreeKey = canonicalizeBuilding(permutation);
-            if (visited.contains(permutationBTreeKey)) {
+            if (visited.has(permutationBTreeKey)) {
                 continue;
             }
-            visited.insert(permutationBTreeKey);
+            visited.add(permutationBTreeKey);
             visitedSize++;
             if (success(permutation)) {
                 return [...path, permutation];
