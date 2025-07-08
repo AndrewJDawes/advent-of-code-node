@@ -552,49 +552,54 @@ export function decanonicalizeBuilding(commandString: string) {
 
 // BFS - Breadth First Search
 export async function findShortestPathToSuccess(building: Building) {
-    await visited.clearAsync();
-    const buildingCanonicalized = canonicalizeBuilding(building);
-    let queue: [string, string[]][] = [
-        [buildingCanonicalized, [buildingCanonicalized]],
-    ];
-    // const visited = new Set<string>();
-    let visitedSize = 0;
-    await visited.put(buildingCanonicalized, true);
-    const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
-        getPermutatedBuildingsFromFloorToFloor:
-            getFunctionGetPermutatedBuildingsFromFloorToFloor({
-                getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
-            }),
+    return visited.transaction(() => {
+        visited.clearAsync();
+        const buildingCanonicalized = canonicalizeBuilding(building);
+        let queue: [string, string[]][] = [
+            [buildingCanonicalized, [buildingCanonicalized]],
+        ];
+        // const visited = new Set<string>();
+        let visitedSize = 0;
+        visited.put(buildingCanonicalized, true);
+        const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
+            getPermutatedBuildingsFromFloorToFloor:
+                getFunctionGetPermutatedBuildingsFromFloorToFloor({
+                    getMemoizedBuilding: getFunctionGetMemoizedBuilding(),
+                }),
+        });
+        while (queue.length > 0) {
+            const queueItem = queue.shift();
+            if (queueItem === undefined) {
+                throw new Error(`queueItem is undefined`);
+            }
+            const [nodeCanonicalized, path] = queueItem;
+            console.log(
+                `visited: ${visitedSize}. queue: ${queue.length}. path: ${path.length}`
+            );
+            const permutations = getPermutatedBuildings(
+                decanonicalizeBuilding(nodeCanonicalized)
+            );
+            for (const permutation of permutations) {
+                const permutationBTreeKey = canonicalizeBuilding(permutation);
+                if (visited.get(permutationBTreeKey)) {
+                    continue;
+                }
+                visited.put(permutationBTreeKey, true);
+                visitedSize++;
+                if (success(permutation)) {
+                    return [...path, permutation];
+                }
+                if (failure(permutation)) {
+                    continue;
+                }
+                queue.push([
+                    permutationBTreeKey,
+                    [...path, permutationBTreeKey],
+                ]);
+            }
+        }
+        return null;
     });
-    while (queue.length > 0) {
-        const queueItem = queue.shift();
-        if (queueItem === undefined) {
-            throw new Error(`queueItem is undefined`);
-        }
-        const [nodeCanonicalized, path] = queueItem;
-        console.log(
-            `visited: ${visitedSize}. queue: ${queue.length}. path: ${path.length}`
-        );
-        const permutations = getPermutatedBuildings(
-            decanonicalizeBuilding(nodeCanonicalized)
-        );
-        for (const permutation of permutations) {
-            const permutationBTreeKey = canonicalizeBuilding(permutation);
-            if (visited.get(permutationBTreeKey)) {
-                continue;
-            }
-            await visited.put(permutationBTreeKey, true);
-            visitedSize++;
-            if (success(permutation)) {
-                return [...path, permutation];
-            }
-            if (failure(permutation)) {
-                continue;
-            }
-            queue.push([permutationBTreeKey, [...path, permutationBTreeKey]]);
-        }
-    }
-    return null;
 }
 
 export function isValidItemType(type: any): type is ItemType {
