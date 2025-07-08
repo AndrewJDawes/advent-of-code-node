@@ -1999,7 +1999,7 @@ describe('201611a', () => {
         });
     });
     describe('findShortestPathToSuccess', () => {
-        it('solves initial state A', () => {
+        it('solves initial state A', async () => {
             const building = new BuildingConcrete(
                 new FloorMapConcrete(
                     new Map([
@@ -2027,7 +2027,7 @@ describe('201611a', () => {
                 ),
                 1
             );
-            const results = findShortestPathToSuccess(building);
+            const results = await findShortestPathToSuccess(building);
             expect(results?.length).to.equal(12);
         });
     });

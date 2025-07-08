@@ -1,6 +1,14 @@
 // import { BTree, BTreeInterface, BTreeKeyInterface } from './btree.js';
+import { open } from 'lmdb';
+
+let visited = open<boolean, string>({
+    path: '_db_201611',
+    // any options go here, we can turn on compression like this:
+    compression: true,
+});
 
 import { BTree } from '@umerx/btreejs';
+import { BTreeKeyInterface } from './btree.js';
 
 export type ItemType = 'generator' | 'microchip';
 export interface Item {
@@ -269,6 +277,21 @@ export class BuildingConcrete implements Building {
     }
 }
 
+export class BTreeKeyBuilding implements BTreeKeyInterface<string, Building> {
+    private building: Building;
+    private key: string;
+    constructor(building: Building) {
+        this.building = building;
+        this.key = canonicalizeBuilding(this.building);
+    }
+    getKey() {
+        return this.key;
+    }
+    getValue() {
+        return this.building;
+    }
+}
+
 export function success(building: Building) {
     // all items and elevator on 4th floor
     // if (building.getElevatorFloorNumber() !== 4) {
@@ -528,14 +551,15 @@ export function decanonicalizeBuilding(commandString: string) {
 }
 
 // BFS - Breadth First Search
-export function findShortestPathToSuccess(building: Building) {
+export async function findShortestPathToSuccess(building: Building) {
+    await visited.clearAsync();
     const buildingCanonicalized = canonicalizeBuilding(building);
     let queue: [string, string[]][] = [
         [buildingCanonicalized, [buildingCanonicalized]],
     ];
-    const visited = new Set<string>();
+    // const visited = new Set<string>();
     let visitedSize = 0;
-    visited.add(buildingCanonicalized);
+    await visited.put(buildingCanonicalized, true);
     const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
         getPermutatedBuildingsFromFloorToFloor:
             getFunctionGetPermutatedBuildingsFromFloorToFloor({
@@ -551,17 +575,15 @@ export function findShortestPathToSuccess(building: Building) {
         console.log(
             `visited: ${visitedSize}. queue: ${queue.length}. path: ${path.length}`
         );
-
         const permutations = getPermutatedBuildings(
             decanonicalizeBuilding(nodeCanonicalized)
         );
-
         for (const permutation of permutations) {
             const permutationBTreeKey = canonicalizeBuilding(permutation);
-            if (visited.has(permutationBTreeKey)) {
+            if (visited.get(permutationBTreeKey)) {
                 continue;
             }
-            visited.add(permutationBTreeKey);
+            await visited.put(permutationBTreeKey, true);
             visitedSize++;
             if (success(permutation)) {
                 return [...path, permutation];

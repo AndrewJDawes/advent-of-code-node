@@ -121,7 +121,7 @@ class Solution implements InterfaceSolutionStrategy {
         for await (let line of iterator) {
             commandParser.execute(line);
         }
-        const path = findShortestPathToSuccess(building);
+        const path = await findShortestPathToSuccess(building);
         if (path === null) {
             throw new Error(`Unable to find a path`);
         }

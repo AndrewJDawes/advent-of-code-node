@@ -2,6 +2,10 @@
 
 ## Todo
 
+-   Try using a btree for ALL persisted states (including the interned canonicalized states)
+-   Use WeakMaps for non-deterministic memoization of states, so that we can avoid memory leaks and allow garbage collection to clean up unused states.
+-   If we think Garbage Collection thrashing is still the issue when it starts to slow down and there are breaks in between the steps, then we may want to try using a custom memory pool or database for the states, so that we can reuse the memory and avoid GC thrashing.
+
 ### 201611a and 201611b
 
 GitHub Copilot

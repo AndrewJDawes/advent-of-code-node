@@ -50,7 +50,7 @@ class Solution implements InterfaceSolutionStrategy {
         ].forEach((item) => {
             floorOne.addItem(item);
         });
-        const path = findShortestPathToSuccess(building);
+        const path = await findShortestPathToSuccess(building);
         if (path === null) {
             throw new Error(`Unable to find a path`);
         }
