@@ -423,14 +423,15 @@ function getFunctionInternCanonicalizedBuilding(
     canonicalizedBuildings: Map<string, string> = new Map<string, string>()
 ) {
     return function internCanonicalizedBuilding(buildingString: string) {
-        if (!canonicalizedBuildings.has(buildingString)) {
-            canonicalizedBuildings.set(buildingString, buildingString);
-        }
-        const result = canonicalizedBuildings.get(buildingString);
-        if (undefined === result) {
-            throw new Error(`undefined result`)
-        }
-        return result;
+        // if (!canonicalizedBuildings.has(buildingString)) {
+        //     canonicalizedBuildings.set(buildingString, buildingString);
+        // }
+        // const result = canonicalizedBuildings.get(buildingString);
+        // if (undefined === result) {
+        //     throw new Error(`undefined result`)
+        // }
+        // return result;
+        return buildingString;
     };
 }
 
