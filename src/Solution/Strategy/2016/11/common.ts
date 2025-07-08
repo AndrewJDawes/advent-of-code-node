@@ -5,6 +5,8 @@ let visited = open<boolean, string>({
     path: '_db_201611',
     // any options go here, we can turn on compression like this:
     compression: true,
+    noSync: true,
+    useWritemap: true,
 });
 
 import { BTree } from '@umerx/btreejs';
