@@ -1,15 +1,5 @@
-// import { BTree, BTreeInterface, BTreeKeyInterface } from './btree.js';
-import { open } from 'lmdb';
+import visited from './db.js';
 
-let visited = open<boolean, string>({
-    path: '_db_201611',
-    // any options go here, we can turn on compression like this:
-    compression: true,
-    noSync: true,
-    useWritemap: true,
-});
-
-import { BTree } from '@umerx/btreejs';
 import { BTreeKeyInterface } from './btree.js';
 
 export type ItemType = 'generator' | 'microchip';
@@ -444,24 +434,6 @@ export function getFunctionGetPermutatedBuildingsFromFloorToFloor({
     };
 }
 
-function getFunctionInternCanonicalizedBuilding(
-    canonicalizedBuildings: Map<string, string> = new Map<string, string>()
-) {
-    return function internCanonicalizedBuilding(buildingString: string) {
-        // if (!canonicalizedBuildings.has(buildingString)) {
-        //     canonicalizedBuildings.set(buildingString, buildingString);
-        // }
-        // const result = canonicalizedBuildings.get(buildingString);
-        // if (undefined === result) {
-        //     throw new Error(`undefined result`)
-        // }
-        // return result;
-        return buildingString;
-    };
-}
-
-const internCanonicalizedBuilding = getFunctionInternCanonicalizedBuilding();
-
 export function canonicalizeBuilding(building: Building) {
     const floors = building.getFloors();
     const canonicalizedBuilding = `[${building.getElevatorFloorNumber()}]${[
@@ -476,7 +448,7 @@ export function canonicalizeBuilding(building: Building) {
                 .join(',')}`;
         })
         .join('|')}`;
-    return internCanonicalizedBuilding(canonicalizedBuilding);
+    return canonicalizedBuilding;
 }
 
 // [1]1:H-microchip,L-microchip|2:H-generator|3:L-generator|4:
@@ -560,7 +532,6 @@ export async function findShortestPathToSuccess(building: Building) {
         let queue: [string, string[]][] = [
             [buildingCanonicalized, [buildingCanonicalized]],
         ];
-        // const visited = new Set<string>();
         let visitedSize = 0;
         visited.put(buildingCanonicalized, true);
         const getPermutatedBuildings = getFunctionGetPermutatedBuildings({
@@ -589,6 +560,7 @@ export async function findShortestPathToSuccess(building: Building) {
                 visited.put(permutationBTreeKey, true);
                 visitedSize++;
                 if (success(permutation)) {
+                    visited.clearAsync();
                     return [...path, permutation];
                 }
                 if (failure(permutation)) {
