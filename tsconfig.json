@@ -5,9 +5,12 @@
         "target": "es2022",
         "strict": true,
         "sourceMap": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "skipLibCheck": true
     },
-    "include": ["src/**/*"],
+    "include": [
+        "src/**/*"
+    ],
     // Use "transpile then test" to avoid module resolution issues
     // "exclude": ["src/**/*.spec.ts"]
 }
