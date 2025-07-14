@@ -21,5 +21,5 @@ describe('Solution201611a', () => {
     //     ]);
     //     const solution = await new Solution201611a(input).solve();
     //     expect(solution).to.equal('31');
-    // });
+    // }).timeout(60000);
 });
