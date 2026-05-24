@@ -30,6 +30,7 @@ import Solution201610a from '../Strategy/2016/10/a.js';
 import Solution201610b from '../Strategy/2016/10/b.js';
 import Solution201611a from '../Strategy/2016/11/a.js';
 import Solution201611b from '../Strategy/2016/11/b.js';
+import Solution201612a from '../Strategy/2016/12/a.js';
 
 class FromConfig implements InterfaceSolutionFactory {
     inputFetcherFactory: InterfaceInputFetcherFactory;
@@ -40,7 +41,7 @@ class FromConfig implements InterfaceSolutionFactory {
         const { dataType, dataSource } = config;
         const service = this.inputFetcherFactory.getService(
             dataType,
-            dataSource
+            dataSource,
         );
         const yearDayPart = config.year + config.day + config.part;
         switch (yearDayPart) {
@@ -98,9 +99,11 @@ class FromConfig implements InterfaceSolutionFactory {
                 return new Solution201611a(service);
             case '201611b':
                 return new Solution201611b(service);
+            case '201612a':
+                return new Solution201612a(service);
             default:
                 throw new Error(
-                    `Unknown year and day and part: ${yearDayPart}`
+                    `Unknown year and day and part: ${yearDayPart}`,
                 );
         }
     }

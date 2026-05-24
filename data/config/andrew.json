@@ -60,14 +60,18 @@
         "day": "5",
         "part": "a",
         "dataType": "array",
-        "dataSource": ["d4cd2ee1"]
+        "dataSource": [
+            "d4cd2ee1"
+        ]
     },
     {
         "year": "2016",
         "day": "5",
         "part": "b",
         "dataType": "array",
-        "dataSource": ["d4cd2ee1"]
+        "dataSource": [
+            "d4cd2ee1"
+        ]
     },
     {
         "year": "2016",
@@ -138,5 +142,26 @@
         "part": "b",
         "dataType": "url",
         "dataSource": "https://adventofcode.com/2016/day/10/input"
+    },
+    {
+        "year": "2016",
+        "day": "11",
+        "part": "a",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/11/input"
+    },
+    {
+        "year": "2016",
+        "day": "11",
+        "part": "b",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/11/input"
+    },
+    {
+        "year": "2016",
+        "day": "12",
+        "part": "a",
+        "dataType": "url",
+        "dataSource": "https://adventofcode.com/2016/day/12/input"
     }
 ]
