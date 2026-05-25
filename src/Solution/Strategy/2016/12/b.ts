@@ -15,7 +15,9 @@ class Solution implements InterfaceSolutionStrategy {
                 instructions.push(trimmed);
             }
         }
-        return execute(instructions).toString();
+        const registers = new Map();
+        registers.set('c', 1);
+        return execute(instructions, registers).toString();
     }
 }
 export default Solution;
