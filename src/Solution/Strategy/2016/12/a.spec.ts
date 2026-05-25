@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import StringArray from '../../../../InputFetcher/Service/StringArray.js';
-import Solution201612a, { execute } from './a.js';
+import Solution201612a, { execute, ExecutionContext, jnz } from './a.js';
 
 describe('Solution201612a', () => {
     describe('execute', () => {
@@ -72,5 +72,11 @@ describe('Solution201612a', () => {
             const solution = await new Solution201612a(input).solve();
             expect(solution).to.equal('42');
         });
+    });
+    it('jumps when the test value is a literal non-zero value jnz 1 5', () => {
+        const registers = new Map();
+        const context: ExecutionContext = { registers, programCounter: 0 };
+        jnz(registers, ['1', '5'], context);
+        expect(context.programCounter).to.equal(4);
     });
 });

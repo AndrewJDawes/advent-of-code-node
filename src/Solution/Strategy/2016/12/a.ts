@@ -11,7 +11,7 @@ cpy, inc, dec, and jnz. After executing the program, return the value in registe
 
 type Registers = Map<string, number>;
 
-type ExecutionContext = {
+export type ExecutionContext = {
     registers: Registers;
     programCounter: number;
 };
@@ -55,10 +55,10 @@ function cpy(registers: Registers, args: string[]): void {
     registers.set(y, newValue);
 }
 
-function jnz(
+export function jnz(
     registers: Registers,
     args: string[],
-    context: ExecutionContext
+    context: ExecutionContext,
 ): void {
     const [x, y] = args;
     const xValue = getRegisterValue(registers, x);
