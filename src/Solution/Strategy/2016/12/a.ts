@@ -30,6 +30,19 @@ function ensureRegister(registers: Registers, name: string): void {
     }
 }
 
+function getLiteralIntegerOrExistingRegisterValue(
+    registers: Registers,
+    arg: string,
+): number {
+    if (isLiteral(arg)) {
+        return parseInt(arg, 10);
+    }
+    if (!registers.has(arg)) {
+        throw new Error(`Register ${arg} does not exist`);
+    }
+    return getRegisterValue(registers, arg);
+}
+
 function inc(registers: Registers, args: string[]): void {
     const x = args[0];
     ensureRegister(registers, x);
@@ -45,13 +58,7 @@ function dec(registers: Registers, args: string[]): void {
 function cpy(registers: Registers, args: string[]): void {
     const [x, y] = args;
     let newValue: number;
-    if (isLiteral(x)) {
-        newValue = parseInt(x, 10);
-    } else if (!registers.has(x)) {
-        throw new Error(`Register ${x} does not exist`);
-    } else {
-        newValue = getRegisterValue(registers, x);
-    }
+    newValue = getLiteralIntegerOrExistingRegisterValue(registers, x);
     registers.set(y, newValue);
 }
 
@@ -61,7 +68,7 @@ export function jnz(
     context: ExecutionContext,
 ): void {
     const [x, y] = args;
-    const xValue = getRegisterValue(registers, x);
+    const xValue = getLiteralIntegerOrExistingRegisterValue(registers, x);
     if (xValue === 0) {
         return;
     }
