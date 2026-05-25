@@ -26,10 +26,9 @@ describe('Solution201612a', () => {
             expect(result).to.equal(5);
         });
 
-        it('throws when copying from a non-existent register', () => {
-            expect(() => execute(['cpy b a'])).to.throw(
-                'Register b does not exist',
-            );
+        it('on copy initializes the register with a value of 0 if it does not exist', () => {
+            const result = execute(['cpy f a']);
+            expect(result).to.equal(0);
         });
 
         it('throws when jnz offset is not an integer', () => {
@@ -73,10 +72,19 @@ describe('Solution201612a', () => {
             expect(solution).to.equal('42');
         });
     });
-    it('jumps when the test value is a literal non-zero value jnz 1 5', () => {
-        const registers = new Map();
-        const context: ExecutionContext = { registers, programCounter: 0 };
-        jnz(registers, ['1', '5'], context);
-        expect(context.programCounter).to.equal(4);
+    describe('jnz', () => {
+        it('jumps when the test value is a literal non-zero value jnz 1 5', () => {
+            const registers = new Map();
+            const context: ExecutionContext = { registers, programCounter: 0 };
+            jnz(registers, ['1', '5'], context);
+            expect(context.programCounter).to.equal(4);
+        });
+        it('initializes the register with a value of 0 if it does not exist', () => {
+            const registers = new Map();
+            const context: ExecutionContext = { registers, programCounter: 0 };
+            jnz(registers, ['a', '5'], context);
+            expect(context.programCounter).to.equal(0);
+            expect(registers.get('a')).to.equal(0);
+        });
     });
 });

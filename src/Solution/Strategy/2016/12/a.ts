@@ -33,12 +33,13 @@ function ensureRegister(registers: Registers, name: string): void {
 function getLiteralIntegerOrExistingRegisterValue(
     registers: Registers,
     arg: string,
+    defaultValue: number = 0,
 ): number {
     if (isLiteral(arg)) {
         return parseInt(arg, 10);
     }
     if (!registers.has(arg)) {
-        throw new Error(`Register ${arg} does not exist`);
+        registers.set(arg, defaultValue);
     }
     return getRegisterValue(registers, arg);
 }
