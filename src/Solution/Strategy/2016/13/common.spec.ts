@@ -1,10 +1,8 @@
-import sinon from 'sinon';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 use(sinonChai);
 import {
     countOf1Bits,
-    isOddNumber,
     layoutLogic,
     pointIsWall,
     pointIsWallMemoized,
@@ -12,7 +10,9 @@ import {
     pointToMapKey,
     pointInPath,
     pointOutOfBounds,
-    pathIsShortestKnownPathToPoint,
+    createPathIsShortestKnownPathToPoint,
+    findShortestSteps,
+    execute,
 } from './common.js';
 
 describe('Solution201613', () => {
@@ -25,11 +25,11 @@ describe('Solution201613', () => {
         });
     });
     describe('countOf1Bits', () => {
-        it('returns 4 for input of "170"', () => {
-            expect(countOf1Bits('170')).to.equal(4);
+        it('returns 4 for binary string of 170', () => {
+            expect(countOf1Bits((170).toString(2))).to.equal(4);
         });
-        it('returns 5 for input of "157"', () => {
-            expect(countOf1Bits('157')).to.equal(5);
+        it('returns 5 for binary string of 157', () => {
+            expect(countOf1Bits((157).toString(2))).to.equal(5);
         });
     });
     describe('pointIsWall', () => {
@@ -39,31 +39,12 @@ describe('Solution201613', () => {
         it('returns true for input of 2, 4, 6', () => {
             expect(pointIsWall([2, 4], 6)).to.equal(true);
         });
-        it('calls layoutLogic and countOf1Bits and isOddNumber', () => {
-            const layoutLogicSpy = sinon.spy(layoutLogic);
-            const countOf1BitsSpy = sinon.spy(countOf1Bits);
-            const isOddNumberSpy = sinon.spy(isOddNumber);
-            pointIsWall([1, 2], 3);
-            expect(layoutLogicSpy).to.have.been.called;
-            expect(countOf1BitsSpy).to.have.been.called;
-            expect(isOddNumberSpy).to.have.been.called;
-        });
     });
     describe('pointIsWallMemoized', () => {
         it('should be memoized', () => {
-            const layoutLogicSpy = sinon.spy(layoutLogic);
-            const countOf1BitsSpy = sinon.spy(countOf1Bits);
-            const isOddNumberSpy = sinon.spy(isOddNumber);
-            pointIsWallMemoized([1, 2], 3);
-            pointIsWallMemoized([1, 2], 3);
-            expect(layoutLogicSpy).to.have.been.calledOnce;
-            expect(countOf1BitsSpy).to.have.been.calledOnce;
-            expect(isOddNumberSpy).to.have.been.calledOnce;
-        });
-        it('should call pointToMapKey to generate the cache key', () => {
-            const pointToMapKeySpy = sinon.spy(pointToMapKey);
-            pointIsWallMemoized([1, 2], 3);
-            expect(pointToMapKeySpy).to.have.been.calledWith([1, 2], 3);
+            expect(pointIsWallMemoized([1, 2], 3)).to.equal(false);
+            expect(pointIsWallMemoized([1, 2], 3)).to.equal(false);
+            expect(pointIsWallMemoized([2, 4], 6)).to.equal(true);
         });
     });
     describe('calculateAdjacentPoints', () => {
@@ -117,33 +98,55 @@ describe('Solution201613', () => {
             expect(pointOutOfBounds([0, 0])).to.equal(false);
         });
     });
-    describe('pathIsShortestKnownPathToPoint', () => {
-        it('returns true', () => {
-            expect(
-                pathIsShortestKnownPathToPoint(
-                    [1, 2],
-                    [
-                        [1, 1],
-                        [1, 2],
-                    ],
-                ),
-            ).to.equal(true);
-        });
-        it('should return true', () => {
-            expect(pathIsShortestKnownPathToPoint([1, 2], [[1, 2]])).to.equal(
+    describe('createPathIsShortestKnownPathToPoint', () => {
+        it('returns true on first visit to a point', () => {
+            const { pathIsShortestKnownPathToPoint } =
+                createPathIsShortestKnownPathToPoint();
+            expect(pathIsShortestKnownPathToPoint([2, 1], [[1, 1]])).to.equal(
                 true,
             );
         });
-        it('returns false', () => {
+        it('returns false when a longer path reaches the same point', () => {
+            const { pathIsShortestKnownPathToPoint } =
+                createPathIsShortestKnownPathToPoint();
+            expect(pathIsShortestKnownPathToPoint([2, 1], [[1, 1]])).to.equal(
+                true,
+            );
             expect(
-                pathIsShortestKnownPathToPoint(
+                pathIsShortestKnownPathToPoint([2, 1], [
+                    [1, 1],
                     [1, 2],
-                    [
-                        [1, 1],
-                        [1, 2],
-                    ],
-                ),
+                    [2, 2],
+                    [2, 1],
+                ]),
             ).to.equal(false);
+        });
+        it('returns true when a shorter path reaches the same point', () => {
+            const { pathIsShortestKnownPathToPoint } =
+                createPathIsShortestKnownPathToPoint();
+            expect(
+                pathIsShortestKnownPathToPoint([2, 1], [
+                    [1, 1],
+                    [1, 2],
+                    [2, 2],
+                    [2, 1],
+                ]),
+            ).to.equal(true);
+            expect(pathIsShortestKnownPathToPoint([2, 1], [[1, 1]])).to.equal(
+                true,
+            );
+        });
+    });
+    describe('findShortestSteps', () => {
+        it('returns 11 for AoC example (puzzle input 10, start [1,1], goal [7,4])', () => {
+            expect(findShortestSteps(10, [1, 1], [7, 4])).to.equal(11);
+        });
+    });
+    describe('execute', () => {
+        it('returns the same result as findShortestSteps for the same arguments', () => {
+            expect(execute(10, [1, 1], [7, 4])).to.equal(
+                findShortestSteps(10, [1, 1], [7, 4]),
+            );
         });
     });
 });

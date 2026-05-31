@@ -3,7 +3,7 @@ export type Path = Point[];
 
 export function pointIsWall([x, y]: Point, puzzleInput: number): boolean {
     const value = layoutLogic([x, y], puzzleInput);
-    return isOddNumber(countOf1Bits(value.toString()));
+    return isOddNumber(countOf1Bits(value.toString(2)));
 }
 
 export const pointIsWallMemoized = (() => {
@@ -54,21 +54,103 @@ export function pointOutOfBounds([x, y]: Point): boolean {
     return x < 0 || y < 0;
 }
 
-export const pathIsShortestKnownPathToPoint = (() => {
+function pointsEqual([ax, ay]: Point, [bx, by]: Point): boolean {
+    return ax === bx && ay === by;
+}
+
+export function createPathIsShortestKnownPathToPoint(): {
+    pathIsShortestKnownPathToPoint: (point: Point, path: Path) => boolean;
+    isStalePath: (path: Path) => boolean;
+    seedStart: (point: Point) => void;
+} {
     const shortestDistanceByPoint: Record<string, number> = {};
-    return (point: Point, path: Path): boolean => {
+    const pathIsShortestKnownPathToPoint = (
+        point: Point,
+        path: Path,
+    ): boolean => {
         const key = pointToMapKey(point);
-        const distance = path.findIndex(
-            ([px, py]) => px === point[0] && py === point[1],
-        );
-        if (distance === -1) {
-            return false;
-        }
+        const steps = path.length;
         const known = shortestDistanceByPoint[key];
-        if (known === undefined || distance < known) {
-            shortestDistanceByPoint[key] = distance;
+        if (known === undefined || steps < known) {
+            shortestDistanceByPoint[key] = steps;
             return true;
         }
         return false;
     };
-})();
+    const isStalePath = (path: Path): boolean => {
+        const currentPoint = path[path.length - 1]!;
+        const key = pointToMapKey(currentPoint);
+        const stepsToCurrent = path.length - 1;
+        const known = shortestDistanceByPoint[key];
+        return known !== undefined && known < stepsToCurrent;
+    };
+    const seedStart = (point: Point): void => {
+        shortestDistanceByPoint[pointToMapKey(point)] = 0;
+    };
+    return {
+        pathIsShortestKnownPathToPoint,
+        isStalePath,
+        seedStart,
+    };
+}
+
+export function findShortestSteps(
+    puzzleInput: number,
+    start: Point = [1, 1],
+    goal: Point = [31, 39],
+): number {
+    let stepsToWin: number | null = null;
+    const pathsToExplore: Path[] = [[start]];
+    const {
+        pathIsShortestKnownPathToPoint,
+        isStalePath,
+        seedStart,
+    } = createPathIsShortestKnownPathToPoint();
+    seedStart(start);
+
+    while (stepsToWin === null && pathsToExplore.length > 0) {
+        const pathToExplore = pathsToExplore.shift()!;
+        if (isStalePath(pathToExplore)) {
+            continue;
+        }
+        const currentPoint = pathToExplore[pathToExplore.length - 1]!;
+
+        for (const adjacentPoint of calculateAdjacentPoints(currentPoint)) {
+            if (pointsEqual(adjacentPoint, goal)) {
+                stepsToWin = pathToExplore.length;
+                break;
+            }
+            if (pointOutOfBounds(adjacentPoint)) {
+                continue;
+            }
+            if (pointInPath(adjacentPoint, pathToExplore)) {
+                continue;
+            }
+            if (
+                !pathIsShortestKnownPathToPoint(adjacentPoint, pathToExplore)
+            ) {
+                continue;
+            }
+            if (pointIsWallMemoized(adjacentPoint, puzzleInput)) {
+                continue;
+            }
+            pathsToExplore.push([...pathToExplore, adjacentPoint]);
+        }
+    }
+
+    if (stepsToWin === null) {
+        throw new Error(
+            `Unable to find a path from ${start} to ${goal} with puzzle input ${puzzleInput}`,
+        );
+    }
+
+    return stepsToWin;
+}
+
+export function execute(
+    puzzleInput: number,
+    start: Point = [1, 1],
+    goal: Point = [31, 39],
+): number {
+    return findShortestSteps(puzzleInput, start, goal);
+}
