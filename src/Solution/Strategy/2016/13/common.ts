@@ -1,23 +1,31 @@
 export type Point = [number, number];
 export type Path = Point[];
 
-export function pointIsWall([x, y]: Point, puzzleInput: number): boolean {
-    const value = layoutLogic([x, y], puzzleInput);
-    return isOddNumber(countOf1Bits(value.toString(2)));
+export function toBinaryString(n: number): string {
+    return n.toString(2);
 }
 
-export const pointIsWallMemoized = (() => {
+export function pointIsWall([x, y]: Point, puzzleInput: number): boolean {
+    const value = layoutLogic([x, y], puzzleInput);
+    return isOddNumber(countOf1Bits(toBinaryString(value)));
+}
+
+export function createPointIsWallMemoized(
+    wallFn: (point: Point, puzzleInput: number) => boolean = pointIsWall,
+): (point: Point, puzzleInput: number) => boolean {
     const cache: Record<string, boolean> = {};
-    return ([x, y]: Point, puzzleInput: number): boolean => {
-        const key = pointToMapKey([x, y], puzzleInput);
+    return (point: Point, puzzleInput: number): boolean => {
+        const key = pointToMapKey(point, puzzleInput);
         if (cache[key] !== undefined) {
             return cache[key];
         }
-        const result = pointIsWall([x, y], puzzleInput);
+        const result = wallFn(point, puzzleInput);
         cache[key] = result;
         return result;
     };
-})();
+}
+
+export const pointIsWallMemoized = createPointIsWallMemoized();
 
 export function countOf1Bits(n: string): number {
     return n.split('').filter((bit) => bit === '1').length;

@@ -1,10 +1,13 @@
+import sinon from 'sinon';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 use(sinonChai);
 import {
     countOf1Bits,
+    toBinaryString,
     layoutLogic,
     pointIsWall,
+    createPointIsWallMemoized,
     pointIsWallMemoized,
     calculateAdjacentPoints,
     pointToMapKey,
@@ -24,12 +27,18 @@ describe('Solution201613', () => {
             expect(layoutLogic([2, 4], 6)).to.equal(52);
         });
     });
+    describe('toBinaryString', () => {
+        it('returns the binary representation of a number', () => {
+            expect(toBinaryString(170)).to.equal('10101010');
+            expect(toBinaryString(157)).to.equal('10011101');
+        });
+    });
     describe('countOf1Bits', () => {
         it('returns 4 for binary string of 170', () => {
-            expect(countOf1Bits((170).toString(2))).to.equal(4);
+            expect(countOf1Bits(toBinaryString(170))).to.equal(4);
         });
         it('returns 5 for binary string of 157', () => {
-            expect(countOf1Bits((157).toString(2))).to.equal(5);
+            expect(countOf1Bits(toBinaryString(157))).to.equal(5);
         });
     });
     describe('pointIsWall', () => {
@@ -41,10 +50,23 @@ describe('Solution201613', () => {
         });
     });
     describe('pointIsWallMemoized', () => {
-        it('should be memoized', () => {
-            expect(pointIsWallMemoized([1, 2], 3)).to.equal(false);
+        it('returns the same results as pointIsWall', () => {
             expect(pointIsWallMemoized([1, 2], 3)).to.equal(false);
             expect(pointIsWallMemoized([2, 4], 6)).to.equal(true);
+        });
+        it('calls wallFn only once per cache key', () => {
+            const wallFn = sinon.stub().callsFake(pointIsWall);
+            const memoized = createPointIsWallMemoized(wallFn);
+            memoized([1, 2], 3);
+            memoized([1, 2], 3);
+            expect(wallFn).to.have.been.calledOnce;
+        });
+        it('uses distinct cache keys per puzzle input', () => {
+            const wallFn = sinon.stub().callsFake(pointIsWall);
+            const memoized = createPointIsWallMemoized(wallFn);
+            memoized([1, 2], 3);
+            memoized([1, 2], 6);
+            expect(wallFn).to.have.been.calledTwice;
         });
     });
     describe('calculateAdjacentPoints', () => {

@@ -70,15 +70,21 @@ Remove log files from history.
 
 ## How to use
 
--   `npm run dev` to watch and rebuild
--   Create a class that implements `InterfaceSolutionStrategy` organized inside the `src/Solution/Strategy` directory.
-    -   These are organized by year and day
--   Create a mocha test file adjacent to it, with the same name as the file you created, but with `.spec.ts` extension
-    -   So if your file was named `34.ts`, name your spec file `34.spec.ts`
--   Write your unit tests
--   Run `npm run test` and use the `-f` filter to run only your test (by name)
-    -   Example: `npm run test -- --args  -f '20165b'`
--   Add your Solution class to: `FromConfig` factory
--   Add the Problem Input data to a config file - such as: `data/config/andrew.json`
--   View your results:
-    -   `cat data/config/andrew.json | node dist/index.js | jq`
+- `npm run dev` to watch and rebuild
+- Create a class that implements `InterfaceSolutionStrategy` organized inside the `src/Solution/Strategy` directory.
+    - These are organized by year and day
+- Create a mocha test file adjacent to it, with the same name as the file you created, but with `.spec.ts` extension
+    - So if your file was named `34.ts`, name your spec file `34.spec.ts`
+- Write your unit tests
+- Run `npm run test` and use the `-f` filter to run only your test (by name)
+    - Example: `npm run test -- --args  -f '20165b'`
+- Add your Solution class to: `FromConfig` factory
+- Add the Problem Input data to a config file - such as: `data/config/andrew.json`
+- View your results:
+    - `cat data/config/andrew.json | node dist/index.js | jq`
+
+### JQ command for specific days
+
+```
+jq '[.[] | select(.year == "2016" and .day == "13" and .part == "a")]' data/config/andrew.json | node dist/index.js | jq
+```

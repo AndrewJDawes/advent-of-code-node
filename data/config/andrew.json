@@ -170,5 +170,14 @@
         "part": "b",
         "dataType": "url",
         "dataSource": "https://adventofcode.com/2016/day/12/input"
+    },
+    {
+        "year": "2016",
+        "day": "13",
+        "part": "a",
+        "dataType": "array",
+        "dataSource": [
+            "1362"
+        ]
     }
 ]
