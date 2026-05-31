@@ -7,15 +7,17 @@ import {
     isOddNumber,
     layoutLogic,
     pointIsWall,
+    pointIsWallMemoized,
+    calculateAdjacentPoints,
 } from './common.js';
 
 describe('Solution201613', () => {
     describe('layoutLogic', () => {
         it('returns 17 for input of 1, 2, 3', () => {
-            expect(layoutLogic(1, 2, 3)).to.equal(17);
+            expect(layoutLogic([1, 2], 3)).to.equal(17);
         });
         it('returns 52 for input of 2, 4, 6', () => {
-            expect(layoutLogic(2, 4, 6)).to.equal(52);
+            expect(layoutLogic([2, 4], 6)).to.equal(52);
         });
     });
     describe('countOf1Bits', () => {
@@ -28,29 +30,41 @@ describe('Solution201613', () => {
     });
     describe('pointIsWall', () => {
         it('returns false for input of 1, 2, 3', () => {
-            expect(pointIsWall(1, 2, 3)).to.equal(false);
+            expect(pointIsWall([1, 2], 3)).to.equal(false);
         });
         it('returns true for input of 2, 4, 6', () => {
-            expect(pointIsWall(2, 4, 6)).to.equal(true);
+            expect(pointIsWall([2, 4], 6)).to.equal(true);
         });
         it('calls layoutLogic and countOf1Bits and isOddNumber', () => {
             const layoutLogicSpy = sinon.spy(layoutLogic);
             const countOf1BitsSpy = sinon.spy(countOf1Bits);
             const isOddNumberSpy = sinon.spy(isOddNumber);
-            pointIsWall(1, 2, 3);
+            pointIsWall([1, 2], 3);
             expect(layoutLogicSpy.called).to.be.true;
             expect(countOf1BitsSpy.called).to.be.true;
             expect(isOddNumberSpy.called).to.be.true;
         });
+    });
+    describe('pointIsWallMemoized', () => {
         it('should be memoized', () => {
             const layoutLogicSpy = sinon.spy(layoutLogic);
             const countOf1BitsSpy = sinon.spy(countOf1Bits);
             const isOddNumberSpy = sinon.spy(isOddNumber);
-            pointIsWall(1, 2, 3);
-            pointIsWall(1, 2, 3);
+            pointIsWallMemoized([1, 2], 3);
+            pointIsWallMemoized([1, 2], 3);
             expect(layoutLogicSpy.calledOnce).to.be.true;
             expect(countOf1BitsSpy.calledOnce).to.be.true;
             expect(isOddNumberSpy.calledOnce).to.be.true;
+        });
+    });
+    describe('calculateAdjacentPoints', () => {
+        it('returns correct adjacent points for input of 1, 2', () => {
+            expect(calculateAdjacentPoints([1, 2])).to.deep.equal([
+                [0, 2],
+                [2, 2],
+                [1, 1],
+                [1, 3],
+            ]);
         });
     });
 });
