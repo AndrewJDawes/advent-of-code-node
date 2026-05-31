@@ -6,19 +6,18 @@ export function pointIsWall([x, y]: Point, puzzleInput: number): boolean {
     return isOddNumber(countOf1Bits(value.toString()));
 }
 
-export function pointIsWallMemoized(
-    [x, y]: Point,
-    puzzleInput: number,
-): boolean {
+export const pointIsWallMemoized = (() => {
     const cache: Record<string, boolean> = {};
-    const key = `${x},${y},${puzzleInput}`;
-    if (cache[key] !== undefined) {
-        return cache[key];
-    }
-    const result = pointIsWall([x, y], puzzleInput);
-    cache[key] = result;
-    return result;
-}
+    return ([x, y]: Point, puzzleInput: number): boolean => {
+        const key = pointToMapKey([x, y], puzzleInput);
+        if (cache[key] !== undefined) {
+            return cache[key];
+        }
+        const result = pointIsWall([x, y], puzzleInput);
+        cache[key] = result;
+        return result;
+    };
+})();
 
 export function countOf1Bits(n: string): number {
     return n.split('').filter((bit) => bit === '1').length;
@@ -42,8 +41,9 @@ export function calculateAdjacentPoints([x, y]: Point): Point[] {
     ];
 }
 
-export function pointToMapKey([x, y]: Point): string {
-    return `${x},${y}`;
+export function pointToMapKey([x, y]: Point, puzzleInput?: number): string {
+    const pointKey = `${x},${y}`;
+    return puzzleInput === undefined ? pointKey : `${pointKey},${puzzleInput}`;
 }
 
 export function pointInPath(point: Point, path: Path): boolean {
@@ -54,9 +54,21 @@ export function pointOutOfBounds([x, y]: Point): boolean {
     return x < 0 || y < 0;
 }
 
-export function pathIsShortestKnownPathToPoint(
-    point: Point,
-    path: Path,
-): boolean {
-    return true; // Placeholder for actual implementation
-}
+export const pathIsShortestKnownPathToPoint = (() => {
+    const shortestDistanceByPoint: Record<string, number> = {};
+    return (point: Point, path: Path): boolean => {
+        const key = pointToMapKey(point);
+        const distance = path.findIndex(
+            ([px, py]) => px === point[0] && py === point[1],
+        );
+        if (distance === -1) {
+            return false;
+        }
+        const known = shortestDistanceByPoint[key];
+        if (known === undefined || distance < known) {
+            shortestDistanceByPoint[key] = distance;
+            return true;
+        }
+        return false;
+    };
+})();

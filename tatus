@@ -1,0 +1,1380 @@
+[33mcommit 57a25eafd41c8a27dcdb3602d0aa443fcd3482a9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Sun May 31 18:03:58 2026 +0000
+
+    Add pointToMapKey, pointInPath, pointOutOfBounds, and pathIsShortestKnownPathToPoint functions with corresponding tests; update common.ts and common.spec.ts
+
+[33mcommit 39753fb3d704d529534ea070028d9d8057d87054[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Sun May 31 17:45:30 2026 +0000
+
+    Refactor pointIsWall and layoutLogic functions to accept Point type; add pointIsWallMemoized and calculateAdjacentPoints functions with corresponding tests.
+
+[33mcommit e92d68c810b74c87095932d9e7876516b3c90c53[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Sun May 31 17:29:59 2026 +0000
+
+    Add initial implementation of Solution201613 with common functions and tests for layoutLogic, countOf1Bits, and pointIsWall.
+
+[33mcommit 1bbbaaf0400dda7a64d38d8b83e9025cf0514f60[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon May 25 16:20:45 2026 +0000
+
+    Add Solution201612b and update FromConfig to support it; refactor tests for Solution201612a to improve clarity and maintainability.
+
+[33mcommit c719deda4e924685b2c3bda25611e61e785e5ecd[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon May 25 16:11:29 2026 +0000
+
+    Update tests for cpy and jnz functions to handle non-existent registers by initializing them with a value of 0, enhancing error handling and functionality.
+
+[33mcommit 14ea59416eab1427831f46178a0d727d400c87f0[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon May 25 16:04:17 2026 +0000
+
+    Refactor cpy and jnz functions to utilize getLiteralIntegerOrExistingRegisterValue for improved readability and error handling.
+
+[33mcommit b6f25515eb3b0e0bc22997fe20ca1224b4a649ad[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon May 25 15:53:29 2026 +0000
+
+    Enhance Solution201612a by exporting ExecutionContext and jnz function; add unit test for jnz functionality.
+
+[33mcommit a5bd914af54e2ec1e66abfa7236c89cf3f79b890[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun May 24 18:57:25 2026 +0000
+
+    201612a
+
+[33mcommit 6910db45c405cb378e8228161ee820b873b7c0ed[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun May 24 14:12:47 2026 +0000
+
+    Add draw.io
+
+[33mcommit 308ade3c8ba0910b7076b834e7e4e1efab3d9099[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 1 10:52:09 2025 +0000
+
+    Define serialization method
+
+[33mcommit a07d719d51855e9ea7f6be6d996e54c704ff2e0b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 30 10:27:25 2025 +0000
+
+    Add Solution201611b
+
+[33mcommit 18fa7ffece7960de9f50a9bf73e44e3978d54944[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 30 10:14:09 2025 +0000
+
+    Add reminder on log files
+
+[33mcommit be444b51e52cdf9decf692aaa3f51d61791180a7[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 30 10:13:58 2025 +0000
+
+    Clean up
+
+[33mcommit 218bf601b5c3166c962fac61a444b4ccaec5beb3[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 30 10:09:24 2025 +0000
+
+    Remove fluff
+
+[33mcommit 2feda44f4ccc5b663b35ad3d9a681a7875ff3597[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 27 10:58:45 2025 +0000
+
+    Do not count first element in path when solving
+
+[33mcommit e1e4b935bfaf2cb6d80e26695f9a6cb907cbcdef[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 27 10:57:24 2025 +0000
+
+    Solve
+
+[33mcommit 4ed6d67cc7c9d8c5b05be96fb04a905a5d9dfacb[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 27 10:41:15 2025 +0000
+
+    Fix JSON keys use for BTree
+
+[33mcommit 54cf8e1545ab2fae0cd5e3a39bafafadf59295a9[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 27 01:24:40 2025 +0000
+
+    Create failing test
+
+[33mcommit 8c985d1f85f96f04c11afe3dea54c24765926854[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 27 01:20:10 2025 +0000
+
+    Fix keys
+
+[33mcommit 4a5f4e066549a1797e854be3bfd8443100de80bd[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 11:13:37 2025 +0000
+
+    Use btree - need to ensure key consistency for Buildings
+
+[33mcommit ac02cef3e2115209a05abda3d2caf3ceb432174e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 10:20:01 2025 +0000
+
+    Drop in btree.js
+
+[33mcommit 01a57a3482030c7dfca77f0a53bd370f1238638c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 02:28:37 2025 +0000
+
+    Keep trying to optimize
+
+[33mcommit a146b78bc0bccb61599f62d1b1b32e8aaf0a40be[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 01:55:30 2025 +0000
+
+    Checkout
+
+[33mcommit 40724d9bfd10217dc1c9ded83eb51c811e7d9350[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 01:24:02 2025 +0000
+
+    Delete troubleshoot.ts
+
+[33mcommit f937ff1cca52f228bc7b3a490e8f82f7eef39a57[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 01:23:46 2025 +0000
+
+    Checkpoint
+
+[33mcommit 4ec1e488bb3b43540e01325820f0ca9f8dfbc6cf[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 01:10:20 2025 +0000
+
+    Remove elevator floor number restriction for success
+
+[33mcommit ec7f0a9f86d0ea84328202bf429618e86e368de9[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 01:10:02 2025 +0000
+
+    Add test case
+
+[33mcommit fb66c2944bf1f5a914142cfece5327036acdfb0f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 00:46:03 2025 +0000
+
+    Refactor
+
+[33mcommit c48fd0576bd72f125e82ab23588380e15dd23fb7[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 26 00:33:48 2025 +0000
+
+    Keep troubleshooting
+
+[33mcommit 57451ae45fcf623787118cd8225e00e31ce475dc[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Jun 25 11:05:49 2025 +0000
+
+    Memoize and clean
+
+[33mcommit 5bbebd9af9527d8ba8c9b7ff6ea6cbb5beb3cf1f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Jun 25 10:56:29 2025 +0000
+
+    Memoize
+
+[33mcommit d8f035fd76ed7cf9a48cceadaf10c3960f93ab6b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jun 24 11:01:32 2025 +0000
+
+    Naive solution
+
+[33mcommit 808f63265b02b0f3134e52e6b182142d480b5e7c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jun 24 10:38:45 2025 +0000
+
+    Parse floors
+
+[33mcommit 350d874a0dc4a63ff977d2a3a340c7c50ac4ac64[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 23 10:45:53 2025 +0000
+
+    Start looping through commands
+
+[33mcommit 967b3d49429077894bebb7b5b6e13c25b9ecfdc4[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 20 10:33:59 2025 +0000
+
+    Clean things up
+
+[33mcommit 85e118cf16c3f939ad6e3c9961e21f94c50322c6[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 21:28:50 2025 +0000
+
+    Start scaffolding out solution
+
+[33mcommit 1c152b79c0eb63670b1d2d121469a5be978c03bb[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 21:26:04 2025 +0000
+
+    Passing tests
+
+[33mcommit 71cccd7d5c419abf9cc3ac2e36f4da9a6f5852c7[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 21:19:28 2025 +0000
+
+    Clean up
+
+[33mcommit 4501f3e0e8f81bf34abbf8c76b0d8c56e816c7d7[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 21:16:33 2025 +0000
+
+    Clea up a bit
+
+[33mcommit 21ede7a368e8290741b9a0d7ecfe1654f3042e48[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 21:10:09 2025 +0000
+
+    Get closer to solution
+
+[33mcommit ed06ec815f8ae5e0ff807f8984eee56a1fa7c208[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 18:02:16 2025 +0000
+
+    Break finding route again
+
+[33mcommit 981f825f98b5bbdf312affffeb1361b3a4988a28[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 17:36:50 2025 +0000
+
+    Make it possible to log solutionPaths
+
+[33mcommit 133ffcfdb063e60a317cd0a792b842053c907258[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 15:40:29 2025 +0000
+
+    Stop infinite recursion
+
+[33mcommit 4deb3d687eb7368f8f31b7b3ded0251e25fb22df[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 14:59:29 2025 +0000
+
+    Fix issue with permutations never being made
+
+[33mcommit ba2ddd3b5d32205a4a6e7d1a8caac5b06f002175[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 14:30:40 2025 +0000
+
+    Get redundant tests fixed
+
+[33mcommit c072b7e5a74e2c813148547ba2e98959029330b5[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 14:23:10 2025 +0000
+
+    Identify issues
+
+[33mcommit 328314d4c91b568a98cc7ca1ecfdb03e300cf2c4[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 14:15:56 2025 +0000
+
+    Test success and failure conditions
+
+[33mcommit ab37ac1ddfac058e43da6bcff6f4da3f75c874e4[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 19 14:06:25 2025 +0000
+
+    Ensure permutations are generated correctly
+
+[33mcommit d1777ef3cf7623eca007234633e90039ab763f8e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Jun 18 11:02:19 2025 +0000
+
+    Start testing
+
+[33mcommit fd4b92bcda2e076902f4ba272c4ae42e0f3cf3c8[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Jun 18 10:58:55 2025 +0000
+
+    Set elevator floor number to move elevator
+
+[33mcommit 840ea1f44badf10224767ab1a9c47d08193bfb4e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jun 17 10:43:17 2025 +0000
+
+    Fix differenceSet
+
+[33mcommit 06aa96290bf6e61b503c788a0b44d685f5bbe0ec[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jun 17 10:38:48 2025 +0000
+
+    Fix copy bug
+
+[33mcommit 5e4621a068e77aa475b460b42a68e2bde2f3b76f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 16 10:45:36 2025 +0000
+
+    Add SolutionData
+
+[33mcommit f89ed63ccc4dc5c0d53095e25de27517b155e21f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 16 10:40:47 2025 +0000
+
+    Upgrade Typescript ES target
+
+[33mcommit 3e6f8e0fe196fb34cbaea1e65a62374815bb18af[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 16 10:40:37 2025 +0000
+
+    Upgrade Typescript
+
+[33mcommit 9b5992ffbd7f7598ad461e97789becaba13c6b8a[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 16 10:40:14 2025 +0000
+
+    Prevent errors on build
+
+[33mcommit 7341e3a52b367615e502a20d267217b6a925c979[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 16 10:08:46 2025 +0000
+
+    Remove todos
+
+[33mcommit 473fbd38f950bf6a7caadfcc03ce656e3ad820b0[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 15 12:19:17 2025 +0000
+
+    Define failure and success
+
+[33mcommit ab6d5de17996b3feb4ba1ce8e4af759471d8f6e0[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 15 07:55:05 2025 -0400
+
+    Observe for explored changes
+
+[33mcommit 9c75715a6b624aac72c42351256fdf00b9e29525[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 13 17:53:41 2025 -0400
+
+    Add notes on explored
+
+[33mcommit 3971ee80ee4aec54a4f195c6329f5e6c7598a43d[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 13 17:52:28 2025 -0400
+
+    Add comment
+
+[33mcommit b85134dfd5fc6c393cf15ae70083b0840aab836f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 13 17:51:09 2025 -0400
+
+    Once explored, always explored
+
+[33mcommit a45f81ededb050bdc77129be1b8bf5339649ede4[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 13 17:47:23 2025 -0400
+
+    Store permutatedSolutionPaths on SolutionPath
+
+[33mcommit 289c9196f0e5876daee598d543a189f34a479d4a[m
+Merge: 7e2922d 74f9852
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 13 17:43:23 2025 -0400
+
+    Merge branch 'main' of https://github.com/AndrewJDawes/advent-of-code-node
+
+[33mcommit 7e2922dbd95b28544c361d3bee7e1f5b35b24ddf[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 13 17:42:04 2025 -0400
+
+    Clean
+
+[33mcommit 9f7a5306e8df1c47bfaefa077e8a8bff55141731[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 13 17:39:13 2025 -0400
+
+    Work through some stuff
+
+[33mcommit 74f9852ddbf60dedacf38bfa9c44fde3ef229909[m
+Merge: 1b55145 bcfb5a8
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Fri Jun 13 18:59:01 2025 +0000
+
+    Merge branch 'main' of https://github.com/AndrewJDawes/advent-of-code-node
+
+[33mcommit 1b551454ed0d711d7ebfc61ab567055e46564a38[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Fri Jun 13 18:58:58 2025 +0000
+
+    Refactor Vertex interface and implement bitwise operation classes for improved signal handling
+
+[33mcommit bcfb5a88e940eb4ddc7dc935a30c01c3a2023b2b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 13 14:18:04 2025 -0400
+
+    Work on memoization
+
+[33mcommit 0de0e58d7cfb6c9436c3bb08bd30be04dea1663c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 12 18:09:33 2025 +0000
+
+    Model objects
+
+[33mcommit 66a79a06ce6e70d41db349508d65b82152b650e3[m
+Merge: 0918f00 64f2d42
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 12 14:50:43 2025 +0000
+
+    Merge branch 'main' of https://github.com/AndrewJDawes/advent-of-code-node
+
+[33mcommit 0918f006b063f32abd2a24e5e7d9b2dc67442f92[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 12 14:50:07 2025 +0000
+
+    Add FloorMap
+
+[33mcommit 4290284f800add5cbb69f7ed6f9308c885bf7be3[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 12 13:55:17 2025 +0000
+
+    Keep expanding
+
+[33mcommit 64f2d42e2b6833ff572fa9116e66a12eed2fd1c4[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Wed Jun 11 16:58:46 2025 +0000
+
+    Add propagateVertex method to update related vertices on value change
+
+[33mcommit e163918f7fbfd4312ce802503156155898651311[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Tue Jun 10 15:58:39 2025 +0000
+
+    Refactor Vertex and SimpleGraph classes; enhance edge handling and add value change notification
+
+[33mcommit 09c51769d9bbfb8a2bd3b1d7bb1b5ef2a4be65a2[m
+Merge: b57a1c8 88d79c6
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Tue Jun 10 15:47:13 2025 +0000
+
+    Merge
+
+[33mcommit b57a1c8cdf17aadf720fe45f273cd5ac7325e670[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Tue Jun 10 14:19:33 2025 +0000
+
+    Make progress on problem
+
+[33mcommit 88d79c6ca697a56057a008ee85b16f7a575bdb3e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 9 20:56:36 2025 +0000
+
+    Solve 201610b
+
+[33mcommit 840651f6f7840f8f340d33105c32b62e327cf53c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 9 17:52:40 2025 +0000
+
+    Solve 201610a
+
+[33mcommit d8776f9946cad5fd70318783a67ca5d30ce5097b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 9 17:43:55 2025 +0000
+
+    Test solution
+
+[33mcommit 753802abed7c0fb5162cffe9f9e4025d987078bc[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 9 17:33:38 2025 +0000
+
+    Confirm that controller will not transfer until minMicrochips is satisfied
+
+[33mcommit 013d1027cce3646e7cd9b6faff535a22ea23658c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 9 13:13:07 2025 +0000
+
+    Clean up
+
+[33mcommit a32ba49aa2ee53869b96cd84fdff730783218e7b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 9 13:03:14 2025 +0000
+
+    Enqueue processes
+
+[33mcommit b65890971e957ac998ec93e70d1e28c7a15b583f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jun 9 12:59:34 2025 +0000
+
+    Add processor queue
+
+[33mcommit 72df2a8ca9db3178aa78db0a7cd338fb9e584e64[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 8 22:41:38 2025 +0000
+
+    Set up test for hold and recursive effects
+
+[33mcommit bc9f4e23b7d0fe9c2eb10ff0ee8cf4d071aa175f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 8 18:59:42 2025 +0000
+
+    Scaffold out A solution
+
+[33mcommit 00dd06806c0b708a7fa3028235bd9da46516719e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 8 18:54:52 2025 +0000
+
+    Get event emit tested
+
+[33mcommit e209b2730e67ee511aa8aac5c7a99256bd0423f2[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 8 18:17:47 2025 +0000
+
+    Add tests
+
+[33mcommit e95f9e247b4d43f4b5112e23fe4f1d870df46d81[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 8 17:58:09 2025 +0000
+
+    Fix compare and return high and low
+
+[33mcommit f0839491d4aa28cd67debea7599a5f50e3e81daf[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 8 15:39:46 2025 +0000
+
+    Add tests
+
+[33mcommit 4f1341b9693333754e71c8899efb83cedc5fc743[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 8 15:39:42 2025 +0000
+
+    Refactor to pass props as objects
+
+[33mcommit 0a698b99059a37ebff0125b23e9879e30f0cc164[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jun 8 13:15:11 2025 +0000
+
+    Scaffold out more
+
+[33mcommit 62c025746a09b7477317bdf68e4cdb9ee0eda1a8[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 6 10:38:11 2025 +0000
+
+    Start to write out command parser
+
+[33mcommit 997e6bc5fbb24ae642dd8a972aaf8a654bc160b1[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Jun 6 10:26:12 2025 +0000
+
+    Give Controller its own events
+
+[33mcommit 25392e9579368585c18edfe362f5602ff644dfd0[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jun 5 10:45:53 2025 +0000
+
+    Add events
+
+[33mcommit d495938e48d434ee533b95c701213ccc472f75ad[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Jun 4 10:58:51 2025 +0000
+
+    Start creating bots
+
+[33mcommit 77355b5e1dd5e469ccfb369e3b1f4e5b998113aa[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Jun 4 10:27:57 2025 +0000
+
+    Add compareAndReturnHighAndLowMicrochips
+
+[33mcommit 314ab5358ebc0e8ad56d99a59b825b78d390e0eb[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jun 3 11:09:18 2025 +0000
+
+    Scaffold out Bot
+
+[33mcommit 289bae6234ef03dd5ddce121a19644b0508195dc[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 30 11:07:22 2025 +0000
+
+    Solve 20169
+
+[33mcommit 010afb846e7e1e8353d88c5315f156454155bbfa[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 29 10:50:47 2025 +0000
+
+    Add comments
+
+[33mcommit 3fb2368e2ded1c2a6b47fd656b5230e34b4ef8ab[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 29 10:23:22 2025 +0000
+
+    Get tests working
+
+[33mcommit 013372885e767e94747e2818e7e47da6ccad0e48[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed May 28 11:00:09 2025 +0000
+
+    Set up for recursive expansion
+
+[33mcommit 13e512f32edadfc062e365b0099cc666505c26f7[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue May 27 10:47:18 2025 +0000
+
+    Add 20168b
+
+[33mcommit 2ee43d575bf9dd7e29b8102675d2e87445c806fc[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue May 27 10:44:36 2025 +0000
+
+    Add Solution21069a
+
+[33mcommit 5cb25d1d864543c772278d46f58b6a4e79d8ccd3[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue May 27 10:41:17 2025 +0000
+
+    Test Solution20169a
+
+[33mcommit af09634870d63814f0f5bc5e48c023070835750d[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue May 27 10:26:46 2025 +0000
+
+    Test input method
+
+[33mcommit 7888da30e2484cbd6389177a94d55614f7c63ad4[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue May 27 10:15:43 2025 +0000
+
+    Refator to use null for no results
+
+[33mcommit 17b6581fe7b42d261045bc03dc74efcdc78af435[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 23 10:59:34 2025 +0000
+
+    Pass tests
+
+[33mcommit e0227f5d9c6b08e74a31854760b1a8c79b6475a1[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 22 10:52:55 2025 +0000
+
+    Start testing state machine
+
+[33mcommit 4761517b745c8b8e25d139e6f7d4f3e9a4abda70[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed May 21 11:13:32 2025 +0000
+
+    Save and push
+
+[33mcommit 32fdec78315d56e81b49750bf165c2852856555a[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue May 20 10:25:16 2025 +0000
+
+    Refactor
+
+[33mcommit 674cc6f8e51ef14ad1fcb9350c4dfacd86c1a044[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon May 19 11:15:29 2025 +0000
+
+    Get working test
+
+[33mcommit bda0299bb23f9bb8051339f234703f5457506e80[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon May 19 11:13:34 2025 +0000
+
+    Build passing test
+
+[33mcommit 9f5481d5d9cb73aaf258ffa74dc8ecb8f95d93f2[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun May 18 11:01:29 2025 +0000
+
+    Keep scaffolding display
+
+[33mcommit 6aee35c321312e32dde0696b44312d456971c726[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat May 17 11:07:49 2025 +0000
+
+    Start parsing letters
+
+[33mcommit f87748606f781a9091ae98ca03dc3cc999f9f6ea[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat May 17 10:48:42 2025 +0000
+
+    Solution 20168a
+
+[33mcommit a4ab776eaa3e6480cd35e7343444d31de505c4c0[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat May 17 10:42:31 2025 +0000
+
+    Fix up how we prevent loops when shifting and swapping
+
+[33mcommit 90cfb27c09c5e13fb7c927195fd9a1848a4a77f5[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 16 10:43:28 2025 +0000
+
+    Rename more properties again
+
+[33mcommit 2ee24a0b6bb9fa841b3d9577bbf017fca74c3688[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 16 10:42:22 2025 +0000
+
+    Rename more properties
+
+[33mcommit 2611acf9a1bda56cd88443608042e8c2cb499fe0[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 16 10:40:59 2025 +0000
+
+    Rename property
+
+[33mcommit 58ea82e33f694dceefac5eea25125a2a33e27007[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 16 10:36:29 2025 +0000
+
+    Add tests for CommandParser
+
+[33mcommit 4e507d0c4095d3b1b155196b54d11fc90a358f90[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 16 10:36:18 2025 +0000
+
+    Add sinon
+
+[33mcommit 2333d0ab5034943be268dff0ef4cc575ad95d1d6[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 15 11:10:08 2025 +0000
+
+    Scaffold out CommandParser
+
+[33mcommit a3143273e815fa42359b3f126b5682547740c5cf[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 15 10:38:36 2025 +0000
+
+    Refactor
+
+[33mcommit 21443cd92ccae94ad5f8d69c3f2da856eaaee5d7[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed May 14 10:49:56 2025 +0000
+
+    Get even more tests passing
+
+[33mcommit 40890a0d124ccd6e8dc93d04a6f0f9610f24f811[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue May 13 10:29:16 2025 +0000
+
+    Start drawing
+
+[33mcommit 09e831ae018ed70d79ae94c42254692189e7de7e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon May 12 11:06:03 2025 +0000
+
+    Keep programming display
+
+[33mcommit 09fd2ea1cebe0804b4ad864d4fb343d19ffd87fb[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 9 10:56:09 2025 +0000
+
+    Start scaffolding out pixel map
+
+[33mcommit 1f42918c95d902e2664426952bc49e7d7365b175[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 8 10:38:31 2025 +0000
+
+    Solve 20167b
+
+[33mcommit 0c86afb67174bdc5bcaa3f0d9943f4b219c6b7a6[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 8 10:26:13 2025 +0000
+
+    Get passing tests
+
+[33mcommit 066f83557c1f0a0626d068ed2def9d0b10b3bc50[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed May 7 11:01:40 2025 +0000
+
+    Prototype ProtocolValidatorSSL
+
+[33mcommit f869330373a8b08577436b4b3e7cd78c66442c43[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue May 6 10:36:38 2025 +0000
+
+    Solve 20167a
+
+[33mcommit b417009a2b810c96d4bb63129f2d5c61bfd5a638[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon May 5 10:54:38 2025 +0000
+
+    Scaffold out ABBA protocol
+
+[33mcommit 3d5837350d712efaa12cc6f7a8dbcf847382cdfb[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 2 10:37:44 2025 +0000
+
+    Update test wording
+
+[33mcommit 18ae843650de36dd19bcaea9a4ac0e7bfa9dfd51[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri May 2 10:36:31 2025 +0000
+
+    Extract out CounterFrequencyPositional
+
+[33mcommit e3549096405dcc234b39e80c4923e1217eb978ba[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 1 10:54:25 2025 +0000
+
+    Refactor based on suggestions
+
+[33mcommit 6928661ae3f1f7364304bc7fb2b043b5ab90c7a1[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 1 10:42:39 2025 +0000
+
+    Refactor to us iterator
+
+[33mcommit 9f82ee61d56ad78151d5404d9fda858fdb86f7e4[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu May 1 10:36:20 2025 +0000
+
+    Try to get iterator working
+
+[33mcommit 5896613c446f6263c3ed2cba567cdb4b4f5d71dd[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Apr 30 11:03:00 2025 +0000
+
+    Start setting up Iterator
+
+[33mcommit c03e5dea9b69ec11acdefa180e9fa4148fc75dee[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Apr 30 10:11:13 2025 +0000
+
+    Solve 20166
+
+[33mcommit 13ca4e4cce6cad3ebf75f75e4cab77ce30caab42[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Apr 29 11:00:34 2025 +0000
+
+    Solve 20166a
+
+[33mcommit f4dd890022e6a55ff4f08dd0baccf5314299c2dc[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Apr 29 10:57:02 2025 +0000
+
+    Solve 20166a
+
+[33mcommit 3bd0c4815b139c99f0528522bc0ec3dbeff8181e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Apr 28 10:37:51 2025 +0000
+
+    Solve 20165a more efficiently
+
+[33mcommit 0d39bcba71356885e7d6d813b5693824e5eab8b4[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 13:00:45 2025 +0000
+
+    Remove dead code
+
+[33mcommit 0d56d8787c23bca128703f57f9d9c468b8bd0d1a[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 12:58:23 2025 +0000
+
+    Tune
+
+[33mcommit b0f04280241fd3b3fe6ac9d07d7b9b3a38a92cf9[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 12:54:14 2025 +0000
+
+    Remove timer
+
+[33mcommit da14980835e537f31a28b627aa1dd3f68a4c779e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 12:52:39 2025 +0000
+
+    Merge transpile then test
+
+[33mcommit 5e59fb9739bb6e7f30ab539038f3f67119396db8[m
+Merge: 72a58b2 45fc7b5
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 12:47:03 2025 +0000
+
+    Transpile then test
+
+[33mcommit 72a58b21fc9b4f0a635dc766210906fa1edf07a7[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 12:44:04 2025 +0000
+
+    Get worker working
+
+[33mcommit 45fc7b5d16225320493776cc02b193b2247fa2e5[m[33m ([m[1;31morigin/transpile-then-test[m[33m, [m[1;32mtranspile-then-test[m[33m)[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 12:38:03 2025 +0000
+
+    Transpile then test
+
+[33mcommit 9d7870512c82a519e210825edae82d8104d968ad[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 11:59:04 2025 +0000
+
+    encapsulate worker
+
+[33mcommit 695252459429e369764f459fc00ae68a39774bda[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 26 01:08:53 2025 +0000
+
+    Wrap in function
+
+[33mcommit 5d621e94b9c0a475493e46bf592612a2abf3cd2a[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Apr 25 10:43:37 2025 +0000
+
+    Dynamicize workers
+
+[33mcommit b2ef7e4aa09037b4541007403ea62f5767e3d402[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Apr 25 10:35:51 2025 +0000
+
+    Get result working
+
+[33mcommit 6c2cf9f581d1d6562d8aba49dbe4383b3d9e2dfb[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Apr 24 11:20:08 2025 +0000
+
+    Comment
+
+[33mcommit e717a52d533f91e99090c1cb944efd9dc3ba9be2[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Apr 24 11:17:20 2025 +0000
+
+    Multithreading
+
+[33mcommit f9e7a6c1766798902f807f84e182ff9627d549ff[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Apr 24 11:06:10 2025 +0000
+
+    Multithreading
+
+[33mcommit a5abd1c816c8fa1a658c2bb95c026ef21288dcc1[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Apr 23 10:37:37 2025 +0000
+
+    Working with multithreading
+
+[33mcommit a2b5d1f506783a8aa405e799524e5441228b8f5b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Apr 22 10:17:04 2025 +0000
+
+    Solve 20165b
+
+[33mcommit 932d9a15698a70774ab5f428a5488bf647408e6b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Apr 21 11:07:34 2025 +0000
+
+    Solve 20165a
+
+[33mcommit b163fb7f5dc8719431a69823a01fb392e371af9a[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Apr 14 11:02:50 2025 +0000
+
+    Set up 20165
+
+[33mcommit 23052cb0f07c8abcaefce187dd28ce53985c96f6[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Apr 14 10:25:26 2025 +0000
+
+    Clean up
+
+[33mcommit dabd3b9a8252c34392edf0e4365c7bc65e3ec992[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Fri Apr 11 10:28:39 2025 +0000
+
+    Solve 20164b
+
+[33mcommit 778b477c9de3fcec9dc6c83b97720ba2f3a9a54a[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Apr 10 23:26:26 2025 +0000
+
+    Set up decoding
+
+[33mcommit e00c81242030d0dfe8cfa086694738a6484e0bf1[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Apr 10 23:15:59 2025 +0000
+
+    Simplify rotation function
+
+[33mcommit 7b9349a1171962f07293652513147697ce22413d[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Apr 10 10:56:45 2025 +0000
+
+    Get working character rotation function
+
+[33mcommit c954d143668708e555dadc7a4839d7e4bff2f173[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Apr 9 10:43:02 2025 +0000
+
+    Correctly sum solution
+
+[33mcommit 91549e5cc66f9cf30aa053b6dc06bf03f534297e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Apr 9 10:38:18 2025 +0000
+
+    Get working solution
+
+[33mcommit 2e91d7d1282825bbc8e12e072006952d6b68e2f3[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Apr 8 10:28:04 2025 +0000
+
+    Get started with room parsing
+
+[33mcommit 130a7f02bfae35f4cdf1501354e6b9eae5036e32[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Apr 8 09:58:03 2025 +0000
+
+    Simplify class names
+
+[33mcommit 8a4addb4789c5b80073d10e1c7f724322423b97b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Apr 8 09:49:48 2025 +0000
+
+    Remove comments
+
+[33mcommit 7ac6eea0521ddaaa0ec7f41d6c4058873b3f6660[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Apr 7 10:42:14 2025 +0000
+
+    Solve 20163b
+
+[33mcommit 4d522ccc6f217422c90ded16c52a6b987ae78196[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Apr 7 10:39:38 2025 +0000
+
+    Refactor to encapsulate column to row transforms
+
+[33mcommit 3eb7569423ddc2e972c57b04512997e0661a99cf[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Apr 7 10:27:31 2025 +0000
+
+    Create ColumnToRowInputTransformer
+
+[33mcommit 6c6e04050b75ac8338f3640ee76dffe989482d28[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 5 12:04:30 2025 +0000
+
+    Fix mocha import
+
+[33mcommit a56025a32f0bbb17de7989ca09e4a36fcf1a4733[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 5 11:07:08 2025 +0000
+
+    Test common
+
+[33mcommit 6385f23b12ea1a99f4d8ff3771c6c4e7598ddcab[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Apr 5 11:07:00 2025 +0000
+
+    Common js
+
+[33mcommit 720ae72726238cc1220bf01152440c6c4e26f59f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Apr 3 10:41:22 2025 +0000
+
+    Get Solution20163b tests working
+
+[33mcommit 77540e96cb40ae819aeaa2f987b7b108051703b6[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Apr 2 10:52:41 2025 +0000
+
+    Solve 20163a
+
+[33mcommit cc11c10f69703a73ac9a265716a69d7e6c940191[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Apr 1 10:09:42 2025 +0000
+
+    Solve 20162b
+
+[33mcommit 18bf0e96e938187a07975376d8a4c80572c743ea[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sat Nov 30 00:38:54 2024 +0000
+
+    Add unit tests for c1
+
+[33mcommit f02983400c6c9e78bd561a31e69426598b0381c9[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Nov 21 17:36:31 2024 +0000
+
+    Prepare for Grid
+
+[33mcommit e42859dcfa8f0ebefdab5bb0e7b4901985c935d3[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Nov 21 15:33:47 2024 +0000
+
+    Rename for clarity
+
+[33mcommit b9f3d3eaa052f762c197f8983a487c36852b0426[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Nov 21 15:24:13 2024 +0000
+
+    Solve 20162a
+
+[33mcommit 1312c981ee266102102202e2a581d4fb1b2258fb[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Nov 21 15:21:56 2024 +0000
+
+    Fix move wrapping
+
+[33mcommit 807a0449c30ab322ca268c2777d6bc03685d7631[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Nov 21 15:16:40 2024 +0000
+
+    Get mostly working - need to work out wrapping
+
+[33mcommit 04a235f131a638b823d263c2d54810093500164b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Nov 21 15:06:34 2024 +0000
+
+    Add GridNavigator
+
+[33mcommit e4d974b00095a525cda92d085595d7f4b13f2e39[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Nov 21 14:33:15 2024 +0000
+
+    Get working tests
+
+[33mcommit 29fb91541a0626d3b409cba3e10a3f3607ed7092[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Nov 20 12:17:12 2024 +0000
+
+    Rename function
+
+[33mcommit ed16e9e9c116a009f1865fb94d8d5c67878fd96c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Nov 20 12:06:26 2024 +0000
+
+    Wrap up 2016b
+
+[33mcommit d2d750d012af7a1093f5a67590bb9fda427d00bf[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Wed Nov 20 12:01:48 2024 +0000
+
+    Get tests passing
+
+[33mcommit 4c238f1c2463bb8299d8399aa56a34fd38d70de1[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Nov 19 19:53:23 2024 +0000
+
+    Attempt solution for 20161b
+
+[33mcommit 95c98c4e9ae5656ccc5077644f7b31b665c602a2[m
+Merge: ff5a07e 6e92ac1
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Nov 19 19:25:12 2024 +0000
+
+    Merge branch 'main' of https://github.com/AndrewJDawes/advent-of-code-node
+
+[33mcommit ff5a07e71f2cee64629f8c29b7e43673ce682d32[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Nov 19 19:25:10 2024 +0000
+
+    Working on Solution20161b
+
+[33mcommit 6e92ac1069408d45a0a2ad15eb48db68514d525f[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Tue Nov 19 19:08:39 2024 +0000
+
+    Solve 20156b
+
+[33mcommit e64b17e6693b3a2ae06adfec772674c2e6810ff8[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Tue Nov 19 18:32:50 2024 +0000
+
+    Solve 20155a
+
+[33mcommit 9176361a0838bb8a97cdf522313abd375d34d8b7[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Tue Nov 19 16:17:05 2024 +0000
+
+    Add 'part' to Config
+
+[33mcommit c6a97e7a9f043f61f942fc4761491aa23e5a7c4d[m
+Merge: 7fe7bec c676de0
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Tue Nov 19 16:01:14 2024 +0000
+
+    Merge branch 'main' of https://github.com/AndrewJDawes/advent-of-code-node
+
+[33mcommit 7fe7bec926d7955a47c43c30de76e281a7b53ffe[m
+Author: Missie Dawes <missiedawes@gmail.com>
+Date:   Tue Nov 19 15:53:06 2024 +0000
+
+    Add solution for 20155b
+
+[33mcommit c676de07b560a843b8612f3b488d6034812a2598[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Nov 19 15:50:56 2024 +0000
+
+    Rename 20161 to 20161a
+
+[33mcommit 3da59fd7db8c6464cba36322eeb4e5f6c4dd25b1[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Nov 19 12:49:32 2024 +0000
+
+    Remove old comments
+
+[33mcommit 1821f2509f019fc9b95a0ff7ede40c841ecee748[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Nov 19 12:48:36 2024 +0000
+
+    Solve 20161
+
+[33mcommit 69a5fdf56af8bdfcf73b08c0c5e37d0adae6f6af[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Nov 19 12:48:25 2024 +0000
+
+    Fix LineStreamer to not add an empty string chunk if no new data
+
+[33mcommit 99d4440207f048ed2bd04afa6cb22a842bdb02a3[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Nov 19 12:32:18 2024 +0000
+
+    Get tests passing
+
+[33mcommit 9fde65b242802b966a6ef900c45b3ecdba9ce2f0[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 21:50:48 2024 +0000
+
+    Keep going with the parseInstruction
+
+[33mcommit cfbf594a7d4e4029a2161d6e2b769efca52ba492[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 21:49:26 2024 +0000
+
+    Get a lot of Cardinal Direction stuff done
+
+[33mcommit 10588525f2718c319b8d6f7fe373cc050f0a544c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 19:36:55 2024 +0000
+
+    Add test cases
+
+[33mcommit f151a65565801e8740f027e6dbd8f475ae0925d2[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 16:36:24 2024 +0000
+
+    Set up automatic solving
+
+[33mcommit 3dee5c4df4f20d20898825cd28f4060043f3f89b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 16:21:33 2024 +0000
+
+    Get URL iterator working
+
+[33mcommit 9ab0e632cdb270bda5b070a64935344e0101b6c5[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 16:08:11 2024 +0000
+
+    Get URL service working except it doesn't work for the LineStreamer
+
+[33mcommit 888132a75e289318da5638ea00b624fd0267df7b[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 15:02:13 2024 +0000
+
+    Rename files
+
+[33mcommit d91b9614ffa26fe818465ddeb5c9a134cca7910c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 14:59:54 2024 +0000
+
+    Rename streamers and readables
+
+[33mcommit 99000e6b43a688e895bc8b78e4f50f556d714832[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 14:50:56 2024 +0000
+
+    Rename getIterator to getAsyncIterator
+
+[33mcommit 82191430ffa670d088340a60021af7b48e8e9246[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Nov 18 14:46:05 2024 +0000
+
+    Rename Iterator interface to AsyncIterator
+
+[33mcommit 17dab2ef260adb54c0992ba4f29050f24ae0278e[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Nov 19 14:55:04 2023 +0000
+
+    Make sure to pull stream from TextStreamer
+
+[33mcommit e66af2f902ae1cdf5f3b7f127b8f2258e54dbd80[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Nov 19 14:14:10 2023 +0000
+
+    Comment out unnecessary service
+
+[33mcommit 546e29b727e78bfea387c9563c037eb7e4a998b7[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 11 00:37:58 2023 +0000
+
+    Get LineStreamer to work
+
+[33mcommit 265228e7253706781437816d812684f608dc2234[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jul 9 18:32:50 2023 +0000
+
+    Wrap fs.createReadStream in ReadableStream
+
+[33mcommit 7dcc2e55bc9da1426808f7d7a160b42618761198[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Sun Jul 9 17:53:24 2023 +0000
+
+    Add new tests for Readable Stream
+
+[33mcommit 7146fddd72707bc59d012026fa8584fd2370975f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Thu Jul 6 00:42:56 2023 +0000
+
+    Add processing for STDIN
+
+[33mcommit e21688f28547aec4900656e25a3f1bdf7c7715c5[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 4 16:58:38 2023 +0000
+
+    Add factories
+
+[33mcommit d32dc78431abba6712efdef0dfae1f0591c8b18c[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 4 16:48:32 2023 +0000
+
+    Add InputFetcher factory
+
+[33mcommit 311e07d24ef898dfb1663733108fde77e1b16a7f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 4 16:48:00 2023 +0000
+
+    Require single quotes
+
+[33mcommit 5148eaccd85df0782599d86138d0b01e46113654[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 4 16:30:05 2023 +0000
+
+    exclude spect.ts files from build process
+
+[33mcommit e8720ee2df9a49c88e0f3b5df3b94f4f1d414240[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 4 16:28:21 2023 +0000
+
+    Add StringArray and test
+
+[33mcommit ae7d145158e3f22f1bb0d19a9f5bfd732302698f[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 4 15:54:59 2023 +0000
+
+    Add StringArrayIterator and test
+
+[33mcommit 23e06208e8dc8e48ac8e03296e2b8469df46cdb2[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Tue Jul 4 01:57:22 2023 +0000
+
+    Mess around with streams
+
+[33mcommit e275ee2153785eace2f8df7d18a890f16e23a474[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jul 3 23:53:50 2023 +0000
+
+    Add Mocha test
+
+[33mcommit 471ce5c3a0e57c6054d0870ee724f4f9a6049318[m
+Author: Andrew Dawes <andrewjamesdawes@gmail.com>
+Date:   Mon Jul 3 22:49:42 2023 +0000
+
+    Set up typescript
