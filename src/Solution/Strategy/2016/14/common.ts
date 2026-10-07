@@ -1,6 +1,7 @@
 export interface StringCharacterizerFiniteStateMachine {
     isDone(): boolean;
     getLongestStreakForLetter(letter: string): number;
+    getLettersWithStreakOrLonger(): string[];
     advance(): void;
 }
 export class StringCharacterizerFiniteStateMachineA implements StringCharacterizerFiniteStateMachineA {
