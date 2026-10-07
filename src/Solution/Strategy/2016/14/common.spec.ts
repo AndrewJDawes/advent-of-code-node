@@ -39,18 +39,14 @@ describe('Solution 201614', () => {
                     sut.advance();
                 }
                 const letters = sut.getLettersWithStreakOrLonger(4);
-                expect(
-                    letters.findIndex((val) => val.getLetter() === 'a'),
-                ).to.equal(-1);
-                expect(
-                    letters.findIndex((val) => val.getLetter() === 'b'),
-                ).to.not.equal(-1);
-                expect(
-                    letters.findIndex((val) => val.getLetter() === 'c'),
-                ).to.not.equal(-1);
-                expect(
-                    letters.findIndex((val) => val.getLetter() === 'd'),
-                ).to.equal(-1);
+                expect(letters.findIndex((val) => val === 'a')).to.equal(-1);
+                expect(letters.findIndex((val) => val === 'b')).to.not.equal(
+                    -1,
+                );
+                expect(letters.findIndex((val) => val === 'c')).to.not.equal(
+                    -1,
+                );
+                expect(letters.findIndex((val) => val === 'd')).to.equal(-1);
             });
         });
     });

@@ -3,26 +3,6 @@ export interface StringCharacterizerFiniteStateMachine {
     getLongestStreakForLetter(letter: string): number;
     advance(): void;
 }
-
-export interface LetterAndStreak {
-    getLetter(): string;
-    getStreak(): number;
-}
-
-export class LetterAndStreakA implements LetterAndStreak {
-    protected letter: string;
-    protected streak: number;
-    constructor(letter: string, streak: number) {
-        this.letter = letter;
-        this.streak = streak;
-    }
-    public getLetter() {
-        return this.letter;
-    }
-    public getStreak(): number {
-        return this.streak;
-    }
-}
 export class StringCharacterizerFiniteStateMachineA implements StringCharacterizerFiniteStateMachineA {
     protected subject: string;
     protected position: number;
@@ -43,13 +23,11 @@ export class StringCharacterizerFiniteStateMachineA implements StringCharacteriz
         const streak = this.longestStreakByLetter.get(letter);
         return streak === undefined ? 0 : streak;
     }
-    public getLettersWithStreakOrLonger(streak: number): LetterAndStreak[] {
-        const lettersAndStreaks: LetterAndStreak[] = [];
+    public getLettersWithStreakOrLonger(streak: number): string[] {
+        const lettersAndStreaks: string[] = [];
         for (const [letter, letterStreak] of this.longestStreakByLetter) {
             if (letterStreak >= streak) {
-                lettersAndStreaks.push(
-                    new LetterAndStreakA(letter, letterStreak),
-                );
+                lettersAndStreaks.push(letter);
             }
         }
         return lettersAndStreaks;
