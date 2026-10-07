@@ -42,7 +42,7 @@ export class StringCharacterizerFiniteStateMachineA implements StringCharacteriz
             }
         } else {
             this.letter = newLetter;
-            this.currentStreakLength = 0;
+            this.currentStreakLength = 1;
         }
         this.position++;
     }
