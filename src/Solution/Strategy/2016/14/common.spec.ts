@@ -32,6 +32,26 @@ describe('Solution 201614', () => {
                 expect(sut.getLongestStreakForLetter('c')).to.equal(5);
                 expect(sut.getLongestStreakForLetter('d')).to.equal(0);
             });
+            it('reports all letters with streak or longer', () => {
+                const subject = 'bbaaabbbcccaacccccaaabbbbbb';
+                const sut = new StringCharacterizerFiniteStateMachineA(subject);
+                while (!sut.isDone()) {
+                    sut.advance();
+                }
+                const letters = sut.getLettersWithStreakOrLonger(4);
+                expect(
+                    letters.findIndex((val) => val.getLetter() === 'a'),
+                ).to.equal(-1);
+                expect(
+                    letters.findIndex((val) => val.getLetter() === 'b'),
+                ).to.not.equal(-1);
+                expect(
+                    letters.findIndex((val) => val.getLetter() === 'c'),
+                ).to.not.equal(-1);
+                expect(
+                    letters.findIndex((val) => val.getLetter() === 'd'),
+                ).to.equal(-1);
+            });
         });
     });
 });
