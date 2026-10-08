@@ -1,3 +1,5 @@
+import md5 from 'md5';
+
 export interface StringCharacterizerFiniteStateMachine {
     isDone(): boolean;
     getLongestStreakForLetter(letter: string): number;
@@ -54,5 +56,12 @@ export class StringCharacterizerFiniteStateMachineA implements StringCharacteriz
             this.currentStreakLength = 1;
         }
         this.position++;
+    }
+}
+
+export function* generateHash(salt: string) {
+    let index: number = 0;
+    while (true) {
+        yield md5(salt + (++index).toString());
     }
 }
