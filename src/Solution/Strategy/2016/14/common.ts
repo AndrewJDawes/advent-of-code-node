@@ -1,12 +1,12 @@
 import md5 from 'md5';
 
-export interface StringCharacterizerFiniteStateMachine {
+export interface StringCharacterizerFiniteStateMachineInterface {
     isDone(): boolean;
     getLongestStreakForLetter(letter: string): number;
-    getLettersWithStreakOrLonger(): string[];
+    getLettersWithStreakOrLonger(streak: number): string[];
     advance(): void;
 }
-export class StringCharacterizerFiniteStateMachineA implements StringCharacterizerFiniteStateMachineA {
+export class StringCharacterizerFiniteStateMachineA implements StringCharacterizerFiniteStateMachineInterface {
     protected subject: string;
     protected position: number;
     protected letter: string | null;
@@ -59,9 +59,90 @@ export class StringCharacterizerFiniteStateMachineA implements StringCharacteriz
     }
 }
 
-export function* generateHash(salt: string) {
-    let index: number = 0;
+export interface StringCharacterizerFiniteStateMachineFactoryInterface {
+    fabricate(subject: string): StringCharacterizerFiniteStateMachineInterface;
+}
+
+export class StringCharacterizerFiniteStateMachineFactoryA implements StringCharacterizerFiniteStateMachineFactoryInterface {
+    fabricate(subject: string): StringCharacterizerFiniteStateMachineInterface {
+        return new StringCharacterizerFiniteStateMachineA(subject);
+    }
+}
+
+export function generateHash(salt: string, index: number): string {
+    return md5(salt + (++index).toString());
+}
+
+export interface StringCharacterizerFiniteStateMachineManagerInterface {
+    getValueAtIndex(
+        index: number,
+    ): StringCharacterizerFiniteStateMachineInterface;
+}
+export class StringCharacterizerFiniteStateMachineManager implements StringCharacterizerFiniteStateMachineManagerInterface {
+    salt: string;
+    generateHash: (salt: string, index: number) => string;
+    stringCharacterizerFiniteStateMachineFactory: StringCharacterizerFiniteStateMachineFactoryInterface;
+    stringCharacterizerFiniteStateMachines: StringCharacterizerFiniteStateMachineInterface[];
+    constructor(
+        salt: string,
+        generateHash: (salt: string, index: number) => string,
+        stringCharacterizerFiniteStateMachineFactory: StringCharacterizerFiniteStateMachineFactoryInterface,
+    ) {
+        this.salt = salt;
+        this.generateHash = generateHash;
+        this.stringCharacterizerFiniteStateMachineFactory =
+            stringCharacterizerFiniteStateMachineFactory;
+        this.stringCharacterizerFiniteStateMachines = [];
+    }
+    public getValueAtIndex(
+        index: number,
+    ): StringCharacterizerFiniteStateMachineInterface {
+        if (undefined === this.stringCharacterizerFiniteStateMachines[index]) {
+            this.stringCharacterizerFiniteStateMachines[index] ===
+                this.stringCharacterizerFiniteStateMachineFactory.fabricate(
+                    generateHash(this.salt, index),
+                );
+        }
+        return this.stringCharacterizerFiniteStateMachines[index];
+    }
+}
+
+export function* generateKey(
+    stringCharacterizerFiniteStateMachineManagerInterface: StringCharacterizerFiniteStateMachineManagerInterface,
+) {
+    let targetStringCharacterizerFiniteStateMachineIndex = 0;
+    const targetStreakMinimum = 3;
+    const dependentsStreakMinimum = 5;
     while (true) {
-        yield md5(salt + (++index).toString());
+        let valid: boolean = false;
+        while (false === valid) {
+            const targetStringCharacterizerFiniteStateMachine =
+                stringCharacterizerFiniteStateMachineManagerInterface.getValueAtIndex(
+                    targetStringCharacterizerFiniteStateMachineIndex,
+                );
+            let targetLetter: string | null = null;
+            while (
+                targetLetter === null &&
+                !targetStringCharacterizerFiniteStateMachine.isDone()
+            ) {
+                targetStringCharacterizerFiniteStateMachine.advance();
+                const targetStreaks =
+                    targetStringCharacterizerFiniteStateMachine.getLettersWithStreakOrLonger(
+                        targetStreakMinimum,
+                    );
+                if (targetStreaks.length > 0) {
+                    const lastItem = targetStreaks.at(-1);
+                    if (lastItem !== undefined) {
+                        targetLetter = lastItem;
+                    }
+                }
+            }
+            let dependentIndex: null | number = null;
+            // todo find the dependent index or give up if still null after 1000
+            targetStringCharacterizerFiniteStateMachineIndex++;
+        }
+        yield stringCharacterizerFiniteStateMachineManagerInterface.getValueAtIndex(
+            targetStringCharacterizerFiniteStateMachineIndex,
+        );
     }
 }

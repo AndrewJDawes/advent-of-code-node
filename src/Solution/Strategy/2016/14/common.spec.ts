@@ -55,14 +55,13 @@ describe('Solution 201614', () => {
         describe('generateHash', () => {
             it('yields consistent results given salt abc', () => {
                 const salt = 'abc';
-                const sut = generateHash(salt);
-                expect(sut.next().value).to.equal(
+                expect(generateHash(salt, 0)).to.equal(
                     '23734cd52ad4a4fb877d8a1e26e5df5f',
                 );
-                expect(sut.next().value).to.equal(
+                expect(generateHash(salt, 1)).to.equal(
                     '63872b5565b2179bd72ea9c339192543',
                 );
-                expect(sut.next().value).to.equal(
+                expect(generateHash(salt, 2)).to.equal(
                     '8a8b3aea9e3ca257a31cf91db6d6ba12',
                 );
             });
