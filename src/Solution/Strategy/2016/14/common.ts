@@ -113,6 +113,7 @@ export function* generateKey(
     let targetStringCharacterizerFiniteStateMachineIndex = 0;
     const targetStreakMinimum = 3;
     const dependentsStreakMinimum = 5;
+    const dependentsConsidered = 1000;
     while (true) {
         let valid: boolean = false;
         while (false === valid) {
@@ -137,7 +138,35 @@ export function* generateKey(
                     }
                 }
             }
-            let dependentIndex: null | number = null;
+            if (targetLetter !== null) {
+                let dependentStringCharacterizerFiniteStateMachineIndex =
+                    targetStringCharacterizerFiniteStateMachineIndex + 1;
+                let dependentStringCharacterizerFiniteStateMachineIndexMaxBoundary =
+                    dependentStringCharacterizerFiniteStateMachineIndex +
+                    dependentsConsidered;
+                for (
+                    dependentStringCharacterizerFiniteStateMachineIndex;
+                    dependentStringCharacterizerFiniteStateMachineIndex <
+                    dependentStringCharacterizerFiniteStateMachineIndexMaxBoundary;
+                    dependentStringCharacterizerFiniteStateMachineIndex++
+                ) {
+                    const dependentStringCharacterizerFiniteStateMachine =
+                        stringCharacterizerFiniteStateMachineManagerInterface.getValueAtIndex(
+                            targetStringCharacterizerFiniteStateMachineIndex,
+                        );
+                    let dependentStreak = 0;
+                    while (
+                        dependentStreak < dependentsStreakMinimum &&
+                        !dependentStringCharacterizerFiniteStateMachine.isDone()
+                    ) {
+                        dependentStringCharacterizerFiniteStateMachine.advance();
+                        dependentStreak =
+                            dependentStringCharacterizerFiniteStateMachine.getLongestStreakForLetter(
+                                targetLetter,
+                            );
+                    }
+                }
+            }
             // todo find the dependent index or give up if still null after 1000
             targetStringCharacterizerFiniteStateMachineIndex++;
         }
