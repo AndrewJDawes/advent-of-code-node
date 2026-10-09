@@ -144,6 +144,7 @@ export function* generateKey(
                 let dependentStringCharacterizerFiniteStateMachineIndexMaxBoundary =
                     dependentStringCharacterizerFiniteStateMachineIndex +
                     dependentsConsidered;
+                // Switch from a for to a while based on finding a valid dependent OR exhausting the max dependents.
                 for (
                     dependentStringCharacterizerFiniteStateMachineIndex;
                     dependentStringCharacterizerFiniteStateMachineIndex <
