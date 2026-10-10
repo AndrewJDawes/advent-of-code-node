@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import {
     generateHash,
+    hasStreakOrLongerForLetter,
     StringCharacterizerFiniteStateMachineA,
 } from './common.js';
 
@@ -64,6 +65,28 @@ describe('Solution 201614', () => {
                 expect(generateHash(salt, 2)).to.equal(
                     '8a8b3aea9e3ca257a31cf91db6d6ba12',
                 );
+            });
+        });
+        describe('hasStreakOrLongerForLetter', () => {
+            it('answers true when longer streak present', () => {
+                const subject = 'bbaaabbbcccaacccccaaabbbbbb';
+                const fsm = new StringCharacterizerFiniteStateMachineA(subject);
+                expect(hasStreakOrLongerForLetter(fsm, 'b', 4)).to.be.true;
+            });
+            it('answers true when exact streak present', () => {
+                const subject = 'bbaaabbbcccaacccccaaabbbbbb';
+                const fsm = new StringCharacterizerFiniteStateMachineA(subject);
+                expect(hasStreakOrLongerForLetter(fsm, 'c', 4)).to.be.true;
+            });
+            it('answers false when only lesser streak present', () => {
+                const subject = 'bbaaabbbcccaacccccaaabbbbbb';
+                const fsm = new StringCharacterizerFiniteStateMachineA(subject);
+                expect(hasStreakOrLongerForLetter(fsm, 'c', 6)).to.be.false;
+            });
+            it('answers false when no streak present', () => {
+                const subject = 'bbaaabbbcccaacccccaaabbbbbb';
+                const fsm = new StringCharacterizerFiniteStateMachineA(subject);
+                expect(hasStreakOrLongerForLetter(fsm, 'e', 5)).to.be.false;
             });
         });
     });
