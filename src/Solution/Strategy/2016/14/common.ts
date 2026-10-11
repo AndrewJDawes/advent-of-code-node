@@ -82,7 +82,7 @@ export interface StringCharacterizerFiniteStateMachineManagerInterface {
         index: number,
     ): StringCharacterizerFiniteStateMachineInterface;
 }
-export class StringCharacterizerFiniteStateMachineManager implements StringCharacterizerFiniteStateMachineManagerInterface {
+export class StringCharacterizerFiniteStateMachineManagerA implements StringCharacterizerFiniteStateMachineManagerInterface {
     salt: string;
     generateHash: (salt: string, index: number) => string;
     stringCharacterizerFiniteStateMachineFactory: StringCharacterizerFiniteStateMachineFactoryInterface;
@@ -102,7 +102,7 @@ export class StringCharacterizerFiniteStateMachineManager implements StringChara
         index: number,
     ): StringCharacterizerFiniteStateMachineInterface {
         if (undefined === this.stringCharacterizerFiniteStateMachines[index]) {
-            this.stringCharacterizerFiniteStateMachines[index] ===
+            this.stringCharacterizerFiniteStateMachines[index] =
                 this.stringCharacterizerFiniteStateMachineFactory.fabricate(
                     generateHash(this.salt, index),
                 );

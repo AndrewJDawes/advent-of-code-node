@@ -3,6 +3,8 @@ import {
     generateHash,
     hasStreakOrLongerForLetter,
     StringCharacterizerFiniteStateMachineA,
+    StringCharacterizerFiniteStateMachineFactoryA,
+    StringCharacterizerFiniteStateMachineManagerA,
 } from './common.js';
 
 describe('Solution 201614', () => {
@@ -67,6 +69,25 @@ describe('Solution 201614', () => {
                 );
             });
         });
+        describe('StringCharacterizerFiniteStateMachineManagerA', () => {
+            it('gets expected value at index 0', () => {
+                const salt = 'abc';
+                const sut = new StringCharacterizerFiniteStateMachineManagerA(
+                    salt,
+                    generateHash,
+                    new StringCharacterizerFiniteStateMachineFactoryA(),
+                );
+                expect(sut.getValueAtIndex(0).getSubject()).to.equal(
+                    '23734cd52ad4a4fb877d8a1e26e5df5f',
+                );
+                expect(sut.getValueAtIndex(1).getSubject()).to.equal(
+                    '63872b5565b2179bd72ea9c339192543',
+                );
+                expect(sut.getValueAtIndex(2).getSubject()).to.equal(
+                    '8a8b3aea9e3ca257a31cf91db6d6ba12',
+                );
+            });
+        });
         describe('hasStreakOrLongerForLetter', () => {
             it('answers true when longer streak present', () => {
                 const subject = 'bbaaabbbcccaacccccaaabbbbbb';
@@ -88,6 +109,12 @@ describe('Solution 201614', () => {
                 const fsm = new StringCharacterizerFiniteStateMachineA(subject);
                 expect(hasStreakOrLongerForLetter(fsm, 'e', 5)).to.be.false;
             });
+        });
+        describe('rangeContainsStreakOrLongerForLetter', () => {
+            it('answers true when range contains exact streak', () => {});
+            it('answers true when range contains longer streak', () => {});
+            it('answers false when range only contains shorter streak', () => {});
+            it('answers false when range only contains no streak', () => {});
         });
     });
 });
