@@ -173,5 +173,6 @@ describe('Solution 201614', () => {
                 ).to.be.false;
             });
         });
+        describe('findFirstLetterWithStreakOrLonger', () => {});
     });
 });
