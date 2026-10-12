@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {
     generateHash,
     hasStreakOrLongerForLetter,
+    rangeContainsStreakOrLongerForLetter,
     StringCharacterizerFiniteStateMachineA,
     StringCharacterizerFiniteStateMachineFactoryA,
     StringCharacterizerFiniteStateMachineManagerA,
@@ -111,7 +112,21 @@ describe('Solution 201614', () => {
             });
         });
         describe('rangeContainsStreakOrLongerForLetter', () => {
-            it('answers true when range contains exact streak', () => {});
+            it('answers true when range contains exact streak', () => {
+                const salt = 'abc';
+                const hashGenerator = generateHash;
+                const factory =
+                    new StringCharacterizerFiniteStateMachineFactoryA();
+                const manager =
+                    new StringCharacterizerFiniteStateMachineManagerA(
+                        salt,
+                        hashGenerator,
+                        factory,
+                    );
+                expect(
+                    rangeContainsStreakOrLongerForLetter(manager, 0, 4, '5', 2),
+                ).to.be.true;
+            });
             it('answers true when range contains longer streak', () => {});
             it('answers false when range only contains shorter streak', () => {});
             it('answers false when range only contains no streak', () => {});
