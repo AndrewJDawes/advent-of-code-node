@@ -127,9 +127,51 @@ describe('Solution 201614', () => {
                     rangeContainsStreakOrLongerForLetter(manager, 0, 4, '5', 2),
                 ).to.be.true;
             });
-            it('answers true when range contains longer streak', () => {});
-            it('answers false when range only contains shorter streak', () => {});
-            it('answers false when range only contains no streak', () => {});
+            it('answers true when range contains longer streak', () => {
+                const salt = 'abc';
+                const hashGenerator = generateHash;
+                const factory =
+                    new StringCharacterizerFiniteStateMachineFactoryA();
+                const manager =
+                    new StringCharacterizerFiniteStateMachineManagerA(
+                        salt,
+                        hashGenerator,
+                        factory,
+                    );
+                expect(
+                    rangeContainsStreakOrLongerForLetter(manager, 0, 4, '7', 1),
+                ).to.be.true;
+            });
+            it('answers false when range only contains shorter streak', () => {
+                const salt = 'abc';
+                const hashGenerator = generateHash;
+                const factory =
+                    new StringCharacterizerFiniteStateMachineFactoryA();
+                const manager =
+                    new StringCharacterizerFiniteStateMachineManagerA(
+                        salt,
+                        hashGenerator,
+                        factory,
+                    );
+                expect(
+                    rangeContainsStreakOrLongerForLetter(manager, 0, 4, '7', 3),
+                ).to.be.false;
+            });
+            it('answers false when range only contains no streak', () => {
+                const salt = 'abc';
+                const hashGenerator = generateHash;
+                const factory =
+                    new StringCharacterizerFiniteStateMachineFactoryA();
+                const manager =
+                    new StringCharacterizerFiniteStateMachineManagerA(
+                        salt,
+                        hashGenerator,
+                        factory,
+                    );
+                expect(
+                    rangeContainsStreakOrLongerForLetter(manager, 0, 4, 'k', 1),
+                ).to.be.false;
+            });
         });
     });
 });
