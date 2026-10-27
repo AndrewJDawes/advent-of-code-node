@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import {
+    findFirstLetterWithStreakOrLonger,
     generateHash,
     hasStreakOrLongerForLetter,
     rangeContainsStreakOrLongerForLetter,
@@ -173,6 +174,22 @@ describe('Solution 201614', () => {
                 ).to.be.false;
             });
         });
-        describe('findFirstLetterWithStreakOrLonger', () => {});
+        describe('findFirstLetterWithStreakOrLonger', () => {
+            it('returns null if no letter with streak or longer', () => {
+                const subject = 'asdfasdfasdfaaa';
+                const fsm = new StringCharacterizerFiniteStateMachineA(subject);
+                expect(findFirstLetterWithStreakOrLonger(fsm, 4)).to.be.null;
+            });
+            it('returns letter if letter with exact streak', () => {
+                const subject = 'asdfasdfasddddfaa';
+                const fsm = new StringCharacterizerFiniteStateMachineA(subject);
+                expect(findFirstLetterWithStreakOrLonger(fsm, 4)).to.equal('d');
+            });
+            it('returns letter if longer streak', () => {
+                const subject = 'asdfasdfasddddddddfaa';
+                const fsm = new StringCharacterizerFiniteStateMachineA(subject);
+                expect(findFirstLetterWithStreakOrLonger(fsm, 4)).to.equal('d');
+            });
+        });
     });
 });
