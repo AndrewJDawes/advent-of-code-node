@@ -6,7 +6,7 @@ import {
     rangeContainsStreakOrLongerForLetter,
     StringCharacterizerFiniteStateMachineA,
     StringCharacterizerFiniteStateMachineFactoryA,
-    StringCharacterizerFiniteStateMachineManagerA,
+    StringCharacterizerFiniteStateMachineCollectionA,
 } from './common.js';
 
 describe('Solution 201614', () => {
@@ -71,14 +71,15 @@ describe('Solution 201614', () => {
                 );
             });
         });
-        describe('StringCharacterizerFiniteStateMachineManagerA', () => {
+        describe('StringCharacterizerFiniteStateMachineCollectionA', () => {
             it('gets expected value at index', () => {
                 const salt = 'abc';
-                const sut = new StringCharacterizerFiniteStateMachineManagerA(
-                    salt,
-                    generateHash,
-                    new StringCharacterizerFiniteStateMachineFactoryA(),
-                );
+                const sut =
+                    new StringCharacterizerFiniteStateMachineCollectionA(
+                        salt,
+                        generateHash,
+                        new StringCharacterizerFiniteStateMachineFactoryA(),
+                    );
                 expect(sut.getValueAtIndex(0).getSubject()).to.equal(
                     '23734cd52ad4a4fb877d8a1e26e5df5f',
                 );
@@ -119,7 +120,7 @@ describe('Solution 201614', () => {
                 const factory =
                     new StringCharacterizerFiniteStateMachineFactoryA();
                 const manager =
-                    new StringCharacterizerFiniteStateMachineManagerA(
+                    new StringCharacterizerFiniteStateMachineCollectionA(
                         salt,
                         hashGenerator,
                         factory,
@@ -134,7 +135,7 @@ describe('Solution 201614', () => {
                 const factory =
                     new StringCharacterizerFiniteStateMachineFactoryA();
                 const manager =
-                    new StringCharacterizerFiniteStateMachineManagerA(
+                    new StringCharacterizerFiniteStateMachineCollectionA(
                         salt,
                         hashGenerator,
                         factory,
@@ -149,7 +150,7 @@ describe('Solution 201614', () => {
                 const factory =
                     new StringCharacterizerFiniteStateMachineFactoryA();
                 const manager =
-                    new StringCharacterizerFiniteStateMachineManagerA(
+                    new StringCharacterizerFiniteStateMachineCollectionA(
                         salt,
                         hashGenerator,
                         factory,
@@ -164,7 +165,7 @@ describe('Solution 201614', () => {
                 const factory =
                     new StringCharacterizerFiniteStateMachineFactoryA();
                 const manager =
-                    new StringCharacterizerFiniteStateMachineManagerA(
+                    new StringCharacterizerFiniteStateMachineCollectionA(
                         salt,
                         hashGenerator,
                         factory,

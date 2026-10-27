@@ -77,12 +77,12 @@ export function generateHash(salt: string, index: number): string {
     return md5(salt + (++index).toString());
 }
 
-export interface StringCharacterizerFiniteStateMachineManagerInterface {
+export interface StringCharacterizerFiniteStateMachineCollectionInterface {
     getValueAtIndex(
         index: number,
     ): StringCharacterizerFiniteStateMachineInterface;
 }
-export class StringCharacterizerFiniteStateMachineManagerA implements StringCharacterizerFiniteStateMachineManagerInterface {
+export class StringCharacterizerFiniteStateMachineCollectionA implements StringCharacterizerFiniteStateMachineCollectionInterface {
     salt: string;
     generateHash: (salt: string, index: number) => string;
     stringCharacterizerFiniteStateMachineFactory: StringCharacterizerFiniteStateMachineFactoryInterface;
@@ -153,7 +153,7 @@ export function hasStreakOrLongerForLetter(
 }
 
 export function rangeContainsStreakOrLongerForLetter(
-    stringCharacterizerFiniteStateMachineManager: StringCharacterizerFiniteStateMachineManagerInterface,
+    stringCharacterizerFiniteStateMachineManager: StringCharacterizerFiniteStateMachineCollectionInterface,
     startIndex: number,
     exclusiveEndIndex: number,
     targetLetter: string,
@@ -176,7 +176,7 @@ export function rangeContainsStreakOrLongerForLetter(
 }
 
 export function* generateKey(
-    stringCharacterizerFiniteStateMachineManager: StringCharacterizerFiniteStateMachineManagerInterface,
+    stringCharacterizerFiniteStateMachineCollection: StringCharacterizerFiniteStateMachineCollectionInterface,
     startIndex: number = 0,
     targetStreakMinimum: number = 3,
     dependentStreakMinimum: number = 5,
@@ -186,7 +186,7 @@ export function* generateKey(
         let key: StringCharacterizerFiniteStateMachineInterface | null = null;
         while (null === key) {
             const targetStringCharacterizerFiniteStateMachine =
-                stringCharacterizerFiniteStateMachineManager.getValueAtIndex(
+                stringCharacterizerFiniteStateMachineCollection.getValueAtIndex(
                     startIndex,
                 );
             let targetLetter: string | null = findFirstLetterWithStreakOrLonger(
@@ -201,7 +201,7 @@ export function* generateKey(
                     dependentStringCharacterizerFiniteStateMachineIndex +
                     dependentsConsidered;
                 dependentFound = rangeContainsStreakOrLongerForLetter(
-                    stringCharacterizerFiniteStateMachineManager,
+                    stringCharacterizerFiniteStateMachineCollection,
                     dependentStringCharacterizerFiniteStateMachineIndex,
                     dependentStringCharacterizerFiniteStateMachineIndexMaxBoundary,
                     targetLetter,
