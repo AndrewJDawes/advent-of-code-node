@@ -72,7 +72,7 @@ describe('Solution 201614', () => {
             });
         });
         describe('StringCharacterizerFiniteStateMachineManagerA', () => {
-            it('gets expected value at index 0', () => {
+            it('gets expected value at index', () => {
                 const salt = 'abc';
                 const sut = new StringCharacterizerFiniteStateMachineManagerA(
                     salt,
@@ -191,5 +191,6 @@ describe('Solution 201614', () => {
                 expect(findFirstLetterWithStreakOrLonger(fsm, 4)).to.equal('d');
             });
         });
+        describe('generateKey', () => {});
     });
 });
