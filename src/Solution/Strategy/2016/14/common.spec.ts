@@ -1,4 +1,6 @@
-import { expect } from 'chai';
+import { expect, use } from 'chai';
+import sinonChai from 'sinon-chai';
+use(sinonChai);
 import {
     findFirstLetterWithStreakOrLonger,
     generateHash,
@@ -7,6 +9,11 @@ import {
     StringCharacterizerFiniteStateMachineA,
     StringCharacterizerFiniteStateMachineFactoryA,
     StringCharacterizerFiniteStateMachineCollectionA,
+    StringCharacterizerFiniteStateMachineCollectionInterface,
+    StringCharacterizerFiniteStateMachineInterface,
+    findFirstLetterWithStreakOrLongerType,
+    rangeContainsStreakOrLongerForLetterType,
+    generateKey,
 } from './common.js';
 
 describe('Solution 201614', () => {
@@ -192,6 +199,55 @@ describe('Solution 201614', () => {
                 expect(findFirstLetterWithStreakOrLonger(fsm, 4)).to.equal('d');
             });
         });
-        describe('generateKey', () => {});
+        describe('generateKey', () => {
+            it('returns value when match found', () => {
+                class StringCharacterizerFiniteStateMachineMock implements StringCharacterizerFiniteStateMachineInterface {
+                    getLettersWithStreakOrLonger(streak: number): string[] {
+                        return ['a'];
+                    }
+                    getLongestStreakForLetter(letter: string): number {
+                        return 3;
+                    }
+                    getSubject(): string {
+                        return 'aaafdafd';
+                    }
+                    isDone(): boolean {
+                        return false;
+                    }
+                    advance(): void {}
+                }
+                class StringCharacterizerFiniteStateMachineCollectionMock implements StringCharacterizerFiniteStateMachineCollectionInterface {
+                    getValueAtIndex(
+                        index: number,
+                    ): StringCharacterizerFiniteStateMachineInterface {
+                        return new StringCharacterizerFiniteStateMachineMock();
+                    }
+                }
+                const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
+                    new StringCharacterizerFiniteStateMachineCollectionMock();
+                const findFirstLetterWithStreakOrLongerMock: findFirstLetterWithStreakOrLongerType =
+                    (
+                        stringCharacterizerFiniteStateMachine: StringCharacterizerFiniteStateMachineInterface,
+                        streakMinimum?: number,
+                    ) => 'a';
+                const rangeContainsStreakOrLongerForLetterMock: rangeContainsStreakOrLongerForLetterType =
+                    (
+                        stringCharacterizerFiniteStateMachineCollection: StringCharacterizerFiniteStateMachineCollectionInterface,
+                        startIndex: number,
+                        exclusiveEndIndex: number,
+                        targetLetter: string,
+                        streakMinimum?: number,
+                    ) => {
+                        return true;
+                    };
+                // const value = generateKey(
+                //     collection,
+                //     0,
+                //     3,
+                //     5,
+                //     1000,
+                // )
+            });
+        });
     });
 });

@@ -7,6 +7,18 @@ export interface StringCharacterizerFiniteStateMachineInterface {
     advance(): void;
     getSubject(): string;
 }
+
+export type findFirstLetterWithStreakOrLongerType = (
+    stringCharacterizerFiniteStateMachine: StringCharacterizerFiniteStateMachineInterface,
+    streakMinimum?: number,
+) => string | null;
+export type rangeContainsStreakOrLongerForLetterType = (
+    stringCharacterizerFiniteStateMachineCollection: StringCharacterizerFiniteStateMachineCollectionInterface,
+    startIndex: number,
+    exclusiveEndIndex: number,
+    targetLetter: string,
+    streakMinimum?: number,
+) => boolean;
 export class StringCharacterizerFiniteStateMachineA implements StringCharacterizerFiniteStateMachineInterface {
     protected subject: string;
     protected position: number;
@@ -111,26 +123,30 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
     }
 }
 
-export function findFirstLetterWithStreakOrLonger(
-    stringCharacterizerFiniteStateMachine: StringCharacterizerFiniteStateMachineInterface,
-    streakMinimum: number = 3,
-) {
-    let letter: string | null = null;
-    while (letter === null && !stringCharacterizerFiniteStateMachine.isDone()) {
-        stringCharacterizerFiniteStateMachine.advance();
-        const streaks =
-            stringCharacterizerFiniteStateMachine.getLettersWithStreakOrLonger(
-                streakMinimum,
-            );
-        if (streaks.length > 0) {
-            const lastItem = streaks.at(-1);
-            if (lastItem !== undefined) {
-                letter = lastItem;
+export const findFirstLetterWithStreakOrLonger: findFirstLetterWithStreakOrLongerType =
+    (
+        stringCharacterizerFiniteStateMachine: StringCharacterizerFiniteStateMachineInterface,
+        streakMinimum: number = 3,
+    ) => {
+        let letter: string | null = null;
+        while (
+            letter === null &&
+            !stringCharacterizerFiniteStateMachine.isDone()
+        ) {
+            stringCharacterizerFiniteStateMachine.advance();
+            const streaks =
+                stringCharacterizerFiniteStateMachine.getLettersWithStreakOrLonger(
+                    streakMinimum,
+                );
+            if (streaks.length > 0) {
+                const lastItem = streaks.at(-1);
+                if (lastItem !== undefined) {
+                    letter = lastItem;
+                }
             }
         }
-    }
-    return letter;
-}
+        return letter;
+    };
 
 export function hasStreakOrLongerForLetter(
     stringCharacterizerFiniteStateMachine: StringCharacterizerFiniteStateMachineInterface,
@@ -152,28 +168,29 @@ export function hasStreakOrLongerForLetter(
     return exists;
 }
 
-export function rangeContainsStreakOrLongerForLetter(
-    stringCharacterizerFiniteStateMachineManager: StringCharacterizerFiniteStateMachineCollectionInterface,
-    startIndex: number,
-    exclusiveEndIndex: number,
-    targetLetter: string,
-    streakMinimum: number = 5,
-) {
-    let exists: boolean = false;
-    while (false == exists && startIndex < exclusiveEndIndex) {
-        const dependentStringCharacterizerFiniteStateMachine =
-            stringCharacterizerFiniteStateMachineManager.getValueAtIndex(
-                startIndex,
+export const rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerForLetterType =
+    (
+        stringCharacterizerFiniteStateMachineCollection: StringCharacterizerFiniteStateMachineCollectionInterface,
+        startIndex: number,
+        exclusiveEndIndex: number,
+        targetLetter: string,
+        streakMinimum: number = 5,
+    ) => {
+        let exists: boolean = false;
+        while (false == exists && startIndex < exclusiveEndIndex) {
+            const dependentStringCharacterizerFiniteStateMachine =
+                stringCharacterizerFiniteStateMachineCollection.getValueAtIndex(
+                    startIndex,
+                );
+            exists = hasStreakOrLongerForLetter(
+                dependentStringCharacterizerFiniteStateMachine,
+                targetLetter,
+                streakMinimum,
             );
-        exists = hasStreakOrLongerForLetter(
-            dependentStringCharacterizerFiniteStateMachine,
-            targetLetter,
-            streakMinimum,
-        );
-        startIndex++;
-    }
-    return exists;
-}
+            startIndex++;
+        }
+        return exists;
+    };
 
 export function* generateKey(
     stringCharacterizerFiniteStateMachineCollection: StringCharacterizerFiniteStateMachineCollectionInterface,
@@ -181,6 +198,8 @@ export function* generateKey(
     targetStreakMinimum: number = 3,
     dependentStreakMinimum: number = 5,
     dependentsConsidered: number = 1000,
+    findFirstLetterWithStreakOrLonger: findFirstLetterWithStreakOrLongerType,
+    rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerForLetterType,
 ) {
     while (true) {
         let key: StringCharacterizerFiniteStateMachineInterface | null = null;
