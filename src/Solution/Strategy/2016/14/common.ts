@@ -17,7 +17,7 @@ export type rangeContainsStreakOrLongerForLetterType = (
     startIndex: number,
     exclusiveEndIndex: number,
     targetLetter: string,
-    streakMinimum?: number,
+    streakMinimum: number,
 ) => boolean;
 export class StringCharacterizerFiniteStateMachineA implements StringCharacterizerFiniteStateMachineInterface {
     protected subject: string;
@@ -194,12 +194,12 @@ export const rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerFo
 
 export function* generateKey(
     stringCharacterizerFiniteStateMachineCollection: StringCharacterizerFiniteStateMachineCollectionInterface,
+    findFirstLetterWithStreakOrLonger: findFirstLetterWithStreakOrLongerType,
+    rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerForLetterType,
     startIndex: number = 0,
     targetStreakMinimum: number = 3,
     dependentStreakMinimum: number = 5,
     dependentsConsidered: number = 1000,
-    findFirstLetterWithStreakOrLonger: findFirstLetterWithStreakOrLongerType,
-    rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerForLetterType,
 ) {
     while (true) {
         let key: StringCharacterizerFiniteStateMachineInterface | null = null;

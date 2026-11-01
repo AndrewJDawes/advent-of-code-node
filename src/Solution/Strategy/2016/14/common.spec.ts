@@ -201,6 +201,7 @@ describe('Solution 201614', () => {
         });
         describe('generateKey', () => {
             it('returns value when match found', () => {
+                const subject = 'aaafdafd';
                 class StringCharacterizerFiniteStateMachineMock implements StringCharacterizerFiniteStateMachineInterface {
                     getLettersWithStreakOrLonger(streak: number): string[] {
                         return ['a'];
@@ -209,7 +210,7 @@ describe('Solution 201614', () => {
                         return 3;
                     }
                     getSubject(): string {
-                        return 'aaafdafd';
+                        return subject;
                     }
                     isDone(): boolean {
                         return false;
@@ -236,17 +237,21 @@ describe('Solution 201614', () => {
                         startIndex: number,
                         exclusiveEndIndex: number,
                         targetLetter: string,
-                        streakMinimum?: number,
+                        streakMinimum: number,
                     ) => {
                         return true;
                     };
-                // const value = generateKey(
-                //     collection,
-                //     0,
-                //     3,
-                //     5,
-                //     1000,
-                // )
+                const sut = generateKey(
+                    collection,
+                    findFirstLetterWithStreakOrLongerMock,
+                    rangeContainsStreakOrLongerForLetterMock,
+                    0,
+                    3,
+                    3,
+                    1000,
+                );
+                const result = sut.next();
+                expect(result.value).to.equal(subject);
             });
         });
     });
