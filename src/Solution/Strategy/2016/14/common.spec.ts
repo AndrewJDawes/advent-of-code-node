@@ -1,4 +1,6 @@
 import { expect, use } from 'chai';
+import sinon from 'sinon';
+
 import sinonChai from 'sinon-chai';
 use(sinonChai);
 import {
@@ -200,7 +202,7 @@ describe('Solution 201614', () => {
             });
         });
         describe('generateKey', () => {
-            it('returns value when match found', () => {
+            it('returns value when match found first time', () => {
                 const subject = 'aaafdafd';
                 class StringCharacterizerFiniteStateMachineMock implements StringCharacterizerFiniteStateMachineInterface {
                     getLettersWithStreakOrLonger(streak: number): string[] {
@@ -251,6 +253,128 @@ describe('Solution 201614', () => {
                     1000,
                 );
                 const result = sut.next();
+                expect(result.value).to.equal(subject);
+            });
+            it('returns value when no streak or longer found on first try', () => {
+                const subject = 'aaafdafd';
+                class StringCharacterizerFiniteStateMachineMock implements StringCharacterizerFiniteStateMachineInterface {
+                    getLettersWithStreakOrLonger(streak: number): string[] {
+                        return ['a'];
+                    }
+                    getLongestStreakForLetter(letter: string): number {
+                        return 3;
+                    }
+                    getSubject(): string {
+                        return subject;
+                    }
+                    isDone(): boolean {
+                        return false;
+                    }
+                    advance(): void {}
+                }
+                class StringCharacterizerFiniteStateMachineCollectionMock implements StringCharacterizerFiniteStateMachineCollectionInterface {
+                    getValueAtIndex(
+                        index: number,
+                    ): StringCharacterizerFiniteStateMachineInterface {
+                        return new StringCharacterizerFiniteStateMachineMock();
+                    }
+                }
+                const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
+                    new StringCharacterizerFiniteStateMachineCollectionMock();
+
+                const findFirstLetterWithStreakOrLongerMock = sinon.stub();
+                findFirstLetterWithStreakOrLongerMock
+                    .onFirstCall()
+                    .returns(null);
+                findFirstLetterWithStreakOrLongerMock
+                    .onSecondCall()
+                    .returns('a');
+                const rangeContainsStreakOrLongerForLetterMock: rangeContainsStreakOrLongerForLetterType =
+                    (
+                        stringCharacterizerFiniteStateMachineCollection: StringCharacterizerFiniteStateMachineCollectionInterface,
+                        startIndex: number,
+                        exclusiveEndIndex: number,
+                        targetLetter: string,
+                        streakMinimum: number,
+                    ) => {
+                        return true;
+                    };
+                const sut = generateKey(
+                    collection,
+                    findFirstLetterWithStreakOrLongerMock,
+                    rangeContainsStreakOrLongerForLetterMock,
+                    0,
+                    3,
+                    3,
+                    1000,
+                );
+                const result = sut.next();
+                expect(findFirstLetterWithStreakOrLongerMock).to.have.callCount(
+                    2,
+                );
+                expect(result.value).to.equal(subject);
+            });
+            it('returns value when no dependent found on first try', () => {
+                const subject = 'aaafdafd';
+                class StringCharacterizerFiniteStateMachineMock implements StringCharacterizerFiniteStateMachineInterface {
+                    getLettersWithStreakOrLonger(streak: number): string[] {
+                        return ['a'];
+                    }
+                    getLongestStreakForLetter(letter: string): number {
+                        return 3;
+                    }
+                    getSubject(): string {
+                        return subject;
+                    }
+                    isDone(): boolean {
+                        return false;
+                    }
+                    advance(): void {}
+                }
+                class StringCharacterizerFiniteStateMachineCollectionMock implements StringCharacterizerFiniteStateMachineCollectionInterface {
+                    getValueAtIndex(
+                        index: number,
+                    ): StringCharacterizerFiniteStateMachineInterface {
+                        return new StringCharacterizerFiniteStateMachineMock();
+                    }
+                }
+                const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
+                    new StringCharacterizerFiniteStateMachineCollectionMock();
+
+                const findFirstLetterWithStreakOrLongerMock = sinon.stub();
+                findFirstLetterWithStreakOrLongerMock
+                    .onFirstCall()
+                    .returns(null);
+                findFirstLetterWithStreakOrLongerMock
+                    .onSecondCall()
+                    .returns('a');
+                findFirstLetterWithStreakOrLongerMock
+                    .onThirdCall()
+                    .returns('a');
+                const rangeContainsStreakOrLongerForLetterMock = sinon.stub();
+                rangeContainsStreakOrLongerForLetterMock
+                    .onFirstCall()
+                    .returns(false);
+                rangeContainsStreakOrLongerForLetterMock
+                    .onSecondCall()
+                    .returns(true);
+
+                const sut = generateKey(
+                    collection,
+                    findFirstLetterWithStreakOrLongerMock,
+                    rangeContainsStreakOrLongerForLetterMock,
+                    0,
+                    3,
+                    3,
+                    1000,
+                );
+                const result = sut.next();
+                expect(
+                    rangeContainsStreakOrLongerForLetterMock,
+                ).to.have.callCount(2);
+                expect(findFirstLetterWithStreakOrLongerMock).to.have.callCount(
+                    3,
+                );
                 expect(result.value).to.equal(subject);
             });
         });
