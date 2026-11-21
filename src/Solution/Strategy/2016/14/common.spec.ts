@@ -70,14 +70,17 @@ describe('Solution 201614', () => {
             it('yields consistent results given salt abc', () => {
                 const salt = 'abc';
                 expect(generateHash(salt, 0)).to.equal(
-                    '23734cd52ad4a4fb877d8a1e26e5df5f',
+                    '577571be4de9dcce85a041ba0410f29f',
                 );
                 expect(generateHash(salt, 1)).to.equal(
-                    '63872b5565b2179bd72ea9c339192543',
+                    '23734cd52ad4a4fb877d8a1e26e5df5f',
                 );
                 expect(generateHash(salt, 2)).to.equal(
-                    '8a8b3aea9e3ca257a31cf91db6d6ba12',
+                    '63872b5565b2179bd72ea9c339192543',
                 );
+            });
+            it('generates hash which contains cc38887a5 when given salt abc and index 18', () => {
+                expect(generateHash('abc', 18)).to.contain('cc38887a5');
             });
         });
         describe('StringCharacterizerFiniteStateMachineCollectionA', () => {
@@ -90,13 +93,13 @@ describe('Solution 201614', () => {
                         new StringCharacterizerFiniteStateMachineFactoryA(),
                     );
                 expect(sut.getValueAtIndex(0).getSubject()).to.equal(
-                    '23734cd52ad4a4fb877d8a1e26e5df5f',
+                    '577571be4de9dcce85a041ba0410f29f',
                 );
                 expect(sut.getValueAtIndex(1).getSubject()).to.equal(
-                    '63872b5565b2179bd72ea9c339192543',
+                    '23734cd52ad4a4fb877d8a1e26e5df5f',
                 );
                 expect(sut.getValueAtIndex(2).getSubject()).to.equal(
-                    '8a8b3aea9e3ca257a31cf91db6d6ba12',
+                    '63872b5565b2179bd72ea9c339192543',
                 );
             });
         });
@@ -393,7 +396,7 @@ describe('Solution 201614', () => {
                     rangeContainsStreakOrLongerForLetter,
                     0,
                     3,
-                    3,
+                    5,
                     1000,
                 );
                 const result = sut.next();

@@ -86,7 +86,7 @@ export class StringCharacterizerFiniteStateMachineFactoryA implements StringChar
 }
 
 export function generateHash(salt: string, index: number): string {
-    return md5(salt + (++index).toString());
+    return md5(salt + index.toString());
 }
 
 export interface StringCharacterizerFiniteStateMachineCollectionInterface {
@@ -114,9 +114,15 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
         index: number,
     ): StringCharacterizerFiniteStateMachineInterface {
         if (undefined === this.stringCharacterizerFiniteStateMachines[index]) {
+            const hash = generateHash(this.salt, index);
+            console.log({
+                salt: this.salt,
+                index,
+                hash,
+            });
             this.stringCharacterizerFiniteStateMachines[index] =
                 this.stringCharacterizerFiniteStateMachineFactory.fabricate(
-                    generateHash(this.salt, index),
+                    hash,
                 );
         }
         return this.stringCharacterizerFiniteStateMachines[index];
@@ -212,6 +218,13 @@ export function* generateKey(
                 targetStringCharacterizerFiniteStateMachine,
                 targetStreakMinimum,
             );
+            const subject =
+                targetStringCharacterizerFiniteStateMachine.getSubject();
+            console.log({
+                startIndex,
+                targetLetter,
+                subject,
+            });
             if (targetLetter !== null) {
                 let dependentFound: boolean = false;
                 let dependentStringCharacterizerFiniteStateMachineIndex =
