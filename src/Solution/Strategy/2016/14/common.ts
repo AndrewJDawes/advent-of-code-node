@@ -232,14 +232,6 @@ export function* generateKey(
             );
             const subject =
                 targetStringCharacterizerFiniteStateMachine.getSubject();
-            if (startIndex === 39) {
-                console.log({
-                    startIndex,
-                    subject,
-                    targetStreakMinimum,
-                    targetLetter,
-                });
-            }
             if (targetLetter !== null) {
                 let dependentFound: boolean = false;
                 let dependentStringCharacterizerFiniteStateMachineIndex =
