@@ -384,9 +384,12 @@ describe('Solution 201614', () => {
                         generateHash,
                         new StringCharacterizerFiniteStateMachineFactoryA(),
                     );
+                const findFirstLetterWithStreakOrLongerSpy = sinon.spy(
+                    findFirstLetterWithStreakOrLonger,
+                );
                 const sut = generateKey(
                     collection,
-                    findFirstLetterWithStreakOrLonger,
+                    findFirstLetterWithStreakOrLongerSpy,
                     rangeContainsStreakOrLongerForLetter,
                     0,
                     3,
@@ -394,7 +397,9 @@ describe('Solution 201614', () => {
                     1000,
                 );
                 const result = sut.next();
-                expect(result.value).to.equal(subject);
+                expect(findFirstLetterWithStreakOrLongerSpy).to.have.callCount(
+                    39,
+                );
             });
         });
     });
