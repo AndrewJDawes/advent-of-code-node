@@ -1,4 +1,5 @@
 import md5 from 'md5';
+import { rotateLetterCaseInsensitive } from '../4/Common.js';
 
 export interface StringCharacterizerFiniteStateMachineInterface {
     isDone(): boolean;
@@ -124,27 +125,43 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
     }
 }
 
+export const getFirstLetterWithStreakOrLonger = (
+    stringCharacterizerFiniteStateMachine: StringCharacterizerFiniteStateMachineInterface,
+    streakMinimum: number = 3,
+) => {
+    let letter: string | null = null;
+    const streaks =
+        stringCharacterizerFiniteStateMachine.getLettersWithStreakOrLonger(
+            streakMinimum,
+        );
+    if (streaks.length > 0) {
+        const lastItem = streaks.at(-1);
+        if (lastItem !== undefined) {
+            letter = lastItem;
+        }
+    }
+    return letter;
+};
+
 export const findFirstLetterWithStreakOrLonger: findFirstLetterWithStreakOrLongerType =
     (
         stringCharacterizerFiniteStateMachine: StringCharacterizerFiniteStateMachineInterface,
         streakMinimum: number = 3,
     ) => {
         let letter: string | null = null;
+        letter = getFirstLetterWithStreakOrLonger(
+            stringCharacterizerFiniteStateMachine,
+            streakMinimum,
+        );
         while (
             letter === null &&
             !stringCharacterizerFiniteStateMachine.isDone()
         ) {
             stringCharacterizerFiniteStateMachine.advance();
-            const streaks =
-                stringCharacterizerFiniteStateMachine.getLettersWithStreakOrLonger(
-                    streakMinimum,
-                );
-            if (streaks.length > 0) {
-                const lastItem = streaks.at(-1);
-                if (lastItem !== undefined) {
-                    letter = lastItem;
-                }
-            }
+            letter = getFirstLetterWithStreakOrLonger(
+                stringCharacterizerFiniteStateMachine,
+                streakMinimum,
+            );
         }
         return letter;
     };
