@@ -115,11 +115,6 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
     ): StringCharacterizerFiniteStateMachineInterface {
         if (undefined === this.stringCharacterizerFiniteStateMachines[index]) {
             const hash = generateHash(this.salt, index);
-            console.log({
-                salt: this.salt,
-                index,
-                hash,
-            });
             this.stringCharacterizerFiniteStateMachines[index] =
                 this.stringCharacterizerFiniteStateMachineFactory.fabricate(
                     hash,
@@ -220,11 +215,14 @@ export function* generateKey(
             );
             const subject =
                 targetStringCharacterizerFiniteStateMachine.getSubject();
-            console.log({
-                startIndex,
-                targetLetter,
-                subject,
-            });
+            if (startIndex === 39) {
+                console.log({
+                    startIndex,
+                    subject,
+                    targetStreakMinimum,
+                    targetLetter,
+                });
+            }
             if (targetLetter !== null) {
                 let dependentFound: boolean = false;
                 let dependentStringCharacterizerFiniteStateMachineIndex =
