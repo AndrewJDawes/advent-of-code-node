@@ -37,8 +37,9 @@ class Solution implements InterfaceSolutionStrategy {
             5,
             1000,
         );
-        const sut = getKeyByIndexOrGenerateMemoized(keyGenerator);
-        return sut(63);
+        const memoizedGenerator = getKeyByIndexOrGenerateMemoized(keyGenerator);
+        const keyAndMeta = memoizedGenerator(63);
+        return keyAndMeta.index.toString();
     }
 }
 export default Solution;

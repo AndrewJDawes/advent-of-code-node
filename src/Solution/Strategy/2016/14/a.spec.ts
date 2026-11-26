@@ -8,7 +8,7 @@ describe('Solution201614a', () => {
                 'abc', // real +123
             ]);
             const solution = await new Solution201614a(input).solve();
-            expect(solution).to.equal('00ee429b6acccdab81a4b6f2cd9ea278');
+            expect(solution).to.equal('22728');
         }).timeout(0);
     });
 });

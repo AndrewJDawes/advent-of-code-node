@@ -217,7 +217,10 @@ export const rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerFo
         }
         return exists;
     };
-
+type KeyAndMeta = {
+    subject: string;
+    index: number;
+};
 export function* generateKey(
     stringCharacterizerFiniteStateMachineCollection: StringCharacterizerFiniteStateMachineCollectionInterface,
     findFirstLetterWithStreakOrLonger: findFirstLetterWithStreakOrLongerType,
@@ -226,10 +229,10 @@ export function* generateKey(
     targetStreakMinimum: number = 3,
     dependentStreakMinimum: number = 5,
     dependentsConsidered: number = 1000,
-): Generator<string, string, unknown> {
+): Generator<KeyAndMeta, KeyAndMeta, unknown> {
     while (true) {
-        let key: StringCharacterizerFiniteStateMachineInterface | null = null;
-        while (null === key) {
+        let keyAndMeta: KeyAndMeta | null = null;
+        while (null === keyAndMeta) {
             const targetStringCharacterizerFiniteStateMachine =
                 stringCharacterizerFiniteStateMachineCollection.getValueAtIndex(
                     startIndex,
@@ -255,18 +258,22 @@ export function* generateKey(
                     dependentStreakMinimum,
                 );
                 if (true === dependentFound) {
-                    key = targetStringCharacterizerFiniteStateMachine;
+                    keyAndMeta = {
+                        subject:
+                            targetStringCharacterizerFiniteStateMachine.getSubject(),
+                        index: startIndex,
+                    };
                 }
             }
             startIndex++;
         }
-        yield key.getSubject();
+        yield keyAndMeta;
     }
 }
 export function getKeyByIndexOrGenerateMemoized(
-    keyGenerator: Generator<string, string, unknown>,
+    keyGenerator: Generator<KeyAndMeta, KeyAndMeta, unknown>,
 ) {
-    const keys: string[] = [];
+    const keys: KeyAndMeta[] = [];
     return function (index: number) {
         while (keys.length <= index) {
             keys.push(keyGenerator.next().value);

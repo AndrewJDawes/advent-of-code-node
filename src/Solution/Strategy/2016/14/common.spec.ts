@@ -320,7 +320,8 @@ describe('Solution 201614', () => {
                     1000,
                 );
                 const result = sut.next();
-                expect(result.value).to.equal(subject);
+                expect(result.value.subject).to.equal(subject);
+                expect(result.value.index).to.equal(0);
             });
             it('returns value when no streak or longer found on first try', () => {
                 const subject = 'aaafdafd';
@@ -379,7 +380,8 @@ describe('Solution 201614', () => {
                 expect(findFirstLetterWithStreakOrLongerMock).to.have.callCount(
                     2,
                 );
-                expect(result.value).to.equal(subject);
+                expect(result.value.subject).to.equal(subject);
+                expect(result.value.index).to.equal(1);
             });
             it('returns value when no dependent found on first try', () => {
                 const subject = 'aaafdafd';
@@ -442,7 +444,8 @@ describe('Solution 201614', () => {
                 expect(findFirstLetterWithStreakOrLongerMock).to.have.callCount(
                     3,
                 );
-                expect(result.value).to.equal(subject);
+                expect(result.value.subject).to.equal(subject);
+                expect(result.value.index).to.equal(2);
             });
             it('returns value on index 39 when salt is abc', () => {
                 const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
@@ -513,7 +516,10 @@ describe('Solution 201614', () => {
                 );
                 const sut = getKeyByIndexOrGenerateMemoized(keyGenerator);
                 expect(sut(0)).to.not.be.empty;
-                expect(sut(0)).to.equal('347dac6ee8eeea4652c7476d0f97bee5');
+                expect(sut(0).subject).to.equal(
+                    '347dac6ee8eeea4652c7476d0f97bee5',
+                );
+                expect(sut(0).index).to.equal(39);
             });
             it('returns second key when salt is abc', () => {
                 const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
@@ -533,7 +539,10 @@ describe('Solution 201614', () => {
                 );
                 const sut = getKeyByIndexOrGenerateMemoized(keyGenerator);
                 expect(sut(1)).to.not.be.empty;
-                expect(sut(1)).to.equal('ae2e85dd75d63e916a525df95e999ea0');
+                expect(sut(1).subject).to.equal(
+                    'ae2e85dd75d63e916a525df95e999ea0',
+                );
+                expect(sut(1).index).to.equal(92);
             });
         });
     });
