@@ -125,6 +125,13 @@ describe('Solution 201614', () => {
                 const fsm = new StringCharacterizerFiniteStateMachineA(subject);
                 expect(hasStreakOrLongerForLetter(fsm, 'e', 5)).to.be.false;
             });
+            it('answers true for different letter even after exhausted twice', () => {
+                const subject = 'bbaaabbbcccaacccccaaabbbbbb';
+                const fsm = new StringCharacterizerFiniteStateMachineA(subject);
+                expect(hasStreakOrLongerForLetter(fsm, 'b', 5)).to.be.true;
+                expect(hasStreakOrLongerForLetter(fsm, 'b', 5)).to.be.true;
+                expect(hasStreakOrLongerForLetter(fsm, 'c', 4)).to.be.true;
+            });
         });
         describe('rangeContainsStreakOrLongerForLetter', () => {
             it('answers true when range contains exact streak', () => {
