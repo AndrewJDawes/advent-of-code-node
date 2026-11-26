@@ -17,6 +17,7 @@ import {
     rangeContainsStreakOrLongerForLetterType,
     generateKey,
     getFirstLetterWithStreakOrLonger,
+    getKeyByIndexOrGenerateMemoized,
 } from './common.js';
 
 describe('Solution 201614', () => {
@@ -491,6 +492,48 @@ describe('Solution 201614', () => {
                 expect(findFirstLetterWithStreakOrLongerSpy).to.have.callCount(
                     93,
                 );
+            });
+        });
+        describe('getKeyByIndexOrGenerateMemoized', () => {
+            it('returns first key when salt is abc', () => {
+                const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
+                    new StringCharacterizerFiniteStateMachineCollectionA(
+                        'abc',
+                        generateHash,
+                        new StringCharacterizerFiniteStateMachineFactoryA(),
+                    );
+                const keyGenerator = generateKey(
+                    collection,
+                    findFirstLetterWithStreakOrLonger,
+                    rangeContainsStreakOrLongerForLetter,
+                    0,
+                    3,
+                    5,
+                    1000,
+                );
+                const sut = getKeyByIndexOrGenerateMemoized(keyGenerator);
+                expect(sut(0)).to.not.be.empty;
+                expect(sut(0)).to.equal('347dac6ee8eeea4652c7476d0f97bee5');
+            });
+            it('returns second key when salt is abc', () => {
+                const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
+                    new StringCharacterizerFiniteStateMachineCollectionA(
+                        'abc',
+                        generateHash,
+                        new StringCharacterizerFiniteStateMachineFactoryA(),
+                    );
+                const keyGenerator = generateKey(
+                    collection,
+                    findFirstLetterWithStreakOrLonger,
+                    rangeContainsStreakOrLongerForLetter,
+                    0,
+                    3,
+                    5,
+                    1000,
+                );
+                const sut = getKeyByIndexOrGenerateMemoized(keyGenerator);
+                expect(sut(1)).to.not.be.empty;
+                expect(sut(1)).to.equal('ae2e85dd75d63e916a525df95e999ea0');
             });
         });
     });

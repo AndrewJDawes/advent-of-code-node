@@ -226,7 +226,7 @@ export function* generateKey(
     targetStreakMinimum: number = 3,
     dependentStreakMinimum: number = 5,
     dependentsConsidered: number = 1000,
-) {
+): Generator<string, string, unknown> {
     while (true) {
         let key: StringCharacterizerFiniteStateMachineInterface | null = null;
         while (null === key) {
@@ -262,4 +262,15 @@ export function* generateKey(
         }
         yield key.getSubject();
     }
+}
+export function getKeyByIndexOrGenerateMemoized(
+    keyGenerator: Generator<string, string, unknown>,
+) {
+    const keys: string[] = [];
+    return function (index: number) {
+        while (keys.length <= index) {
+            keys.push(keyGenerator.next().value);
+        }
+        return keys[index];
+    };
 }
