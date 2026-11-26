@@ -38,7 +38,7 @@ class Solution implements InterfaceSolutionStrategy {
             1000,
         );
         const memoizedGenerator = getKeyByIndexOrGenerateMemoized(keyGenerator);
-        const keyAndMeta = memoizedGenerator(63);
+        const keyAndMeta = memoizedGenerator(64);
         return keyAndMeta.index.toString();
     }
 }
