@@ -181,19 +181,21 @@ export function hasStreakOrLongerForLetter(
     streakMinimum: number = 5,
 ) {
     // todo: Fix this function
-    let exists: boolean = false;
-    let streak = 0;
-    while (false == exists && !stringCharacterizerFiniteStateMachine.isDone()) {
+    let streak =
+        stringCharacterizerFiniteStateMachine.getLongestStreakForLetter(
+            targetLetter,
+        );
+    while (
+        streak < streakMinimum &&
+        !stringCharacterizerFiniteStateMachine.isDone()
+    ) {
         stringCharacterizerFiniteStateMachine.advance();
         streak =
             stringCharacterizerFiniteStateMachine.getLongestStreakForLetter(
                 targetLetter,
             );
-        if (streak >= streakMinimum) {
-            exists = true;
-        }
     }
-    return exists;
+    return streak >= streakMinimum;
 }
 
 export const rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerForLetterType =
