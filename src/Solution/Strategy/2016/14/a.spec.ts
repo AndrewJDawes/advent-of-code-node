@@ -7,7 +7,7 @@ describe('Solution201614a', () => {
             const input = new StringArray([
                 'abc', // real +123
             ]);
-            const solution = await new Solution201614a(input).solve();
+            const solution = await new Solution201614a(input, 64).solve();
             expect(solution).to.equal('22728');
         }).timeout(0);
     });

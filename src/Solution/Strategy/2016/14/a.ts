@@ -12,8 +12,10 @@ import {
 } from './common.js';
 class Solution implements InterfaceSolutionStrategy {
     inputFetcher: InterfaceInputFetcher;
-    constructor(inputFetcher: InterfaceInputFetcher) {
+    targetKeyIndex: number;
+    constructor(inputFetcher: InterfaceInputFetcher, targetKeyIndex: number) {
         this.inputFetcher = inputFetcher;
+        this.targetKeyIndex = targetKeyIndex;
     }
     async solve() {
         const inputArray: string[] = [];
@@ -24,7 +26,7 @@ class Solution implements InterfaceSolutionStrategy {
         const input = inputArray.join('');
         const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
             new StringCharacterizerFiniteStateMachineCollectionA(
-                'abc',
+                input,
                 generateHash,
                 new StringCharacterizerFiniteStateMachineFactoryA(),
             );
@@ -38,7 +40,7 @@ class Solution implements InterfaceSolutionStrategy {
             1000,
         );
         const memoizedGenerator = getKeyByIndexOrGenerateMemoized(keyGenerator);
-        const keyAndMeta = memoizedGenerator(64);
+        const keyAndMeta = memoizedGenerator(this.targetKeyIndex);
         return keyAndMeta.index.toString();
     }
 }

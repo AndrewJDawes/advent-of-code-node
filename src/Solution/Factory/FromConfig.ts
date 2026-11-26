@@ -109,7 +109,7 @@ class FromConfig implements InterfaceSolutionFactory {
             case '201613a':
                 return new Solution201613a(service, [1, 1], [31, 39]);
             case '201614a':
-                return new Solution201614a(service);
+                return new Solution201614a(service, 63);
             default:
                 throw new Error(
                     `Unknown year and day and part: ${yearDayPart}`,
