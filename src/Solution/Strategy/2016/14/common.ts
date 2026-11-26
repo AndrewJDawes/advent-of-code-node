@@ -1,5 +1,5 @@
 import md5 from 'md5';
-const MEMOIZE: boolean = false;
+const MEMOIZE: boolean = true;
 export interface StringCharacterizerFiniteStateMachineInterface {
     isDone(): boolean;
     getLongestStreakForLetter(letter: string): number;
@@ -113,7 +113,6 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
     public getValueAtIndex(
         index: number,
     ): StringCharacterizerFiniteStateMachineInterface {
-        // todo: Memoize
         let fsm: StringCharacterizerFiniteStateMachineInterface | undefined =
             this.stringCharacterizerFiniteStateMachines[index];
         if (undefined === fsm) {
@@ -124,10 +123,6 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
                 );
             if (MEMOIZE) {
                 this.stringCharacterizerFiniteStateMachines[index] = fsm;
-                console.log({
-                    index,
-                    length: this.stringCharacterizerFiniteStateMachines.length,
-                });
             }
         }
         return fsm;
@@ -206,11 +201,6 @@ export const rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerFo
         targetLetter: string,
         streakMinimum: number = 5,
     ) => {
-        console.log({
-            name: 'rangeContainsStreakOrLongerForLetter',
-            startIndex,
-            exclusiveEndIndex,
-        });
         let exists: boolean = false;
         while (false == exists && startIndex < exclusiveEndIndex) {
             const dependentStringCharacterizerFiniteStateMachine =
@@ -241,10 +231,6 @@ export function* generateKey(
     while (true) {
         let key: StringCharacterizerFiniteStateMachineInterface | null = null;
         while (null === key) {
-            console.log({
-                name: 'generateKey',
-                startIndex,
-            });
             const targetStringCharacterizerFiniteStateMachine =
                 stringCharacterizerFiniteStateMachineCollection.getValueAtIndex(
                     startIndex,
