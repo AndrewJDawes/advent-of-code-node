@@ -470,8 +470,3 @@ describe('Solution 201614', () => {
         });
     });
 });
-
-/*
-There is a bug with the FSM. Because if we return the memoized FSMs (which are already consumed), they are not consistently returning the right answers.
-I think it might be in hasStreakOrLongerForLetter
-*/

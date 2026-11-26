@@ -175,7 +175,6 @@ export function hasStreakOrLongerForLetter(
     targetLetter: string,
     streakMinimum: number = 5,
 ) {
-    // todo: Fix this function
     let streak =
         stringCharacterizerFiniteStateMachine.getLongestStreakForLetter(
             targetLetter,
@@ -259,7 +258,6 @@ export function* generateKey(
                     key = targetStringCharacterizerFiniteStateMachine;
                 }
             }
-            // todo find the dependent index or give up if still null after 1000
             startIndex++;
         }
         yield key.getSubject();
