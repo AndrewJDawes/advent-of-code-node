@@ -114,6 +114,7 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
     public getValueAtIndex(
         index: number,
     ): StringCharacterizerFiniteStateMachineInterface {
+        // todo: Memoize
         const hash = generateHash(this.salt, index);
         return this.stringCharacterizerFiniteStateMachineFactory.fabricate(
             hash,
