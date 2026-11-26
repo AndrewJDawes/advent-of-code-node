@@ -1,6 +1,5 @@
 import md5 from 'md5';
-import { rotateLetterCaseInsensitive } from '../4/Common.js';
-
+const MEMOIZE: boolean = false;
 export interface StringCharacterizerFiniteStateMachineInterface {
     isDone(): boolean;
     getLongestStreakForLetter(letter: string): number;
@@ -115,18 +114,23 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
         index: number,
     ): StringCharacterizerFiniteStateMachineInterface {
         // todo: Memoize
-        const hash = generateHash(this.salt, index);
-        return this.stringCharacterizerFiniteStateMachineFactory.fabricate(
-            hash,
-        );
-        if (undefined === this.stringCharacterizerFiniteStateMachines[index]) {
+        let fsm: StringCharacterizerFiniteStateMachineInterface | undefined =
+            this.stringCharacterizerFiniteStateMachines[index];
+        if (undefined === fsm) {
             const hash = generateHash(this.salt, index);
-            this.stringCharacterizerFiniteStateMachines[index] =
+            fsm =
                 this.stringCharacterizerFiniteStateMachineFactory.fabricate(
                     hash,
                 );
+            if (MEMOIZE) {
+                this.stringCharacterizerFiniteStateMachines[index] = fsm;
+                console.log({
+                    index,
+                    length: this.stringCharacterizerFiniteStateMachines.length,
+                });
+            }
         }
-        return this.stringCharacterizerFiniteStateMachines[index];
+        return fsm;
     }
 }
 
@@ -176,6 +180,7 @@ export function hasStreakOrLongerForLetter(
     targetLetter: string,
     streakMinimum: number = 5,
 ) {
+    // todo: Fix this function
     let exists: boolean = false;
     let streak = 0;
     while (false == exists && !stringCharacterizerFiniteStateMachine.isDone()) {
@@ -199,6 +204,11 @@ export const rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerFo
         targetLetter: string,
         streakMinimum: number = 5,
     ) => {
+        console.log({
+            name: 'rangeContainsStreakOrLongerForLetter',
+            startIndex,
+            exclusiveEndIndex,
+        });
         let exists: boolean = false;
         while (false == exists && startIndex < exclusiveEndIndex) {
             const dependentStringCharacterizerFiniteStateMachine =
@@ -212,14 +222,6 @@ export const rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerFo
                 targetLetter,
                 streakMinimum,
             );
-            console.log({
-                name: 'rangeContainsStreakOrLongerForLetter',
-                startIndex,
-                targetLetter,
-                streakMinimum,
-                subject,
-                exists,
-            });
             startIndex++;
         }
         return exists;
@@ -237,6 +239,10 @@ export function* generateKey(
     while (true) {
         let key: StringCharacterizerFiniteStateMachineInterface | null = null;
         while (null === key) {
+            console.log({
+                name: 'generateKey',
+                startIndex,
+            });
             const targetStringCharacterizerFiniteStateMachine =
                 stringCharacterizerFiniteStateMachineCollection.getValueAtIndex(
                     startIndex,
@@ -247,12 +253,6 @@ export function* generateKey(
             );
             const subject =
                 targetStringCharacterizerFiniteStateMachine.getSubject();
-            console.log({
-                name: 'generateKey outer',
-                startIndex,
-                subject,
-                targetLetter,
-            });
             if (targetLetter !== null) {
                 let dependentFound: boolean = false;
                 let dependentStringCharacterizerFiniteStateMachineIndex =
@@ -267,13 +267,6 @@ export function* generateKey(
                     targetLetter,
                     dependentStreakMinimum,
                 );
-                console.log({
-                    name: 'generateKey inner',
-                    targetLetter,
-                    dependentStringCharacterizerFiniteStateMachineIndex,
-                    dependentStringCharacterizerFiniteStateMachineIndexMaxBoundary,
-                    dependentFound,
-                });
                 if (true === dependentFound) {
                     key = targetStringCharacterizerFiniteStateMachine;
                 }
