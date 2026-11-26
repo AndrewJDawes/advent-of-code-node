@@ -114,6 +114,10 @@ export class StringCharacterizerFiniteStateMachineCollectionA implements StringC
     public getValueAtIndex(
         index: number,
     ): StringCharacterizerFiniteStateMachineInterface {
+        const hash = generateHash(this.salt, index);
+        return this.stringCharacterizerFiniteStateMachineFactory.fabricate(
+            hash,
+        );
         if (undefined === this.stringCharacterizerFiniteStateMachines[index]) {
             const hash = generateHash(this.salt, index);
             this.stringCharacterizerFiniteStateMachines[index] =
@@ -200,11 +204,21 @@ export const rangeContainsStreakOrLongerForLetter: rangeContainsStreakOrLongerFo
                 stringCharacterizerFiniteStateMachineCollection.getValueAtIndex(
                     startIndex,
                 );
+            const subject =
+                dependentStringCharacterizerFiniteStateMachine.getSubject();
             exists = hasStreakOrLongerForLetter(
                 dependentStringCharacterizerFiniteStateMachine,
                 targetLetter,
                 streakMinimum,
             );
+            console.log({
+                name: 'rangeContainsStreakOrLongerForLetter',
+                startIndex,
+                targetLetter,
+                streakMinimum,
+                subject,
+                exists,
+            });
             startIndex++;
         }
         return exists;
@@ -232,6 +246,12 @@ export function* generateKey(
             );
             const subject =
                 targetStringCharacterizerFiniteStateMachine.getSubject();
+            console.log({
+                name: 'generateKey outer',
+                startIndex,
+                subject,
+                targetLetter,
+            });
             if (targetLetter !== null) {
                 let dependentFound: boolean = false;
                 let dependentStringCharacterizerFiniteStateMachineIndex =
@@ -246,6 +266,13 @@ export function* generateKey(
                     targetLetter,
                     dependentStreakMinimum,
                 );
+                console.log({
+                    name: 'generateKey inner',
+                    targetLetter,
+                    dependentStringCharacterizerFiniteStateMachineIndex,
+                    dependentStringCharacterizerFiniteStateMachineIndexMaxBoundary,
+                    dependentFound,
+                });
                 if (true === dependentFound) {
                     key = targetStringCharacterizerFiniteStateMachine;
                 }

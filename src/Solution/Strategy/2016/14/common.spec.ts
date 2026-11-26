@@ -457,9 +457,23 @@ describe('Solution 201614', () => {
                 );
                 const result = sut.next();
                 expect(findFirstLetterWithStreakOrLongerSpy).to.have.callCount(
-                    39,
+                    40,
                 );
             });
         });
     });
 });
+
+/*
+
+{
+  name: 'rangeContainsStreakOrLongerForLetter',
+  startIndex: 816,
+  targetLetter: '8',
+  streakMinimum: 5,
+  subject: '3aeeeee1367614f3061d165a5fe3cac3',
+  exists: false
+}
+The next index which produces a triple is 39; the hash of abc39 contains eee. It is also the first key: one of the next thousand hashes (the one at index 816) contains eeeee.
+THE PROBLEM IS MEMORY
+*/
