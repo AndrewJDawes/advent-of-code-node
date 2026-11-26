@@ -467,6 +467,31 @@ describe('Solution 201614', () => {
                     40,
                 );
             });
+            it('returns value on index 92 when salt is abc', () => {
+                const collection: StringCharacterizerFiniteStateMachineCollectionInterface =
+                    new StringCharacterizerFiniteStateMachineCollectionA(
+                        'abc',
+                        generateHash,
+                        new StringCharacterizerFiniteStateMachineFactoryA(),
+                    );
+                const findFirstLetterWithStreakOrLongerSpy = sinon.spy(
+                    findFirstLetterWithStreakOrLonger,
+                );
+                const sut = generateKey(
+                    collection,
+                    findFirstLetterWithStreakOrLongerSpy,
+                    rangeContainsStreakOrLongerForLetter,
+                    0,
+                    3,
+                    5,
+                    1000,
+                );
+                sut.next();
+                const result = sut.next();
+                expect(findFirstLetterWithStreakOrLongerSpy).to.have.callCount(
+                    93,
+                );
+            });
         });
     });
 });
